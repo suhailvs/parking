@@ -29,8 +29,7 @@
         <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
         <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
         <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
-        {% block extra_style %}{% endblock %}
-        {% block extra_base_style %}{% endblock %}
+        {% block extra_style %}{% endblock %}        
     {% endblock %}
 </head>
 
@@ -46,14 +45,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="#page-top">Parking</a>
+                <a class="navbar-brand page-scroll" href="{% url 'home' %}">Parking</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="hidden">
-                        <a href="#page-top"></a>
+                    {% block navbar %}
+                    <li>
+                        <a class="page-scroll" href="#page-top"> Top</a>
                     </li>
                     <li>
                         <a class="page-scroll" href="#services">How it works</a>
@@ -64,6 +64,15 @@
                     <li>
                         <a class="page-scroll" href="#contact">Contact</a>
                     </li>
+                    {% endblock %}
+                    <li>
+                        <a href="#portfolioModal1" data-toggle="modal">
+                            <i class="fa fa-sign-in"></i> login
+                        </a>
+                    </li>                    
+                    <li>
+                        <a href="#"><i class="fa fa-arrow-up"></i> Signup</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -71,16 +80,14 @@
         <!-- /.container-fluid -->
     </nav>
 
-    {% block body %}
-        {% block content %}
-        {% endblock %}
+    {% block body %}        
     {% endblock %}      
 
     <footer>
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <span class="copyright">Copyright &copy; Your Website 2014</span>
+                    <span class="copyright">Copyright &copy; parking.com</span>
                 </div>
                 <div class="col-md-4">
                     <ul class="list-inline social-buttons">
@@ -104,6 +111,39 @@
         </div>
     </footer>    
 
+
+    <!-- Portfolio Modal 1 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <!-- Project Details Go Here -->
+                            <h2>Project Name</h2>
+                            <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                            <img class="img-responsive" src="img/portfolio/roundicons-free.png" alt="">
+                            p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
+                            <p>
+                                <strong>Want these icons in this portfolio item sample?</strong>You can download 60 of them for free, courtesy of <a href="https://getdpd.com/cart/hoplink/18076?referrer=bvbo4kax5k8ogc">RoundIcons.com</a>, or you can purchase the 1500 icon set <a href="https://getdpd.com/cart/hoplink/18076?referrer=bvbo4kax5k8ogc">here</a>.</p>
+                            <ul class="list-inline">
+                                <li>Date: July 2014</li>
+                                <li>Client: Round Icons</li>
+                                <li>Category: Graphic Design</li>
+                            </ul>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close Project</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- jQuery Version 1.11.0 -->
     <script src="{% static "jquery.min.js" %}"></script>
 
