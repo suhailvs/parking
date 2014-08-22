@@ -15,3 +15,10 @@ also logged in users can:
 + add details about them.
 + view their payments and parking space they purchase.
 + List their parking space
+
+Requirements
+------------
+
+django
+django-user-accounts==1.0b14
+django-bootstrap-form

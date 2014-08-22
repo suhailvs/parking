@@ -9,4 +9,6 @@ urlpatterns = patterns('',
     url(r'^p(\d+|all)/$', 'homepage.views.viewParking', name='parkings'),    
     url(r'^ajax/', include('ajaxviews.urls')),
     url(r'^admin/', include(admin.site.urls)),
+
+	url(r"^account/", include("account.urls")),
 )
