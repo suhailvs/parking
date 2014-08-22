@@ -38,7 +38,8 @@
 	              </button>
 	              <a class="navbar-brand" href="{{home}}">Parking</a>
 	            </div>
-	            <div class="collapse navbar-collapse">            
+	            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
+                     
 	              <ul class="nav navbar-nav">
 	              	<li><a href="{% url 'parkings' 'my' %}">Home({{request.user.username}})</a></li>
 	                <li{% if request.path == home %} class="active"{% endif %}><a href="{% url 'parkings' 'all' %}"> All Parkings</a></li>

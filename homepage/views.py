@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse_lazy
 def viewParking(request,parking_id):
 	sample=[dict(lat=18,lng=20,streetaddress='kolakkode',country='india',state='kerala'),
 		dict(lat=28,lng=22,streetaddress='passs 2',country='india',state='tamilnadu')]
-		
+	print (request.user.account)
 	if parking_id=='my' and request.user.is_active:
 		template='pages/viewparking.html'
 		d=dict(parkings=Parking.objects.filter(user=request.user))

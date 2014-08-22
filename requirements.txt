@@ -1,0 +1,3 @@
+django
+django-bootstrap-form
+django-user-accounts==1.0b18

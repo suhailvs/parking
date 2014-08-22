@@ -3,6 +3,8 @@ from django.views.generic import TemplateView
 from django.contrib import admin
 from homepage.views import NewParking
 from django.contrib.auth.decorators import login_required
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -16,3 +18,4 @@ urlpatterns = patterns('',
 
 	url(r"^account/", include("account.urls")),
 )
+urlpatterns += staticfiles_urlpatterns()

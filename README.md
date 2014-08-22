@@ -20,5 +20,5 @@ Requirements
 ------------
 
 	django
-	django-user-accounts==1.0b14
+	django-user-accounts==1.0b18
 	django-bootstrap-form

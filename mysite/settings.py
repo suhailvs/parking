@@ -63,6 +63,9 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+DATA_DIR=BASE_DIR
+if 'OPENSHIFT_DATA_DIR' in os.environ:
+    DATA_DIR = os.environ.get('OPENSHIFT_DATA_DIR')
 
 DATABASES = {
     'default': {
