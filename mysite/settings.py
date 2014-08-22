@@ -92,3 +92,14 @@ from django.conf import global_settings
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
     "django.core.context_processors.request", "account.context_processors.account",
 )
+
+# gmail server settings
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'suhailvs@gmail.com'
+EMAIL_HOST_PASSWORD = 'pnaoeogqwtqlgusd'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+#django-user-accounts
+ACCOUNT_EMAIL_UNIQUE = True
+ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
