@@ -1,11 +1,8 @@
 <!-- USER -->
-{% comment %}
-
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block head_title %}Log out{% endblock %}
-
-{% block content %}
-<div class="row">
+{% block body %}
+  <div class="row">
     <div class="col-md-5"><br>
         <div class="panel panel-default">  
           <div class="panel-heading">Log out</div>
@@ -19,6 +16,15 @@
         </div>
     </div>
 </div>
+{% endblock %}  
+
+{% comment %}
+
+{% extends "base.html" %}
+{% block head_title %}Log out{% endblock %}
+
+{% block content %}
+
 {% endblock %}
 
 {% endcomment %} 
