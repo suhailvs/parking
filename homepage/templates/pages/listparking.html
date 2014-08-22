@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+{% block extra_style %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}address/jquery-ui-1.9.2.custom.min.css">
+<style type="text/css">
+  body{padding-top: 100px}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-default" style="padding:30px">  	
+	  <form id="parkdetails" class="form-horizontal" method="post" action="">{% csrf_token %}
+	    <h1>List Your Parking details:</h1>
+	    <!--
+	    <input type="text" name="address" class="form-control" id="id_streetaddress">
+	    -->
+	    {{ form|bootstrap }}
+	    <p>You can drag and drop the marker to the correct location for precise selection.</p>
+	    <div class="form-group">    
+	      <div style="width:300px;height:300px;margin-left:50px;">
+	      <div id="map_canvas" style="width:100%; height:100%"></div>
+	      <div id="location" class=""></div>        
+	      </div>
+	      <!--Latitude:<input type="text" name="lat" class="form-control" id="id_lat">
+	      Longitude:<input type="text" name="lng" class="form-control" id="id_lng">
+	      <input type="text" id="lbl_longitude">-->
+	    </div>
+	    <button type="submit" class="btn btn-success">Submit</button> 
+	    <a class="btn btn-danger" href="{% url 'home' %}">Cancel</a>	    
+	  </form>  	
+    </div>
+  </div> 
+</div>	
+{% endblock %}
+{% block extra_script %}
+<!-- Address Picker-->
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="{{STATIC_URL}}address/jquery-ui-1.9.2.custom.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{STATIC_URL}}address/ui.addresspicker.js" type="text/javascript" charset="utf-8"></script>
+<!--/-->
+<script type="text/javascript">
+$(document).ready(function() {
+  var location='{{ loc }}';    
+  if (location){
+      $('#id_streetaddress').val(location);         
+  }  
+  function showCallback(geocodeResult, parsedGeocodeResult){
+    //$("span.lbl-lat").text(parsedGeocodeResult['lat']);
+    //$("span.lbl-lon").text(parsedGeocodeResult['lng']);
+   //alert(parsedGeocodeResult['lat']);
+   //alert(parsedGeocodeResult['lng']);
+  }
+  // Address Picker
+  var addresspickerMap = $("#id_streetaddress").addresspicker({
+    regionBias: "india",
+    updateCallback: showCallback,
+    reverseGeocode: 'true',
+    autocomplete: 'bootstrap',
+    elements: {
+      map: "#map_canvas",
+      lat: "#id_lat",
+      lng: "#id_lng" 
+    }
+  });
+  var gmarker = addresspickerMap.addresspicker("marker");
+  gmarker.setVisible(true);
+  addresspickerMap.addresspicker( "updatePosition");
+  
+  //End of address picker
+});
+</script>
+{% endblock %} 
