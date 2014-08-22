@@ -1,24 +1,16 @@
-{% extends 'guest/base_guest.html' %}
-
+{% extends 'account/base.html' %}
+{% load bootstrap %}
 {% block head_title %}Sign up{% endblock %}
-{% block body %}  
-<header>
-  <div class="container" style="min-height:540px;padding-top:100px">
-    <div class="row">
-      <div class="col-md-4 col-md-offset-4">
-        <h1>Sign up</h1> 
-        
-        <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off">          
-          {% csrf_token %}    
-          {{ form }}   
-          {% if redirect_field_value %}
-              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-          {% endif %}<br>
-          <button type="submit" class="btn btn-primary btn-lg btn-block">Sign up</button>
-        </form>         
-      </div>
-    </div>
-  </div>
-</header> 
-
-{% endblock %}
+{% block content %}  
+<div class="panel-heading"><h1>Sign Up</h1></div>
+  <div class="panel-body" style="padding:20px">
+    <form class="form-horizontal" method="post" action="{% url "account_signup" %}">{% csrf_token %}    
+        {{ form|bootstrap }}    
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}<br>
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Sign up</button>
+      </form>
+  </div>    
+</div>    
+{% endblock %}  

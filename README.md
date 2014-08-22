@@ -19,6 +19,6 @@ also logged in users can:
 Requirements
 ------------
 
-django
-django-user-accounts==1.0b14
-django-bootstrap-form
+	django
+	django-user-accounts==1.0b14
+	django-bootstrap-form
