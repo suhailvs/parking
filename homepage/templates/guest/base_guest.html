@@ -157,8 +157,7 @@
     <script src="{% static "jquery.min.js" %}"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
-    
+    <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>   
     {% block javascript %}
         <!-- Plugin JavaScript -->
         <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
@@ -167,12 +166,16 @@
 
         <!-- Custom Theme JavaScript -->
         <script src="{% static "homepage/agency.js" %}"></script>
+        <script src="{% static "spin.min.js" %}"></script>  
 
         {% if not request.user.is_active %}
         <!-- used for login -->
             <script type="text/javascript">
             $(document).ready(function () {
-                $('input.btnsignin').click(function(e){                 
+                var spinner=new Spinner({lines: 13,length: 20});
+                $('input.btnsignin').click(function(e){
+                    var target = document.getElementById('loading_signin');
+                    spinner.spin(target);
                     e.preventDefault();         
                     var frmname=$(this).data('formtype');
                     var nextpage=$(this).data('next');
@@ -187,7 +190,8 @@
                        if (msg=='1'){
                         document.location.assign(nextpage);
                        }else{   
-                        $('#loading_signin :input').each(function(){this.disabled = false;});                    
+                        $('#loading_signin :input').each(function(){this.disabled = false;}); 
+                        spinner.stop();                   
                         $('#modal-signin').find('.errormsg')
                             .html('<div class="alert alert-danger fade in">'+
                             msg+'<button type="button" class="close" data-dismiss="alert">&times;</button>'+
