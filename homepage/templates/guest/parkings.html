@@ -4,23 +4,22 @@
 {% endblock %}  
 
 {% block extra_script %}     
-{% if results %}
+{% if parkings %}
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script> 
   var map;
   var datas=[];
   function initialize() {
-    var mapOptions = { center:new google.maps.LatLng({{results.0.lat}},{{results.0.lng}}),  
+    var mapOptions = { center:new google.maps.LatLng({{parkings.0.lat}},{{parkings.0.lng}}),  
                        zoom: 6,
                        mapTypeId: google.maps.MapTypeId.ROADMAP };  
     map=new google.maps.Map(document.getElementById("googleMap"), mapOptions);
 
-    {% for property in results %}    
-    var data = {'lat':    {{property.lat}},
-                'long':   {{property.lng}},
-                'address':"{{property.streetaddress}}",
-                'country':   "{{ property.country }}",
-                'state':  "{{ property.state }}"
+    {% for parking in parkings %}    
+    var data = {'url': '{% url 'parkings' parking.pk %}',
+              'lat': {{parking.lat}},
+                'long': {{parking.lng}},
+                'address':"{{parking.streetaddress|truncatechars:30}}"                
                 };
     datas.push(data);
     {% endfor %} 
@@ -32,8 +31,7 @@
         position: new google.maps.LatLng(datas[i]['lat'], datas[i]['long']),
         map: map
       });
-      makeInfoWindowEvent(map, infowindow, "<p style='color:#000'><strong>"+datas[i]['address']+"</strong><br> Country:"+
-        datas[i]['country']+'- State:'+datas[i]['state']+'</p>', marker);
+      makeInfoWindowEvent(map, infowindow, "<a class='btn btn-success btn-xs' href="+datas[i]['url']+">view</a><p style='color:#000'><strong>"+datas[i]['address']+"</strong><br> Latitude:"+datas[i]['lat']+ '<br> Longitude:'+datas[i]['long']+'</p>', marker);
       markers.push(marker);
     }
   }
