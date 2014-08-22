@@ -53,7 +53,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     {% block navbar %}
                     <li>
-                        <a class="page-scroll" href="#page-top"> Top</a>
+                        <a class="page-scroll" href="#page-top">Home</a>
                     </li>
                     <li>
                         <a class="page-scroll" href="#services">How it works</a>
@@ -126,7 +126,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-               <h4 class="modal-title">Member Login</h4>
+               <h4 class="modal-title">Login</h4>
                <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a>
               </div>
             </div>
@@ -172,7 +172,14 @@
         <!-- used for login -->
             <script type="text/javascript">
             $(document).ready(function () {
-                var spinner=new Spinner({lines: 13,length: 20});
+                var spinner=new Spinner({lines: 10,length: 25,width:20,radius:40});
+                $('.modal').on('hidden.bs.modal', function(){
+                    //some modals does not have form tag
+                    $(this).find(".errormsg").empty();
+                    $(this).find('form')[0].reset();                      
+                    //alert('close btn click');         
+                });
+
                 $('input.btnsignin').click(function(e){
                     var target = document.getElementById('loading_signin');
                     spinner.spin(target);
@@ -193,7 +200,7 @@
                         $('#loading_signin :input').each(function(){this.disabled = false;}); 
                         spinner.stop();                   
                         $('#modal-signin').find('.errormsg')
-                            .html('<div class="alert alert-danger fade in">'+
+                            .html('<div class="alert alert-warning fade in">'+
                             msg+'<button type="button" class="close" data-dismiss="alert">&times;</button>'+
                             '</div>');
                        }    
