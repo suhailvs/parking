@@ -12,31 +12,22 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
     <div class="panel panel-default" style="padding:30px">    
-    <form id="parkdetails" class="form-horizontal" method="post" action="">{% csrf_token %}
+    <form id="parkdetails" class="form-horizontal" method="post" action="" enctype="multipart/form-data">{% csrf_token %}
       <h1>List Your Parking details:</h1>
       <!--
       <input type="text" name="address" class="form-control" id="id_streetaddress">
       -->
       {{ form|bootstrap }}
-      <p>You can drag and drop the marker to the correct location for precise selection.</p>
-      <div class="form-group">    
-        <div style="height:300px;">
-        <div id="map_canvas" style="width:100%; height:100%"></div>
-        <div id="location" class=""></div>        
-        </div>
-        <!--Latitude:<input type="text" name="lat" class="form-control" id="id_lat">
-        Longitude:<input type="text" name="lng" class="form-control" id="id_lng">
-        <input type="text" id="lbl_longitude">-->           
-      </div>
+      
       <div class="row" id="timeOnly">
         <div class="col-md-6" style="padding-bottom: 10px;">
-          Number of Spaces:<input type="text" class="form-control" id="totalspaces" name="totalspaces"/>
+          Number of Spaces:<input type="number" class="form-control" id="totalspaces" name="totalspaces" required/>
         </div>
         <div class="col-md-3" style="padding-bottom: 10px;">
-          From:<input type="text" class="form-control time start" id="selected_fromtime" name="fromtime"/>
+          From:<input type="text" class="form-control time start" id="selected_fromtime" name="fromtime" required />
         </div>
         <div class="col-md-3" style="padding-bottom: 10px;">
-          To:<input type="text" id="selected_totime" class="form-control time end" name="totime" />
+          To:<input type="text" id="selected_totime" class="form-control time end" name="totime" required />
         </div>
       </div><!-- /start Date and start Time End Time--> 
       <button type="submit" class="btn btn-primary">Save</button> 

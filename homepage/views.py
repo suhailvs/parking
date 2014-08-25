@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic.edit import FormView
 from homepage.models import ParkingForm,Parking
 from django.core.urlresolvers import reverse_lazy
+from datetime import datetime
 # Create your views here.
 def viewParking(request,parking_id):
 	sample=[dict(lat=18,lng=20,streetaddress='kolakkode',country='india',state='kerala'),
@@ -26,7 +27,10 @@ class NewParking(FormView):
 
 	def form_valid(self, form):
 		# This method is called when valid form data has been POSTed.
-		# It should return an HttpResponse.		
+		# It should return an HttpResponse.	
+		form.instance.totalspaces = self.request.POST['totalspaces']
+		form.instance.fromtime = datetime.strptime(self.request.POST['fromtime'],'%I:%M %p')#11:30 PM
+		form.instance.totime = datetime.strptime(self.request.POST['totime'],'%I:%M %p')
 		form.instance.user = self.request.user
 		form.save()
 		return super(NewParking, self).form_valid(form)
