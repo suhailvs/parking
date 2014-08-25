@@ -7,18 +7,18 @@
       <h1>Parking Spaces:</h1>
       <div id="googleMap" style="height:300px;"></div>
       <hr>
-      <ol>{% for parking in parkings %}<li><a>{{parking.streetaddress}}</a></li>{% endfor %}</ol>
+      <ol>{% for parking in parkings %}<li><a class='parkdetails' href='#viewparkingModal' data-toggle='modal' data-pk='{{parking.pk}}'>{{parking.streetaddress}}</a></li>{% endfor %}</ol>
       {% else %}
       <p class="lead"> No parkings listed! please list parkings</p>
       {% endif %}
     </div>
   </div>
 </div>
-{% include "guest/modal.html" %}
 {% endblock %}  
 
-{% block javascript %}     
+{% block extra_script %}<!-- might need to login from here -->     
 {% if parkings %}
+{% include "guest/modal.html" %}
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script> 
   var map;
@@ -30,10 +30,13 @@
     map=new google.maps.Map(document.getElementById("googleMap"), mapOptions);
 
     {% for parking in parkings %}    
-    var data = {'pk': '{{ parking.pk }}',
-              'lat': {{parking.lat}},
-                'long': {{parking.lng}},
-                'address':"{{parking.streetaddress|truncatechars:30}}"                
+    var data = {'pk': '{{ parking.pk }}',              
+                'address':"{{parking.streetaddress|truncatechars:25}}",
+                'from':'{{ parking.fromtime|date:"h:i a" }}',
+                'to':'{{ parking.totime|date:"h:i a" }}',
+                'booked':'{{ parking.is_booked }}',
+                'lat': {{parking.lat}},
+                'long': {{parking.lng}}
                 };
     datas.push(data);
     {% endfor %} 
@@ -45,7 +48,13 @@
         position: new google.maps.LatLng(datas[i]['lat'], datas[i]['long']),
         map: map
       });
-      makeInfoWindowEvent(map, infowindow, "<a class='btn btn-primary btn-xs' href='#viewparkingModal' data-toggle='modal' data-id="+datas[i]['pk']+">view</a><p style='color:#000'><strong>"+datas[i]['address']+"</strong><br> Latitude:"+datas[i]['lat']+ '<br> Longitude:'+datas[i]['long']+'</p>', marker);
+      if (datas[i]['booked']=='True'){
+        var txt_booked= '<strong>Sorry no parking vacant today</strong>';
+      }else{
+        var txt_booked='Available between<br>'+datas[i]['from']+'-'+datas[i]['to'];
+      }
+      
+      makeInfoWindowEvent(map, infowindow, "<a class='btn btn-primary btn-xs parkdetails' href='#viewparkingModal' data-toggle='modal' data-pk="+datas[i]['pk']+">view</a><p style='color:#000'><strong>"+datas[i]['address']+"</strong><br>" + txt_booked +'</p>', marker);
       markers.push(marker);
     }
   }

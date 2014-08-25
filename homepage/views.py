@@ -8,12 +8,13 @@ from datetime import datetime
 def FindParking(request):
 	return render(request,'guest/find.html',dict(parkings=Parking.objects.all()))
 
-def userpage(request,nm):
+def userpage(request,nm=None):
+	if not nm and request.user.is_active:nm=request.user.username
 	return render(request,'guest/profile.html',{'parkings':Parking.objects.filter(user__username=nm)})
 class ShareParking(FormView):
 	template_name = 'guest/share.html'
 	form_class = ParkingForm
-	success_url = reverse_lazy('homepage.views.viewParking', args=['my'])#parkings/my
+	success_url = reverse_lazy('homepage.views.userpage')#parkings/my
 
 	def form_valid(self, form):
 		# This method is called when valid form data has been POSTed.

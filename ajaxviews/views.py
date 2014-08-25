@@ -1,8 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib import auth
-import time
+import time,json
+from homepage.models import Parking,Orders
 # Create your views here.
+def ajax_parkingdetails(request):
+    p=Parking.objects.get(pk=request.GET['pk'])
+    tformat="%I:%M:%S %p"
+    d=dict(pic=p.pic.url,address=p.streetaddress,spaces=p.totalspaces,isbooked=p.is_booked(),
+        ftime=p.fromtime.strftime(tformat),totime=p.totime.strftime(tformat))
+    return HttpResponse(json.dumps(d), mimetype="application/json")
 
 def ajax_login(request):
     time.sleep(2)   #slowit 

@@ -4,8 +4,7 @@
   <div class="col-md-8 col-md-offset-2">
   	<div class="well">
 	{% if parkings %}
-	<ol>{% for parking in parkings %}<li><a href='#viewparkingModal' data-toggle='modal' >{{parking.streetaddress}}</a></li>{% endfor %}</ol>
-	{% include "guest/modal.html" %}
+	<ol>{% for parking in parkings %}<li><a data-pk="{{parking.pk}}" class="parkdetails" href='#viewparkingModal' data-toggle='modal' >{{parking.streetaddress}}</a></li>{% endfor %}</ol>	
 	{% else %}
 	<p> No parkings listed! please list parkings</p>
 	{% endif %}
@@ -13,3 +12,6 @@
   </div> 
 </div>	
 {% endblock %}  
+{% block extra_script %}
+{% if parkings %}{% include "guest/modal.html" %}{% endif %}
+{% endblock %}

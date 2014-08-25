@@ -10,17 +10,38 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2">
-                    <div class="modal-body">
-                        <h2>Project Heading</h2>
-                        <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                        <img class="img-responsive img-centered" src="img/portfolio/startup-framework-preview.png" alt="">
-                        <p><a href="http://designmodo.com/startup/?u=787">Startup Framework</a> is a website builder for professionals. Startup Framework contains components and complex blocks (PSD+HTML Bootstrap themes and templates) which can easily be integrated into almost any design. All of these components are made in the same style, and can easily be integrated into projects, allowing you to create hundreds of solutions for your future projects.</p>
-                        <p>You can preview Startup Framework <a href="http://designmodo.com/startup/?u=787">here</a>.</p>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Book Now</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Close Project</button>
-                    </div>
+                    <div class="modal-body" id="parkingContent"> </div>
                 </div>
             </div>
         </div>
+        <div class="modal-footer">
+            <button type="button" id="btnBookParking" class="btn btn-primary btn-lg"><i class="fa fa-cart"></i> Book Now</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+        </div>
     </div>
 </div>
+<script type="text/javascript">
+$(document).on('click','.parkdetails',function(){
+    $.get("{% url 'parkingdetails' %}",{pk: $(this).data('pk') })
+    .done(function(datas) {     
+        if (datas.isbooked){
+        var avail_txt ='<h3> <span class="label label-danger">Sorry There is no parking space is available on today</span></h3>';
+        $('#btnBookParking').addClass('disabled');
+        }else{
+        var avail_txt ='<h3><small>Total Parking Spaces Vacant:</small> <span class="label label-primary">' +
+        datas.spaces +'</span></h3><hr><p class="lead"> Time Available<br><kbd>' + datas.ftime +
+        '</kbd> - <kbd>' + datas.totime + '</kbd></p>';
+        $('#btnBookParking').removeClass('disabled');
+        }
+
+        var str_html='<h2>Parking Details</h2><p class="item-intro text-muted">'+
+        datas.address+'</p>'+avail_txt+'<hr><p class="lead">Parking Photos:</p><img class="img-responsive img-centered" src="'+datas.pic+
+        '" alt="">';      
+
+        $('#parkingContent').html(str_html);
+    });
+});
+$(document).on('click','#btnBookParking',function(){
+    alert('need to implement bookings');
+});
+</script>
