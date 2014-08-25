@@ -4,13 +4,13 @@ from django import forms
 from django.utils.safestring import mark_safe
 class Parking(models.Model):
     user = models.ForeignKey(User)	
-    streetaddress=models.CharField(max_length=200,help_text="Street Address or City.")
+    pic = models.ImageField("Parking Photos", upload_to="images/")    
+    streetaddress=models.CharField(max_length=200)
     lat=models.CharField(max_length=20)
     lng=models.CharField(max_length=20)
     totalspaces=models.IntegerField(max_length=3)    
     fromtime=models.DateTimeField()
-    totime=models.DateTimeField()
-    pic = models.ImageField("Image", upload_to="images/")    
+    totime=models.DateTimeField()    
     upload_date=models.DateTimeField(auto_now_add =True)
 #widgets = { 'code_postal_immo': MyPostalField(attrs={'style': 'width:300px'}),}   
 
@@ -37,6 +37,4 @@ class ParkingForm(forms.ModelForm):
     class Meta:
         model=Parking
         exclude=['user','totalspaces','fromtime','totime']        
-        widgets={'lat': forms.HiddenInput(),
-        	'lng': forms.HiddenInput(),
-        	'streetaddress':addressField()}
+        widgets={'lat': forms.HiddenInput(),'lng': forms.HiddenInput()}

@@ -1,5 +1,6 @@
 {% extends 'guest/base_guest.html' %}
-{% block extra_style %}
+{% block dont_needed_at_homepage %}
+  
     <style type="text/css">    
     .link-sm{
         font-size: 50%
@@ -31,11 +32,11 @@
             <div class="intro-text">
                 <div class="row">
                     <div class="col-md-6">
-                        <a href="{% url 'list_parking' %}" class="intro-heading btn-share">Share <i class="fa fa-share"></i><br><span class="link-sm">Parking Space</span></a>
+                        <a href="{% url 'shareparking' %}" class="intro-heading btn-share">Share <i class="fa fa-share"></i><br><span class="link-sm">Parking Space</span></a>
                         
                     </div>
                     <div class="col-md-6">
-                        <a href="{% url 'parkings' 'all' %}" class="intro-heading btn-search">Find <i class="fa fa-search"></i><br><span class="link-sm">Parking Space</span></a>                
+                        <a href="{% url 'findparking' %}" class="intro-heading btn-search">Find <i class="fa fa-search"></i><br><span class="link-sm">Parking Space</span></a>                
                     </div>
                 </div>
                 

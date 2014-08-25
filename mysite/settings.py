@@ -92,6 +92,7 @@ SITE_ID = 1
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/static/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'homepage','static', 'media')
 from django.conf import global_settings
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (

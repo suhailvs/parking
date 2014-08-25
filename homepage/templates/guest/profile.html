@@ -1,0 +1,15 @@
+{% extends 'account/base_g.html' %}
+{% block body %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+  	<div class="well">
+	{% if parkings %}
+	<ol>{% for parking in parkings %}<li><a href='#viewparkingModal' data-toggle='modal' >{{parking.streetaddress}}</a></li>{% endfor %}</ol>
+	{% include "guest/modal.html" %}
+	{% else %}
+	<p> No parkings listed! please list parkings</p>
+	{% endif %}
+	</div><!--/well-->  
+  </div> 
+</div>	
+{% endblock %}  

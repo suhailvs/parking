@@ -1,6 +1,19 @@
 {% extends 'account/base_g.html' %}
-{% block content %}
-<div id="googleMap" style="height:300px;"></div>
+{% block body %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-default">
+      {% if parkings %}
+      <h1>Parking Spaces:</h1>
+      <div id="googleMap" style="height:300px;"></div>
+      <hr>
+      <ol>{% for parking in parkings %}<li><a>{{parking.streetaddress}}</a></li>{% endfor %}</ol>
+      {% else %}
+      <p class="lead"> No parkings listed! please list parkings</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% include "guest/modal.html" %}
 {% endblock %}  
 
@@ -11,13 +24,13 @@
   var map;
   var datas=[];
   function initialize() {
-    var mapOptions = { center:new google.maps.LatLng({{parkings.0.lat}},{{parkings.0.lng}}),  
-                       zoom: 6,
+    var mapOptions = { center:new google.maps.LatLng('38.906', '-77.047'),  
+                       zoom: 10,
                        mapTypeId: google.maps.MapTypeId.ROADMAP };  
     map=new google.maps.Map(document.getElementById("googleMap"), mapOptions);
 
     {% for parking in parkings %}    
-    var data = {'url': '{% url 'parkings' parking.pk %}',
+    var data = {'pk': '{{ parking.pk }}',
               'lat': {{parking.lat}},
                 'long': {{parking.lng}},
                 'address':"{{parking.streetaddress|truncatechars:30}}"                
@@ -32,7 +45,7 @@
         position: new google.maps.LatLng(datas[i]['lat'], datas[i]['long']),
         map: map
       });
-      makeInfoWindowEvent(map, infowindow, "<a class='btn btn-primary btn-xs' href='#viewparkingModal' data-toggle='modal' data-href="+datas[i]['url']+">view</a><p style='color:#000'><strong>"+datas[i]['address']+"</strong><br> Latitude:"+datas[i]['lat']+ '<br> Longitude:'+datas[i]['long']+'</p>', marker);
+      makeInfoWindowEvent(map, infowindow, "<a class='btn btn-primary btn-xs' href='#viewparkingModal' data-toggle='modal' data-id="+datas[i]['pk']+">view</a><p style='color:#000'><strong>"+datas[i]['address']+"</strong><br> Latitude:"+datas[i]['lat']+ '<br> Longitude:'+datas[i]['long']+'</p>', marker);
       markers.push(marker);
     }
   }

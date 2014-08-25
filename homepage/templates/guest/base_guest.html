@@ -1,221 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load staticfiles %}
+
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <title>Parking {% block head_title %}{% endblock %}</title>
+  <title>Parking {% block head_title %}{% endblock %}</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">    
+  <!-- Bootstrap Core CSS -->
+  <link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    {% block style_base %}
-        <!-- Custom CSS -->
-        <link href="{% static "homepage/agency.css" %}" rel="stylesheet">
+  {% block style_base %}
+  <!-- Custom CSS -->
+  <link href="{% static "homepage/agency.css" %}" rel="stylesheet">
 
-        <!-- Custom Fonts -->
-        <link href="{% static "font-awesome-4.1.0/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
-        <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-        <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
-        {% block extra_style %}{% endblock %}        
-    {% endblock %}
+  <!-- Custom Fonts -->
+  <link href="{% static "font-awesome-4.1.0/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
+  <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+  {% block dont_needed_at_homepage %}
+  <style type="text/css">
+      .navbar-shrink{padding: 0!important;}
+      body{padding-top: 60px}
+  </style>
+  {% endblock %}
+  {% block extra_style %}{% endblock %} {% endblock %}
 </head>
 
-<body id="page-top" class="index">    
-    <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top{% block navbarbackclass %}{%endblock%}">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand page-scroll" href="{% url 'home' %}">Parking</a>
-            </div>
+<body id="page-top" class="index">
+  <!-- Navigation -->
+  <nav class="navbar navbar-default navbar-fixed-top{% block navbarbackclass %}{%endblock%}">
+    <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header page-scroll">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand page-scroll" href="{% url 'home' %}">Parking</a>
+      </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    {% block navbar %}                    
-                    <li>
-                        <a class="page-scroll" href="#services">How it works</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#about">About</a>
-                    </li>                    
-                    <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
-                    </li>
-                    {% endblock %}
-                    {% if request.user.is_active %}
-                    <li><a href="#">Find</a></li>
-                    <li><a href="#">Share</a></li>
-                    <li><a href="{% url 'parkings' 'my' %}"> {{request.user.username}}</a></li>
-                    <li>
-                        <a href="{% url 'account_logout' %}" data-toggle="modal">
-                            <i class="fa fa-sign-out"></i> logout
-                        </a>
-                    </li>
-                    {% else %}
-                    <li>
-                        <a href="#modal-signin" data-toggle="modal">
-                            <i class="fa fa-sign-in"></i> login
-                        </a>
-                    </li>                    
-                    <li>
-                        <a href="{% url "account_signup" %}" data-toggle="modal"><i class="fa fa-arrow-up"></i> Signup</a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container-fluid -->
-    </nav>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          {% block navbar %}
+          <li><a class="page-scroll" href="#services">How it works</a>
+          </li>
+          <li><a class="page-scroll" href="#about">About</a>
+          </li>
+          <li><a class="page-scroll" href="#contact">Contact</a>
+          </li>
+          {% endblock %}
 
-    {% block body %}      
-        {% block content %}        
-        {% endblock %}    
-    {% endblock %}      
-
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <span class="copyright">Copyright &copy; parking.com</span>
-                </div>
-                <div class="col-md-4">
-                    <ul class="list-inline social-buttons">
-                        <li><a href="#"><i class="fa fa-twitter"></i></a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-facebook"></i></a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-linkedin"></i></a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <ul class="list-inline quicklinks">
-                        <li><a href="#">Privacy Policy</a>
-                        </li>
-                        <li><a href="#">Terms of Use</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>    
-
-    {% if not request.user.is_active %}
-    <!-- signin modal -->
-    <div id="modal-signin" class="modal fade" data-focus-on="input:first" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-               <h4 class="modal-title">Login</h4>
-                             
-            </div>
-            <div class="modal-body" id="loading_signin" style="width: 100%;height: 100%;">
-              <div class="errormsg"> </div>
-              <form class="form-horizontal" role="form" id="frmsignin">{% csrf_token %}
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">Username:</label>
-                  <div class="col-sm-10">
-                    <input id="login-username" type="text" class="form-control" name="username" value="" placeholder="username or email">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">Password:</label>
-                  <div class="col-sm-10">
-                    <input id="login-password" type="password" class="form-control" name="password" placeholder="password">
-                    </div>
-                </div> 
-                <a href="{% url "account_password_reset" %}">Forgot your password?</a>
-                
-                <input type='button' class="btn btn-lg btn-primary btn-block btnsignin" data-formtype='frmsignin' data-next="{% if request.path == '/accounts/logout/' %}/{%else%}{{request.path}}{% endif %}" value="Sign in" />   
-              </form>         
-            </div>            
-          </div>
-        </div>
+          <li><a href="{% url 'findparking' %}"><i class="fa fa-search"></i> Find</a>
+          </li>
+          <li><a href="{% url 'shareparking' %}"><i class="fa fa-share"></i> Share</a>
+          </li>
+          {% if request.user.is_active %}
+          <li><a href="{% url 'users' request.user.username %}"><i class="fa fa-user"></i> {{request.user.username}}</a>
+          </li>
+          <li>
+            <a href="{% url 'account_logout' %}" data-toggle="modal">
+              <i class="fa fa-sign-out"></i> logout
+            </a>
+          </li>
+          {% else %}
+          <li>
+            <a href="#modal-signin" data-toggle="modal">
+              <i class="fa fa-sign-in"></i> login
+            </a>
+          </li>
+          <li>
+            <a href="{% url "account_signup" %}" data-toggle="modal"><i class="fa fa-arrow-up"></i> Signup</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
     </div>
-    {% endif %}
-    
-    <!-- jQuery Version 1.11.0 -->
-    <script src="{% static "jquery.min.js" %}"></script>
+    <!-- /.container-fluid -->
+  </nav>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>   
-    {% block javascript %}
-        {% block not_needed_for_accountpages %}
-        <!-- Plugin JavaScript -->
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
-        <script src="{% static "homepage/classie.js" %}"></script>
-        <script src="{% static "homepage/cbpAnimatedHeader.js" %}"></script>    
+  {% block body %} {% block content %} {% endblock %} {% endblock %}
 
-        <!-- Custom Theme JavaScript -->
-        <script src="{% static "homepage/agency.js" %}"></script>
-        {% endblock %}
-        <script src="{% static "spin.min.js" %}"></script>  
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <span class="copyright">Copyright &copy; parking.com</span>
+        </div>
+        <div class="col-md-4">
+          <ul class="list-inline social-buttons">
+            <li><a href="#"><i class="fa fa-twitter"></i></a>
+            </li>
+            <li><a href="#"><i class="fa fa-facebook"></i></a>
+            </li>
+            <li><a href="#"><i class="fa fa-linkedin"></i></a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <ul class="list-inline quicklinks">
+            <li><a href="#">Privacy Policy</a>
+            </li>
+            <li><a href="#">Terms of Use</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
 
-        {% if not request.user.is_active %}
-        <!-- used for login -->
-            <script type="text/javascript">
-            $(document).ready(function () {
-                var spinner=new Spinner({lines: 10,length: 25,width:20,radius:40});
-                $('.modal').on('hidden.bs.modal', function(){
-                    //some modals does not have form tag
-                    $(this).find(".errormsg").empty();
-                    $(this).find('form')[0].reset();                      
-                    //alert('close btn click');         
-                });
+  {% if not request.user.is_active %}
+  <!-- signin modal -->
+  <div id="modal-signin" class="modal fade" data-focus-on="input:first" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Login</h4>
 
-                $('input.btnsignin').click(function(e){
-                    var target = document.getElementById('loading_signin');
-                    spinner.spin(target);
-                    e.preventDefault();         
-                    var frmname=$(this).data('formtype');
-                    var nextpage=$(this).data('next');
-                    var datas=$('#'+frmname).serialize();
-                    $('#loading_signin :input').attr('disabled', true);   
-                    $.ajax({
-                        type: "POST",
-                        url: "{% url 'ajax_login' %}",
-                        data: datas
-                    }).done(function(msg){
-                       //alert(msg);
-                       if (msg=='1'){
-                        document.location.assign(nextpage);
-                       }else{   
-                        $('#loading_signin :input').each(function(){this.disabled = false;}); 
-                        spinner.stop();                   
-                        $('#modal-signin').find('.errormsg')
-                            .html('<div class="alert alert-warning fade in">'+
-                            msg+'<button type="button" class="close" data-dismiss="alert">&times;</button>'+
-                            '</div>');
-                       }    
-                    });
-                });
+        </div>
+        <div class="modal-body" id="loading_signin" style="width: 100%;height: 100%;">
+          <div class="errormsg"></div>
+          <form class="form-horizontal" role="form" id="frmsignin">{% csrf_token %}
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Username:</label>
+              <div class="col-sm-10">
+                <input id="login-username" type="text" class="form-control" name="username" value="" placeholder="username or email">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Password:</label>
+              <div class="col-sm-10">
+                <input id="login-password" type="password" class="form-control" name="password" placeholder="password">
+              </div>
+            </div>
+            <a href="{% url "account_password_reset" %}">Forgot your password?</a>
+
+            <input type='button' class="btn btn-lg btn-primary btn-block btnsignin" data-formtype='frmsignin' data-next="{% if request.path == '/accounts/logout/' %}/{%else%}{{request.path}}{% endif %}" value="Sign in" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- jQuery Version 1.11.0 -->
+  <script src="{% static "jquery.min.js" %}"></script>
+
+  <!-- Bootstrap Core JavaScript -->
+  <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+  {% block javascript %} {% block not_needed_for_accountpages %}
+  <!-- Plugin JavaScript -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+  <script src="{% static "homepage/classie.js" %}"></script>
+  <script src="{% static "homepage/cbpAnimatedHeader.js" %}"></script>
+
+  <!-- Custom Theme JavaScript -->
+  <script src="{% static "homepage/agency.js" %}"></script>
+  {% endblock %}
+  <script src="{% static "spin.min.js" %}"></script>
+
+  {% if not request.user.is_active %}
+  <!-- used for login -->
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var spinner = new Spinner({
+        lines: 10,
+        length: 25,
+        width: 20,
+        radius: 40
+      });
+      $('.modal').on('hidden.bs.modal', function() {
+        //some modals does not have form tag
+        $(this).find(".errormsg").empty();
+        $(this).find('form')[0].reset();
+        //alert('close btn click');         
+      });
+
+      $('input.btnsignin').click(function(e) {
+        var target = document.getElementById('loading_signin');
+        spinner.spin(target);
+        e.preventDefault();
+        var frmname = $(this).data('formtype');
+        var nextpage = $(this).data('next');
+        var datas = $('#' + frmname).serialize();
+        $('#loading_signin :input').attr('disabled', true);
+        $.ajax({
+          type: "POST",
+          url: "{% url 'ajax_login' %}",
+          data: datas
+        }).done(function(msg) {
+          //alert(msg);
+          if (msg == '1') {
+            document.location.assign(nextpage);
+          } else {
+            $('#loading_signin :input').each(function() {
+              this.disabled = false;
             });
-            </script>
-        {% endif %}
-
-        {% block extra_script %}{% endblock %}   
-    {% endblock %}
+            spinner.stop();
+            $('#modal-signin').find('.errormsg')
+              .html('<div class="alert alert-warning fade in">' +
+                msg + '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                '</div>');
+          }
+        });
+      });
+    });
+  </script>
+  {% endif %} {% block extra_script %}{% endblock %} {% endblock %}
 </body>
+
 </html>
