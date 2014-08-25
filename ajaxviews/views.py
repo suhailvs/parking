@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib import auth
-import time,json
+import time,json,datetime
 from homepage.models import Parking,Orders
 # Create your views here.
 def ajax_parkingdetails(request):
@@ -20,3 +20,17 @@ def ajax_login(request):
     	auth.login(request, user)
     	return HttpResponse("1")
     return HttpResponse("Username or Password doesn't exist.")
+
+def ajax_savebooking(request):
+    for f in ['time','duration']:
+        if request.GET[f] == "": return HttpResponse("Please fill the fields. Time and Duration")
+
+    p=Parking.objects.get(pk=request.GET['park'])
+    od=Orders(user=request.user,parking=p,fromtime=datetime.time(int(request.GET['time'])),
+            duration=int(request.GET['duration']))
+    try:
+        od.save()
+        msg="Successfully saved your order with order id:%d" %od.pk
+    except:
+        msg="Error"    
+    return HttpResponse(msg)

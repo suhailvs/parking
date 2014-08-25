@@ -49,7 +49,7 @@
         map: map
       });
       if (datas[i]['booked']=='True'){
-        var txt_booked= '<strong>Sorry no parking vacant today</strong>';
+        var txt_booked= '<span class="label label-danger">Sorry no parking vacant today</span>';
       }else{
         var txt_booked='Available between<br>'+datas[i]['from']+'-'+datas[i]['to'];
       }
