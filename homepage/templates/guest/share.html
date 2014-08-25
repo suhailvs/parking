@@ -1,0 +1,103 @@
+{% extends 'account/base_g.html' %}
+{% load bootstrap %}
+{% block extra_style %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}address/jquery-ui-1.9.2.custom.min.css">
+<link href="{{STATIC_URL}}timepicker/jquery.timepicker.css" rel="stylesheet" />
+<style type="text/css">
+  body{padding-top: 60px}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-default" style="padding:30px">    
+    <form id="parkdetails" class="form-horizontal" method="post" action="">{% csrf_token %}
+      <h1>List Your Parking details:</h1>
+      <!--
+      <input type="text" name="address" class="form-control" id="id_streetaddress">
+      -->
+      {{ form|bootstrap }}
+      <p>You can drag and drop the marker to the correct location for precise selection.</p>
+      <div class="form-group">    
+        <div style="height:300px;">
+        <div id="map_canvas" style="width:100%; height:100%"></div>
+        <div id="location" class=""></div>        
+        </div>
+        <!--Latitude:<input type="text" name="lat" class="form-control" id="id_lat">
+        Longitude:<input type="text" name="lng" class="form-control" id="id_lng">
+        <input type="text" id="lbl_longitude">-->           
+      </div>
+      <div class="row" id="timeOnly">
+        <div class="col-md-6" style="padding-bottom: 10px;">
+          Number of Spaces:<input type="text" class="form-control" id="totalspaces" name="totalspaces"/>
+        </div>
+        <div class="col-md-3" style="padding-bottom: 10px;">
+          From:<input type="text" class="form-control time start" id="selected_fromtime" name="fromtime"/>
+        </div>
+        <div class="col-md-3" style="padding-bottom: 10px;">
+          To:<input type="text" id="selected_totime" class="form-control time end" name="totime" />
+        </div>
+      </div><!-- /start Date and start Time End Time--> 
+      <button type="submit" class="btn btn-primary">Save</button> 
+      <a class="btn btn-danger" href="{% url 'home' %}">Cancel</a>      
+    </form>   
+    </div>
+  </div> 
+</div>  
+{% endblock %}
+
+{% block javascript %} 
+<!-- Address Picker-->
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="{{STATIC_URL}}address/jquery-ui-1.9.2.custom.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{STATIC_URL}}address/ui.addresspicker.js" type="text/javascript" charset="utf-8"></script>
+<!--/-->
+
+<script src="{{STATIC_URL}}timepicker/jquery.timepicker.js"></script>
+<script src="{{STATIC_URL}}timepicker/jquery.datepair.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  var location='{{ loc }}';    
+  if (location){
+      $('#id_streetaddress').val(location);         
+  }  
+  function showCallback(geocodeResult, parsedGeocodeResult){
+    //$("span.lbl-lat").text(parsedGeocodeResult['lat']);
+    //$("span.lbl-lon").text(parsedGeocodeResult['lng']);
+   //alert(parsedGeocodeResult['lat']);
+   //alert(parsedGeocodeResult['lng']);
+  }
+  // Address Picker
+  var addresspickerMap = $("#id_streetaddress").addresspicker({
+    regionBias: "india",
+    updateCallback: showCallback,
+    reverseGeocode: 'true',
+    autocomplete: 'bootstrap',
+    elements: {
+      map: "#map_canvas",
+      lat: "#id_lat",
+      lng: "#id_lng" 
+    }
+  });
+  var gmarker = addresspickerMap.addresspicker("marker");
+  gmarker.setVisible(true);
+  addresspickerMap.addresspicker( "updatePosition");
+  
+  //End of address picker
+
+  //$('#selected_fromtime').val(sel_time);
+  $('#timeOnly .start').timepicker({
+    'minTime': '06:30 AM',//sel_time,
+    'timeFormat': 'h:i A'//'g:ia'
+  });
+  $('#timeOnly .end').timepicker({
+      'showDuration': true,
+      'timeFormat': 'h:i A',
+      'maxTime': '11:30 PM'
+  });
+  $('#timeOnly .end').timepicker('setTime');//, sel_endtime);
+  $('#timeOnly').datepair();  
+});
+</script>
+{% endblock %} 

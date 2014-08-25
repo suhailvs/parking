@@ -1,9 +1,10 @@
 {% extends 'account/base_g.html' %}
 {% block content %}
-<div id="googleMap" style="height:540px;"></div>
+<div id="googleMap" style="height:300px;"></div>
+{% include "guest/modal.html" %}
 {% endblock %}  
 
-{% block extra_script %}     
+{% block javascript %}     
 {% if parkings %}
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script> 
@@ -31,7 +32,7 @@
         position: new google.maps.LatLng(datas[i]['lat'], datas[i]['long']),
         map: map
       });
-      makeInfoWindowEvent(map, infowindow, "<a class='btn btn-success btn-xs' href="+datas[i]['url']+">view</a><p style='color:#000'><strong>"+datas[i]['address']+"</strong><br> Latitude:"+datas[i]['lat']+ '<br> Longitude:'+datas[i]['long']+'</p>', marker);
+      makeInfoWindowEvent(map, infowindow, "<a class='btn btn-primary btn-xs' href='#viewparkingModal' data-toggle='modal' data-href="+datas[i]['url']+">view</a><p style='color:#000'><strong>"+datas[i]['address']+"</strong><br> Latitude:"+datas[i]['lat']+ '<br> Longitude:'+datas[i]['long']+'</p>', marker);
       markers.push(marker);
     }
   }

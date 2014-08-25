@@ -11,7 +11,7 @@ def viewParking(request,parking_id):
 		template='pages/viewparking.html'
 		d=dict(parkings=Parking.objects.filter(user=request.user))
 	elif parking_id=='all':
-		template='guest/parkings.html'
+		template='guest/find.html'
 		d=dict(parkings=Parking.objects.all())
 	else:
 		template='pages/parking_details.html'
@@ -20,7 +20,7 @@ def viewParking(request,parking_id):
 
 
 class NewParking(FormView):
-	template_name = 'pages/listparking.html'
+	template_name = 'guest/share.html'
 	form_class = ParkingForm
 	success_url = reverse_lazy('homepage.views.viewParking', args=['my'])#parkings/my
 

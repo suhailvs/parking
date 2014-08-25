@@ -41,6 +41,18 @@
 	            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
                      
 	              <ul class="nav navbar-nav">
+	              	<li class="dropdown">
+			          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="ti-bell"></i><span class="badge badge-info">3</span>Hm <span class="caret"></span></a>
+			          <ul class="dropdown-menu" role="menu">
+			            <li><a href="#">Action</a></li>
+			            <li><a href="#">Another action</a></li>
+			            <li><a href="#">Something else here</a></li>
+			            <li class="divider"></li>
+			            <li><a href="#">Separated link</a></li>
+			            <li class="divider"></li>
+			            <li><a href="#">One more separated link</a></li>
+			          </ul>
+			        </li>
 	              	<li><a href="{% url 'parkings' 'my' %}">Home({{request.user.username}})</a></li>
 	                <li{% if request.path == home %} class="active"{% endif %}><a href="{% url 'parkings' 'all' %}"> All Parkings</a></li>
 	              </ul>

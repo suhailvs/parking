@@ -29,6 +29,7 @@
         <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
         <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
         <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+        {% include 'pages/dropdownstyle.html' %}
         {% block extra_style %}{% endblock %}        
     {% endblock %}
 </head>
@@ -63,7 +64,9 @@
                     </li>
                     {% endblock %}
                     {% if request.user.is_active %}
-                    <li><a href="{% url 'parkings' 'my' %}"> Home({{request.user.username}})</a></li>
+                    <li><a href="#">Find</a></li>
+                    <li><a href="#">Share</a></li>
+                    <li><a href="{% url 'parkings' 'my' %}"> {{request.user.username}}</a></li>
                     <li>
                         <a href="{% url 'account_logout' %}" data-toggle="modal">
                             <i class="fa fa-sign-out"></i> logout
