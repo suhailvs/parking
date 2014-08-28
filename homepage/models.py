@@ -26,7 +26,9 @@ class Parking(models.Model):
     lat=models.CharField(max_length=20)
     lng=models.CharField(max_length=20)
     date_added=models.DateTimeField(auto_now_add =True)
+    description=models.TextField()
     streetaddress=models.CharField(max_length=200)
+
     def is_booked(self):
         od=len(Orders.objects.filter(parking=self,order_date__startswith=date.today()))
         return False if od == 0 else True
