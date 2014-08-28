@@ -4,11 +4,17 @@
   <div class="col-md-8 col-md-offset-2">
   	<div class="well">
 	{% if parkings %}
+	<h3> Parkings</h3>
 	<ol>{% for parking in parkings %}<li><a data-pk="{{parking.pk}}" class="parkdetails" href='#viewparkingModal' data-toggle='modal' >{{parking.streetaddress}}</a></li>{% endfor %}</ol>	
 	{% else %}
 	<p> No parkings listed! please list parkings</p>
 	{% endif %}
 	</div><!--/well-->  
+	{% if request.user.is_active %}
+	<div class="well">
+		<h3> Orders done by <code>{{request.user}}</code></h3>
+	</div>
+	{% endif %}
   </div> 
 </div>	
 {% endblock %}  

@@ -1,20 +1,32 @@
 {% extends 'account/base_g.html' %}
 {% load bootstrap %}
+{% load selectize_tags %}
 {% block extra_style %}
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}address/jquery-ui-1.9.2.custom.min.css">
 <link href="{{STATIC_URL}}timepicker/jquery.timepicker.css" rel="stylesheet" />
-
+<link rel="stylesheet" href="{{ STATIC_URL }}jcrop/jquery.Jcrop.min.css">
+{% selectize_tags_media 'css' 'default' %}
 {% endblock %}
 
 {% block body %}
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
-    <div class="panel panel-default" style="padding:30px">    
-    <form id="parkdetails" class="form-horizontal" method="post" action="" enctype="multipart/form-data">{% csrf_token %}
+    <div class="well" style="padding:10px">    
+    <form id="parkdetails" method="post" action="" enctype="multipart/form-data">{% csrf_token %}
       <h1>List Your Parking details:</h1>
       <!--
       <input type="text" name="address" class="form-control" id="id_streetaddress">
       -->
+      <div class="row" id="timeOnly">
+        
+        <div class="col-md-3">
+          From:<input type="text" class="form-control time start" id="selected_fromtime" name="fromtime" required />
+        </div>
+        <div class="col-md-3">
+          To:<input type="text" id="selected_totime" class="form-control time end" name="totime" required />
+        </div>
+      </div><!-- /start Date and start Time End Time-->   
+          
       {{ form|bootstrap }}
       <p>You can drag and drop the marker to the correct location for precise selection.</p>
       <div class="form-group">    
@@ -25,19 +37,8 @@
         <!--Latitude:<input type="text" name="lat" class="form-control" id="id_lat">
         Longitude:<input type="text" name="lng" class="form-control" id="id_lng">
         <input type="text" id="lbl_longitude">-->           
-      </div>
+      </div>    
       
-      <div class="row" id="timeOnly">
-        <div class="col-md-6" style="padding-bottom: 10px;">
-          Number of Spaces:<input type="number" class="form-control" id="totalspaces" name="totalspaces" required/>
-        </div>
-        <div class="col-md-3" style="padding-bottom: 10px;">
-          From:<input type="text" class="form-control time start" id="selected_fromtime" name="fromtime" required />
-        </div>
-        <div class="col-md-3" style="padding-bottom: 10px;">
-          To:<input type="text" id="selected_totime" class="form-control time end" name="totime" required />
-        </div>
-      </div><!-- /start Date and start Time End Time--> 
       <button type="submit" class="btn btn-primary btn-lg btn-block">Save</button> 
       <!--<a class="btn btn-danger" href="{% url 'home' %}">Cancel</a>      -->
     </form>   
@@ -55,6 +56,8 @@
 
 <script src="{{STATIC_URL}}timepicker/jquery.timepicker.js"></script>
 <script src="{{STATIC_URL}}timepicker/jquery.datepair.js"></script>
+<script src="{{ STATIC_URL }}jcrop/jquery.Jcrop.min.js"></script>
+{% selectize_tags_media 'js' %}
 <script type="text/javascript">
 $(document).ready(function() {
   
@@ -91,7 +94,49 @@ $(document).ready(function() {
       'maxTime': '11:30 PM'
   });
   $('#timeOnly .end').timepicker('setTime');//, sel_endtime);
-  $('#timeOnly').datepair();  
+  $('#timeOnly').datepair(); 
+
+  $('#id_days').removeClass('form-control'); 
+  $('#id_days').selectize(); 
+
+
+  function showCoords(c){
+    //var str_vals='x:'+c.x+',y:'+c.y;
+    //str_vals+=',x2:'+c.x2+',y2:'+c.y2;
+    //str_vals+=',w:'+c.w+',h:'+c.h;    
+        var csv_vals=c.x+','+c.y+','+c.x2+','+c.y2;
+    $("#cropcoords").val(csv_vals);
+  };
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();            
+            reader.onload = function (e) {
+              var img_preview='<img id="blah" src="'+e.target.result+'" height="100" alt="Preview" />';
+                //$('#blah').attr('src', e.target.result);
+                $('#previewimage').html(img_preview);
+                $('#blah').Jcrop({                  
+          onSelect: showCoords,
+                  aspectRatio: 1
+                });
+            }            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }    
+    $("#id_pic").change(function(){
+        readURL(this);
+    });
+    function validateForm()
+    {
+        var x=$("#id_pic").val();
+        var cord=$("#cropcoords").val();
+        if (x==null || x==""){
+          alert("Please select an image to upload.");
+          return false;
+        }else if (cord==null || cord==""){
+          alert("Please select the coordinates to crop the image.");
+          return false;
+        }
+    }
 });
 </script>
 {% endblock %} 

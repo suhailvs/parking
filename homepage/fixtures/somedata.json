@@ -1,0 +1,51 @@
+[
+  {
+    "model": "homepage.Weeks",
+    "pk": 1,
+    "fields": {
+      "name": "sunday"
+    }
+  },
+  {
+    "model": "homepage.Weeks",
+    "pk": 2,
+    "fields": {
+      "name": "monday"
+    }
+  },
+  {
+    "model": "homepage.Weeks",
+    "pk": 3,
+    "fields": {
+      "name": "tuesday"
+    }
+  },
+  {
+    "model": "homepage.Weeks",
+    "pk": 4,
+    "fields": {
+      "name": "wednesday"
+    }
+  },
+  {
+    "model": "homepage.Weeks",
+    "pk": 5,
+    "fields": {
+      "name": "thrusday"
+    }
+  },
+  {
+    "model": "homepage.Weeks",
+    "pk": 6,
+    "fields": {
+      "name": "friday"
+    }
+  },
+  {
+    "model": "homepage.Weeks",
+    "pk": 7,
+    "fields": {
+      "name": "saturday"
+    }
+  }
+]
