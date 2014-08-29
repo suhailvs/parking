@@ -85,13 +85,15 @@ $(document).ready(function() {
 
   //$('#selected_fromtime').val(sel_time);
   $('#timeOnly .start').timepicker({
-    'minTime': '06:30 AM',//sel_time,
+    //'minTime': '06:30 AM',//sel_time,
+    'step':60,
     'timeFormat': 'h:i A'//'g:ia'
   });
   $('#timeOnly .end').timepicker({
       'showDuration': true,
       'timeFormat': 'h:i A',
-      'maxTime': '11:30 PM'
+      'step':60,
+      //'maxTime': '11:30 PM'
   });
   $('#timeOnly .end').timepicker('setTime');//, sel_endtime);
   $('#timeOnly').datepair(); 

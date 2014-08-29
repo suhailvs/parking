@@ -3,6 +3,10 @@ from django.contrib.auth.models import User
 from django import forms
 from django.utils.safestring import mark_safe
 from datetime import date
+import calendar
+from dateutil import relativedelta
+
+TODAY = date.today()
 
 class MyFileUploadField(forms.ClearableFileInput):
     def render(self, name, value, attrs=None):
@@ -26,19 +30,37 @@ class Parking(models.Model):
     lat=models.CharField(max_length=20)
     lng=models.CharField(max_length=20)
     date_added=models.DateTimeField(auto_now_add =True)
-    description=models.TextField()
+    description=models.CharField(max_length=140)
     streetaddress=models.CharField(max_length=200)
+    def weekAvailability(self):
+        weekdays={'sunday':calendar.SUNDAY,'monday':calendar.MONDAY,
+            'tuesday':calendar.TUESDAY,'wednesday':calendar.WEDNESDAY,'thrusday':calendar.THRUSDAY,
+            'friday':calendar.FRIDAY,'saturday':calendar.SATURDAY}
+        ods=Orders.objects.filter(parking=self,park_date__gte=TODAY)
+        for day in self.days.all():
+            iter_date=TODAY+relativedelta(weekday=weekdays[day.name])
+            iter_order=ods.filter(park_date__startswith=iter_date)
+            for hr in range(self.fromtime.hour+1,self.totime.hour+1):
+                booked_hours=[h.park_timings for h in iter_order]
+                if str(hr) in booked_hours.split(','):
+                    print ('Need to mark {0} as booked in heatmap'.format(hr))
+                else:
+                    print ('!!!! Need to mark {0} as Already booked in heatmap'.format(hr))
 
-    def is_booked(self):
-        od=len(Orders.objects.filter(parking=self,order_date__startswith=date.today()))
-        return False if od == 0 else True
+
+class parkTimings(models.Model):
+    ts=models.IntegerField(max_length=2)
+    def __unicode__(self):
+        return self.ts
 
 class Orders(models.Model):
     user = models.ForeignKey(User)
     order_date=models.DateTimeField(auto_now_add =True)
     parking=models.ForeignKey(Parking)
-    fromtime=models.TimeField()
-    duration=models.IntegerField(max_length=2)
+    park_date=models.DateTimeField()
+    park_timings=models.CharField(max_length=200)# comaseperated ordered_hours field
+    #fromtime=models.TimeField()
+    #duration=models.IntegerField(max_length=2)
     paid=models.BooleanField(default=False)
     
 # Create your models here.

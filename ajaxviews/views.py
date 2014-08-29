@@ -7,7 +7,7 @@ from homepage.models import Parking,Orders
 def ajax_parkingdetails(request):
     p=Parking.objects.get(pk=request.GET['pk'])
     tformat="%I:%M:%S %p"
-    d=dict(pic=p.pic.url,address=p.streetaddress,spaces=p.totalspaces,isbooked=p.is_booked(),
+    d=dict(pic=p.pic.url[:-4],address=p.streetaddress,spaces=p.totalspaces,isbooked=p.is_booked(),
         ftime=p.fromtime.strftime(tformat),totime=p.totime.strftime(tformat))
     return HttpResponse(json.dumps(d), mimetype="application/json")
 
@@ -22,8 +22,10 @@ def ajax_login(request):
     return HttpResponse("Username or Password doesn't exist.")
 
 def ajax_savebooking(request):
+    #parking(foreignkey),park_date(date),park_timings(comaseperated ordered_hours field)
     for f in ['time','duration']:
         if request.GET[f] == "": return HttpResponse("Please fill the fields. Time and Duration")
+
 
     p=Parking.objects.get(pk=request.GET['park'])
     od=Orders(user=request.user,parking=p,fromtime=datetime.time(int(request.GET['time'])),
