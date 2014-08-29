@@ -45,6 +45,7 @@ class ShareParking(FormView):
 		form.instance.totime = datetime.strptime(self.request.POST['totime'],'%I:%M %p')
 		form.instance.user = self.request.user		
 		form.save()
-		imfn = os.path.join(settings.MEDIA_ROOT, form.instance.pic.name)	
-		resize_and_crop(imfn,self.request.POST['cropcoords'])
+		if form.instance.pic:
+			imfn = os.path.join(settings.MEDIA_ROOT, form.instance.pic.name)	
+			resize_and_crop(imfn,self.request.POST['cropcoords'])
 		return super(ShareParking, self).form_valid(form)

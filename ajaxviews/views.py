@@ -7,8 +7,9 @@ from homepage.models import Parking,Orders
 def ajax_parkingdetails(request):
     p=Parking.objects.get(pk=request.GET['pk'])
     tformat="%I:%M:%S %p"
-    d=dict(pic=p.pic.url[:-4],address=p.streetaddress,spaces=p.totalspaces,isbooked=p.is_booked(),
+    d=dict(address=p.streetaddress,spaces=p.totalspaces,
         ftime=p.fromtime.strftime(tformat),totime=p.totime.strftime(tformat))
+    if p.pic: d['pic']=p.pic.url[:-4]
     return HttpResponse(json.dumps(d), mimetype="application/json")
 
 def ajax_login(request):
@@ -28,8 +29,8 @@ def ajax_savebooking(request):
 
 
     p=Parking.objects.get(pk=request.GET['park'])
-    od=Orders(user=request.user,parking=p,fromtime=datetime.time(int(request.GET['time'])),
-            duration=int(request.GET['duration']))
+    od=Orders(user=request.user,parking=p,fromtime=datetime.date(request.GET['time']),
+            park_timings=request.GET['timings'])
     try:
         od.save()
         msg="Successfully saved your order with order id:%d" %od.pk
