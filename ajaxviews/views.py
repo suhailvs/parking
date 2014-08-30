@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib import auth
 import time,json,datetime
+from dateutil import parser
 from homepage.models import Parking,Orders
 # Create your views here.
 def ajax_parkingdetails(request):
@@ -9,7 +10,8 @@ def ajax_parkingdetails(request):
     tformat="%I:%M:%S %p"
     week_avail=json.dumps(p.weekAvailability())
     d=dict(address=p.streetaddress,spaces=p.totalspaces,avail=week_avail if week_avail else 'false',
-        ftime=p.fromtime.strftime(tformat),totime=p.totime.strftime(tformat))
+        desc=p.description)
+        #ftime=p.fromtime.strftime(tformat),totime=p.totime.strftime(tformat))
     if p.pic: d['pic']=p.pic.url[:-4]
     return HttpResponse(json.dumps(d), mimetype="application/json")
 
@@ -23,18 +25,20 @@ def ajax_login(request):
     	return HttpResponse("1")
     return HttpResponse("Username or Password doesn't exist.")
 
-def ajax_savebooking(request):
-    #parking(foreignkey),park_date(date),park_timings(comaseperated ordered_hours field)
-    for f in ['time','duration']:
-        if request.GET[f] == "": return HttpResponse("Please fill the fields. Time and Duration")
-
-
+def ajax_savebooking(request):       
     p=Parking.objects.get(pk=request.GET['park'])
-    od=Orders(user=request.user,parking=p,fromtime=datetime.date(request.GET['time']),
-            park_timings=request.GET['timings'])
-    try:
-        od.save()
-        msg="Successfully saved your order with order id:%d" %od.pk
-    except:
-        msg="Error"    
+    msg="Not available for selected time." 
+
+    #check for availablity for give time
+    dur=int(request.GET['duration'])
+    ptime=parser.parse(request.GET['time'])
+    o_time=int(time.mktime(ptime.timetuple()))
+    week_avail=p.weekAvailability()
+    if str(o_time) in week_avail:
+        if week_avail[o_time] >= dur:
+            od=Orders(user=request.user,parking=p,park_date=ptime,duration=dur)
+            od.save()
+            return HttpResponse("Successfully saved your order:%d" %od.pk)
+        msg="only %d hours available" %week_avail[o_time]
+
     return HttpResponse(msg)

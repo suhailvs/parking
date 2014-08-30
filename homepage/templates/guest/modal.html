@@ -25,11 +25,12 @@
 </div>
 <script type="text/javascript">
 $(document).on('click','.parkdetails',function(){
-    $('#btnBookParking').data('park',$(this).data('pk'));
+    //$('#btnBookParking').data('park',$(this).data('pk'));
+    var park_pk=$(this).data('pk');
     $.get("{% url 'parkingdetails' %}",{pk: $(this).data('pk') })
     .done(function(datas) {     
         if (datas.avail){
-            var avail_txt ='<hr><p class="lead"> Time Available<br></p>';
+            var avail_txt ='<hr><p class="lead"> Time Available<br></p> Click Available Timings to book.';
             //<h3><small>Total Parking Spaces Vacant:</small> <span class="label label-primary">' 
             //+  datas.spaces +'</span></h3>'
             //<kbd>' + datas.ftime +'</kbd> - <kbd>' + datas.totime + '</kbd>
@@ -65,8 +66,21 @@ $(document).on('click','.parkdetails',function(){
                     width: 110
                 },
                 onClick: function(date, nb) {
-                    var sdate=date.toDateString();
+                    //var sdate=date.toDateString();
                     //alert(sdate.slice(0, 16));
+                    if (nb){
+                        var dur = prompt("Book Parking Space on "+
+                            date+". Please Enter Duration in Hours", '1');
+                        if (dur > 0) {
+                            //redirect to paypal, remember date,duration & park_id
+                            $.get("{% url 'savebooking' %}",
+                                {'park':park_pk,'time':date,'duration':dur})
+                            .done(function(result){
+                              alert(result);
+                            });
+                        }
+                    }
+                    /*
                     if (sdate.slice(0, 16)=='Wed Jan 05 2000'){
                         alert('it works');
                     }else{
@@ -74,7 +88,7 @@ $(document).on('click','.parkdetails',function(){
                             date + "</b> <br/>with <b>" +
                             (nb === null ? "unknown" : nb) + "</b> items"
                         );
-                    }
+                    }*/
                         
                 }
             });
@@ -85,7 +99,7 @@ $(document).on('click','.parkdetails',function(){
         }
 
         var str_html='<h2>Parking Details</h2><p class="item-intro text-muted">'+
-        datas.address+'</p>'+avail_txt;
+        datas.address+'</p>'+'<p><strong>Description:</strong>'+datas.desc+'</p>'+avail_txt;
 
         if (datas.pic){
             str_html+='<hr><p class="lead">Parking Photos:</p><img class="img-responsive img-centered" src="'+datas.pic+'_crop.jpg" alt="">';
