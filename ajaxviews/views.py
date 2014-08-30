@@ -28,6 +28,7 @@ def ajax_login(request):
 def ajax_savebooking(request):       
     p=Parking.objects.get(pk=request.GET['park'])
     msg="Not available for selected time." 
+    flag=False
 
     #check for availablity for give time
     dur=int(request.GET['duration'])
@@ -35,10 +36,13 @@ def ajax_savebooking(request):
     o_time=int(time.mktime(ptime.timetuple()))
     week_avail=p.weekAvailability()
     if str(o_time) in week_avail:
-        if week_avail[o_time] >= dur:
+        if week_avail[str(o_time)] >= dur:
             od=Orders(user=request.user,parking=p,park_date=ptime,duration=dur)
             od.save()
-            return HttpResponse("Successfully saved your order:%d" %od.pk)
-        msg="only %d hours available" %week_avail[o_time]
+            msg="Successfully saved your order:%d" %od.pk
+            flag=od.pk
+        else:
+            msg="only %d hours available" %week_avail[o_time]
 
-    return HttpResponse(msg)
+    return HttpResponse(json.dumps({'msg':msg,'status':flag}), mimetype="application/json")
+        

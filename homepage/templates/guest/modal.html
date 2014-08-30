@@ -75,8 +75,11 @@ $(document).on('click','.parkdetails',function(){
                             //redirect to paypal, remember date,duration & park_id
                             $.get("{% url 'savebooking' %}",
                                 {'park':park_pk,'time':date,'duration':dur})
-                            .done(function(result){
-                              alert(result);
+                            .done(function(data){
+                              alert(data.msg);
+                              if (data.status){
+                                window.location="{% url 'users' request.user %}";
+                              }
                             });
                         }
                     }

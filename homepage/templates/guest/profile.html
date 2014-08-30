@@ -1,4 +1,5 @@
 {% extends 'account/base_g.html' %}
+{% load extra_tags %}
 {% block body %}
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
@@ -11,9 +12,7 @@
 	{% endif %}
 	</div><!--/well-->  
 	{% if request.user.is_active %}
-	<div class="well">
-		<h3> Orders done by <code>{{request.user}}</code></h3>
-	</div>
+		{% get_my_orders request.user.pk %}	
 	{% endif %}
   </div> 
 </div>	
