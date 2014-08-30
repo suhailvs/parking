@@ -50,19 +50,19 @@ class Parking(models.Model):
             # [2, 3, 4, 3, 7,9..]
             booked_hours=[h+1 for p in iter_order for h in range(p.park_date.hour,p.park_date.hour+p.duration)]
             
-            # loop through the hours listed by owner ie--> [6,7,8,..]
-            for hr in range(self.fromtime.hour+1,self.totime.hour+1):
-                #print 'hour %d' %hr
+            # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
+            for hr in range(self.fromtime.hour,self.totime.hour+1):                
                 # check number of vacancies for that hour
                 vacants=self.totalspaces - booked_hours.count(hr)
                 # datetime.timedelta(seconds=3600) --> 1hour
                 cur_hour= iter_date+datetime.timedelta(seconds=3600 * hr)
+                #print 'hour %d, iter_date %s,cur_hour_ts %s' %(hr,iter_date,cur_hour)
                 if vacants > 0 :
                     # to milliseconds
-                    cur_hour=str(time.mktime(cur_hour.timetuple()) * 1000)
+                    cur_hour=int(time.mktime(cur_hour.timetuple()))
                     # mark vacancies on heatmap for that hour                    
                     # sample heat map json--> var data={"946705035":4,...}                    
-                    heatmap_data[cur_hour]=self.totalspaces
+                    heatmap_data[str(cur_hour)]=self.totalspaces
                 else:
                     print 'Filled spaces for date: %s' %cur_hour
 

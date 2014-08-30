@@ -10,31 +10,15 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2">
-                    <div class="modal-body" id="parkingContent"> </div>
+                    <div class="modal-body"> 
+                        <div id="parkingContent"></div>
+                        <div id="cal-heatmap"></div>
+                        <div id="onClick-placeholder"></div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
-          <div class="row">
-            <div class="col-md-5">
-              <div class="input-group">
-                <span class="input-group-addon">Park start Time:</span>
-                <input type="number" class="form-control" id='pfromtime' name="fromtime">
-                <span class="input-group-addon">Hour :00 Mins</span>
-              </div>
-            </div><!-- /.col-lg-6 -->
-            <div class="col-md-5">
-              <div class="input-group">
-                <span class="input-group-addon">Duration:</span>
-                <input type="number" class="form-control" id='pduration' name="duration">
-                <span class="input-group-addon">Hours</span>
-              </div>
-            </div><!-- /.col-lg-6 -->
-            <div class="col-md-2">
-              <button type="button" id="btnBookParking" data-park="" class="btn btn-primary btn-lg"><i class="fa fa-cart"></i> Book Now</button>
-            </div>
-          </div><!-- /.row -->
-            <hr>
+        <div class="modal-footer">          
             <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
         </div>
     </div>
@@ -45,13 +29,59 @@ $(document).on('click','.parkdetails',function(){
     $.get("{% url 'parkingdetails' %}",{pk: $(this).data('pk') })
     .done(function(datas) {     
         if (datas.avail){
-            var avail_txt ='<h3><small>Total Parking Spaces Vacant:</small> <span class="label label-primary">' +
-            datas.spaces +'</span></h3><hr><p class="lead"> Time Available<br><kbd>' + datas.ftime +
-            '</kbd> - <kbd>' + datas.totime + '</kbd>'+datas.avail+'</p>';
-            $('#btnBookParking').removeClass('disabled');
+            var avail_txt ='<hr><p class="lead"> Time Available<br></p>';
+            //<h3><small>Total Parking Spaces Vacant:</small> <span class="label label-primary">' 
+            //+  datas.spaces +'</span></h3>'
+            //<kbd>' + datas.ftime +'</kbd> - <kbd>' + datas.totime + '</kbd>
+            //
+            //var dts=JSON.parse(datas.avail);
+            //for (var k in dts){
+            //    if (dts.hasOwnProperty(k)) {
+            //         alert("Key is " + k + ", value is" + dts[k]);
+            //    }
+            //}
+
+            //HEAT MAP
+            var cal = new CalHeatMap();
+            cal.init({
+                itemSelector: "#cal-heatmap",
+                domain: "day",
+                subDomain: "hour",
+                subDomainTextFormat: "%H",
+                rowLimit: 1,
+                domainGutter: 0,
+                data: JSON.parse(datas.avail),
+                start: new Date(),
+                cellSize: 30,
+                cellPadding: 5,
+                range: 7,
+                verticalOrientation: true,
+                label: {
+                    position: "left",
+                    offset: {
+                        x: 20,
+                        y: 12
+                    },
+                    width: 110
+                },
+                onClick: function(date, nb) {
+                    var sdate=date.toDateString();
+                    //alert(sdate.slice(0, 16));
+                    if (sdate.slice(0, 16)=='Wed Jan 05 2000'){
+                        alert('it works');
+                    }else{
+                        $("#onClick-placeholder").html("You just clicked <br/>on <b>" +
+                            date + "</b> <br/>with <b>" +
+                            (nb === null ? "unknown" : nb) + "</b> items"
+                        );
+                    }
+                        
+                }
+            });
+
+            
         }else{
-            var avail_txt ='<h3> <span class="label label-danger">Sorry There is no parking space is available on today</span></h3>';
-            $('#btnBookParking').addClass('disabled');
+            var avail_txt ='<h3> <span class="label label-danger">Sorry There is no parking space is available on today</span></h3>';            
         }
 
         var str_html='<h2>Parking Details</h2><p class="item-intro text-muted">'+
@@ -72,3 +102,4 @@ $(document).on('click','#btnBookParking',function(){
   });
 });
 </script>
+
