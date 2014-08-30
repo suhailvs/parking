@@ -44,14 +44,14 @@ $(document).on('click','.parkdetails',function(){
     $('#btnBookParking').data('park',$(this).data('pk'));
     $.get("{% url 'parkingdetails' %}",{pk: $(this).data('pk') })
     .done(function(datas) {     
-        if (datas.isbooked){
-        var avail_txt ='<h3> <span class="label label-danger">Sorry There is no parking space is available on today</span></h3>';
-        $('#btnBookParking').addClass('disabled');
+        if (datas.avail){
+            var avail_txt ='<h3><small>Total Parking Spaces Vacant:</small> <span class="label label-primary">' +
+            datas.spaces +'</span></h3><hr><p class="lead"> Time Available<br><kbd>' + datas.ftime +
+            '</kbd> - <kbd>' + datas.totime + '</kbd>'+datas.avail+'</p>';
+            $('#btnBookParking').removeClass('disabled');
         }else{
-        var avail_txt ='<h3><small>Total Parking Spaces Vacant:</small> <span class="label label-primary">' +
-        datas.spaces +'</span></h3><hr><p class="lead"> Time Available<br><kbd>' + datas.ftime +
-        '</kbd> - <kbd>' + datas.totime + '</kbd></p>';
-        $('#btnBookParking').removeClass('disabled');
+            var avail_txt ='<h3> <span class="label label-danger">Sorry There is no parking space is available on today</span></h3>';
+            $('#btnBookParking').addClass('disabled');
         }
 
         var str_html='<h2>Parking Details</h2><p class="item-intro text-muted">'+

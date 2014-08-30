@@ -7,7 +7,8 @@ from homepage.models import Parking,Orders
 def ajax_parkingdetails(request):
     p=Parking.objects.get(pk=request.GET['pk'])
     tformat="%I:%M:%S %p"
-    d=dict(address=p.streetaddress,spaces=p.totalspaces,
+    week_avail=p.weekAvailability()
+    d=dict(address=p.streetaddress,spaces=p.totalspaces,avail=week_avail if week_avail else 'false',
         ftime=p.fromtime.strftime(tformat),totime=p.totime.strftime(tformat))
     if p.pic: d['pic']=p.pic.url[:-4]
     return HttpResponse(json.dumps(d), mimetype="application/json")
