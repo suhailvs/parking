@@ -32,20 +32,39 @@ class Parking(models.Model):
     date_added=models.DateTimeField(auto_now_add =True)
     description=models.CharField(max_length=140)
     streetaddress=models.CharField(max_length=200)
+    status=models.BooleanField(default=True)
+
     def weekAvailability(self):
+        """ return data for heat map """
         weekdays={'sunday':calendar.SUNDAY,'monday':calendar.MONDAY,
             'tuesday':calendar.TUESDAY,'wednesday':calendar.WEDNESDAY,'thrusday':calendar.THRUSDAY,
             'friday':calendar.FRIDAY,'saturday':calendar.SATURDAY}
         ods=Orders.objects.filter(parking=self,park_date__gte=TODAY)
+
+        # loop through available weekdays ie: sunday, monday....etc
         for day in self.days.all():
+            # make the weekday as a proper datetime object ie: sunday --> Sept-02-2014
             iter_date=TODAY+relativedelta(weekday=weekdays[day.name])
+            # filter orders on current weekday
             iter_order=ods.filter(park_date__startswith=iter_date)
+
+            # iter_order[0].park_timings --> '2,3,4'
+            # >>> x=['2,3,4','5,6,7','3,4,5']
+            # >>> [h for i in x for h in i.split(',') ]
+            # ['2', '3', '4', '5', '6', '7', '3', '4', '5']
+            booked_hours=[h for p in iter_order for h in p.park_timings.split(',')]
+
+            # loop through the hours listed by owner ie--> [6,7,8,..]
             for hr in range(self.fromtime.hour+1,self.totime.hour+1):
-                booked_hours=[h.park_timings for h in iter_order]
-                if str(hr) in booked_hours.split(','):
-                    print ('Need to mark {0} as booked in heatmap'.format(hr))
+                # check number of vacancies for that hour
+                vacants=self.totalspaces - booked_hours.count(str(hr))
+                if vacants > 0 :
+                    # mark vacancies on heatmap for that hour
+                    {'time':iter_date+hr,'vacants':self.totalspaces}
                 else:
-                    print ('!!!! Need to mark {0} as Already booked in heatmap'.format(hr))
+                    print 'no vacants'
+
+
 
 
 class parkTimings(models.Model):
@@ -59,8 +78,7 @@ class Orders(models.Model):
     parking=models.ForeignKey(Parking)
     park_date=models.DateTimeField()
     park_timings=models.CharField(max_length=200)# comaseperated ordered_hours field
-    #fromtime=models.TimeField()
-    #duration=models.IntegerField(max_length=2)
+    nspace=models.PositiveIntegerField(max_length=3,default=1)
     paid=models.BooleanField(default=False)
     
 # Create your models here.
