@@ -25,24 +25,26 @@ def ajax_login(request):
     	return HttpResponse("1")
     return HttpResponse("Username or Password doesn't exist.")
 
-def ajax_savebooking(request):       
-    p=Parking.objects.get(pk=request.GET['park'])
-    msg="Not available for selected time." 
+def ajax_savebooking(request):
     flag=False
+    if request.user.is_active:            
+        p=Parking.objects.get(pk=request.GET['park'])
+        msg="Not available for selected time."         
 
-    #check for availablity for give time
-    dur=int(request.GET['duration'])
-    ptime=parser.parse(request.GET['time'])
-    o_time=int(time.mktime(ptime.timetuple()))
-    week_avail=p.weekAvailability()
-    if str(o_time) in week_avail:
-        if week_avail[str(o_time)] >= dur:
-            od=Orders(user=request.user,parking=p,park_date=ptime,duration=dur)
-            od.save()
-            msg="Successfully saved your order:%d" %od.pk
-            flag=od.pk
-        else:
-            msg="only %d hours available" %week_avail[o_time]
-
+        #check for availablity for give time
+        dur=int(request.GET['duration'])
+        ptime=parser.parse(request.GET['time'])
+        o_time=int(time.mktime(ptime.timetuple()))
+        week_avail=p.weekAvailability()
+        if str(o_time) in week_avail:
+            if week_avail[str(o_time)] >= dur:
+                od=Orders(user=request.user,parking=p,park_date=ptime,duration=dur)
+                od.save()
+                msg="Successfully saved your order:%d" %od.pk
+                flag=od.pk
+            else:
+                msg="only %d hours available" %week_avail[o_time]
+    else:
+        msg='login'        
     return HttpResponse(json.dumps({'msg':msg,'status':flag}), mimetype="application/json")
         

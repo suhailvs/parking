@@ -13,7 +13,7 @@
                     <div class="modal-body"> 
                         <div id="parkingContent"></div>
                         <div id="cal-heatmap"></div>
-                        <div id="onClick-placeholder"></div>
+                        <div id="parkingPhotos"></div>
                     </div>
                 </div>
             </div>
@@ -79,6 +79,8 @@ $(document).on('click','.parkdetails',function(){
                               alert(data.msg);
                               if (data.status){
                                 window.location="{% url 'users' request.user %}";
+                              }else if(data.msg=='login'){
+                                window.location="{% url "account_login" %}";
                               }
                             });
                         }
@@ -105,7 +107,7 @@ $(document).on('click','.parkdetails',function(){
         datas.address+'</p>'+'<p><strong>Description:</strong>'+datas.desc+'</p>'+avail_txt;
 
         if (datas.pic){
-            str_html+='<hr><p class="lead">Parking Photos:</p><img class="img-responsive img-centered" src="'+datas.pic+'_crop.jpg" alt="">';
+            $("#parkingPhotos").html('<hr><p class="lead">Parking Photos:</p><img class="img-responsive img-centered" src="'+datas.pic+'_crop.jpg" alt="">');
         }
 
         $('#parkingContent').html(str_html);

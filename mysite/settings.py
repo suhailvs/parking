@@ -112,3 +112,10 @@ EMAIL_USE_TLS = True
 #django-user-accounts
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
+ON_ARVIXE=False
+if ON_ARVIXE:
+    TIME_ZONE = "America/Los_Angeles"
+    STATIC_URL="/static/parking/"
+    MEDIA_URL = STATIC_URL+'media/'
+    # static files are serving automatically so don't need static_root
+    #STATIC_ROOT = '/home/suhails/public_html/static/parking'

@@ -40,7 +40,7 @@ class Parking(models.Model):
             # make the weekday as a proper datetime object ie: sunday --> Sept-02-2014
             iter_date=TODAY+relativedelta.relativedelta(weekday=weekdays[day.name])
             # filter orders on current weekday
-            iter_order=ods.filter(park_date__startswith=iter_date)
+            iter_order=Orders.objects.filter(parking=self,park_date__startswith=iter_date)#ods.filter(park_date__startswith=iter_date)
 
             
             # >>> order1.park_date =datetime.datetime(2014, 8, 30, 14, 6, 43, 201887)
@@ -48,6 +48,8 @@ class Parking(models.Model):
             # >>> order1.hour --> 14
             # >>> [h+1 for i in x for h in range(14,14+duration)]
             # [2, 3, 4, 3, 7,9..]
+            print 'range'
+            print iter_order
             booked_hours=[h+1 for p in iter_order for h in range(p.park_date.hour,p.park_date.hour+p.duration)]
             
             # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
@@ -56,7 +58,8 @@ class Parking(models.Model):
                 vacants=self.totalspaces - booked_hours.count(hr)
                 # datetime.timedelta(seconds=3600) --> 1hour
                 cur_hour= iter_date+datetime.timedelta(seconds=3600 * hr)
-                #print 'hour %d, iter_date %s,cur_hour_ts %s' %(hr,iter_date,cur_hour)
+                print booked_hours
+                print 'hour %d, iter_date %s,cur_hour_ts %s' %(hr,iter_date,cur_hour)
                 if vacants > 0 :
                     # to milliseconds
                     cur_hour=int(time.mktime(cur_hour.timetuple()))
