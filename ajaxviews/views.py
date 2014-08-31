@@ -33,14 +33,36 @@ def checkBooking(park,parktime,dur):
     # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
     avail_hours=[]    
     for hr in range(park.fromtime.hour,park.totime.hour+1):            
-        if parktime.hour <= hr <= parktime.hour+dur:
-            vacants=park.totalspaces - booked_hours.count(hr)
-            if vacants < 1:break
-            avail_hours.append(hr)
+        vacants=park.totalspaces - booked_hours.count(hr)
+        if vacants > 0:avail_hours.append(hr)
 
-    if len(avail_hours)==dur: 
+    wanted_hours=range(parktime.hour, parktime.hour+dur)
+    print avail_hours,'<-Available | Wanted->',wanted_hours
+    #if wanted_hours in avail_hours: 
+    if set(wanted_hours).issubset(set(avail_hours)):
         return ('Success',True)
-    return ("Sorry Maximum Duration is {0}.".format(len(avail_hours)),False)
+    return ("Please Enter a Valid Duration.",False)
+
+def send_bookingConfirmation(order):
+    from django.core.mail import send_mail
+    from django import template
+    
+    str_html=template.Template("""
+You're ({{order.user}}) receiving this email because you
+have Successfully ordered a parking area in {{order.parking.streetaddress}}.
+
+Order Date: {{order.order_date}}
+Parking Address: {{order.parking.streetaddress}}
+Parking Date:    {{order.park_date}}
+Duration in Hours:  {{order.duration}} Hours
+
+{% if order.paid %}You have paid the parking fees{% else %}
+Please Pay the parking fee with in 1 hour after Order date or else 
+your Order will be automatically deleted.{% endif %}
+""")
+    msg=str_html.render(template.Context({'order':order}))
+
+    send_mail('Parking.com: Order for parking Space.',msg,'noreplay@parking.com',[order.user.email],fail_silently=False)
 
 def ajax_savebooking(request):
     flag=False
@@ -53,6 +75,8 @@ def ajax_savebooking(request):
             #save booking
             od=Orders(user=request.user,parking=p,park_date=ptime,duration=dur)
             od.save()
+            # send confirmation mail
+            send_bookingConfirmation(od)
             msg,flag="Successfully saved your order:%d" %od.pk, od.pk
     else:
         msg='login'
