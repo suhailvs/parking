@@ -27,51 +27,54 @@ class Parking(models.Model):
     status=models.BooleanField(default=True)
     streetaddress=models.CharField(max_length=200)
 
+    def hoursBookedOnDate(self,dt):
+        # filter orders on date
+        order_items=Orders.objects.filter(parking=self,park_date__startswith=dt)
+        # >>> for od in o: print od.park_date, od.duration
+        # [2014-09-01 07:00:00 2, 2014-09-01 06:00:00 4]
+        # park.hoursBookedOnDate(date(2014,9,1)) --> [7, 8, 6, 7, 8, 9]
+
+        return [h for i in order_items for h in range(i.park_date.hour,i.park_date.hour+i.duration)]
+        
     def weekAvailability(self):
         """ return data for heat map for a parking"""
         weekdays={'sunday':calendar.SUNDAY,'monday':calendar.MONDAY,
             'tuesday':calendar.TUESDAY,'wednesday':calendar.WEDNESDAY,'thursday':calendar.THURSDAY,
             'friday':calendar.FRIDAY,'saturday':calendar.SATURDAY}
-        ods=Orders.objects.filter(parking=self,park_date__gte=TODAY)
+        #iter_order=Orders.objects.filter(parking=self,park_date__gte=TODAY)
 
         heatmap_data=dict()
         # loop through available weekdays ie: sunday, monday....etc
         for day in self.days.all():
             # make the weekday as a proper datetime object ie: sunday --> Sept-02-2014
-            iter_date=TODAY+relativedelta.relativedelta(weekday=weekdays[day.name])
-            # filter orders on current weekday
-            #iter_order=Orders.objects.filter(parking=self,park_date__startswith=iter_date) #ods.filter(park_date__startswith=iter_date)
-            iter_order=Orders.objects.filter(parking=self,park_date__gte=TODAY)
+            iter_date=TD+relativedelta.relativedelta(weekday=weekdays[day.name])            
+            booked_hours=self.hoursBookedOnDate(iter_date)
+            print booked_hours
             
-            # >>> order1.park_date =datetime.datetime(2014, 8, 30, 14, 6, 43, 201887)
-            # >>> x=[order1,order1,...]
-            # >>> order1.hour --> 14
-            # >>> [h+1 for i in x for h in range(14,14+duration)]
-            # [2, 3, 4, 3, 7,9..]
-            
-            booked_hours=[h+1 for p in iter_order for h in range(p.park_date.hour,p.park_date.hour+p.duration)]
-            #print iter_order
-            #print booked_hours
-            #print '*'*100
             # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
             for hr in range(self.fromtime.hour,self.totime.hour+1):                
-                # check number of vacancies for that hour
+                # get number of vacancies for that hour
                 vacants=self.totalspaces - booked_hours.count(hr)
-                # datetime.timedelta(seconds=3600) --> 1hour
-                cur_hour= iter_date+datetime.timedelta(seconds=3600 * hr)
-                #print booked_hours
-                #print 'hour %d, iter_date %s,cur_hour_ts %s' %(hr,iter_date,cur_hour)
+                print vacants  
+
                 if vacants > 0 :
+                    # convert hr to datetime object
+                    # datetime.timedelta(seconds=3600) --> 1hour
+                    iter_datetime=datetime.datetime(year=iter_date.year,month=iter_date.month,day=iter_date.day)
+                    cur_hour= iter_datetime+datetime.timedelta(seconds=3600 * hr)
+
                     # to milliseconds
                     cur_hour=int(time.mktime(cur_hour.timetuple()))
+
                     # mark vacancies on heatmap for that hour                    
                     # sample heat map json--> var data={"946705035":4,...}                    
-                    heatmap_data[str(cur_hour)]=self.totalspaces
+                    heatmap_data[str(cur_hour)]=vacants
                 else:
                     print 'Filled spaces for date: %s' %cur_hour
 
         # sample heat map json--> var data={"946705035":4,...}   
         return heatmap_data
+
 
 class Orders(models.Model):
     user = models.ForeignKey(User)
@@ -82,7 +85,10 @@ class Orders(models.Model):
     nspace=models.PositiveIntegerField(max_length=3,default=1)
     paid=models.BooleanField(default=False)
 
-# forms
+#====================================
+# forms                         #####
+#====================================
+
 class MyFileUploadField(forms.ClearableFileInput):
     def render(self, name, value, attrs=None):
         html = super(MyFileUploadField, self).render(name, value,attrs)

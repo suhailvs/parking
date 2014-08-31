@@ -112,7 +112,7 @@ EMAIL_USE_TLS = True
 #django-user-accounts
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
-
+USE_TZ=False
 if ON_ARVIXE:
     TIME_ZONE = "America/Los_Angeles"
     STATIC_URL="/static/parking/"

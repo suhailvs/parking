@@ -67,15 +67,15 @@ $(document).on('click','.parkdetails',function(){
                     width: 110
                 },
                 onClick: function(date, nb) {
-                    //var sdate=date.toDateString();
-                    //alert(sdate.slice(0, 16));
+                    var sdate=date.toLocaleString();
+                    console.log(sdate);//alert(sdate.slice(0, 16));
                     if (nb){
                         var dur = prompt("Book Parking Space on "+
-                            date+". Please Enter Duration in Hours", '1');
+                            sdate+". Please Enter Duration in Hours", '1');
                         if (dur > 0) {
                             //redirect to paypal, remember date,duration & park_id
                             $.get("{% url 'savebooking' %}",
-                                {'park':park_pk,'time':date,'duration':dur})
+                                {'park':park_pk,'time':sdate,'duration':dur})
                             .done(function(data){
                               alert(data.msg);
                               if (data.status){
