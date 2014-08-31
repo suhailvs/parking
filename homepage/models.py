@@ -40,18 +40,19 @@ class Parking(models.Model):
             # make the weekday as a proper datetime object ie: sunday --> Sept-02-2014
             iter_date=TODAY+relativedelta.relativedelta(weekday=weekdays[day.name])
             # filter orders on current weekday
-            iter_order=Orders.objects.filter(parking=self,park_date__startswith=iter_date)#ods.filter(park_date__startswith=iter_date)
-
+            #iter_order=Orders.objects.filter(parking=self,park_date__startswith=iter_date) #ods.filter(park_date__startswith=iter_date)
+            iter_order=Orders.objects.filter(parking=self,park_date__gte=TODAY)
             
             # >>> order1.park_date =datetime.datetime(2014, 8, 30, 14, 6, 43, 201887)
             # >>> x=[order1,order1,...]
             # >>> order1.hour --> 14
             # >>> [h+1 for i in x for h in range(14,14+duration)]
             # [2, 3, 4, 3, 7,9..]
-            print 'range'
-            print iter_order
-            booked_hours=[h+1 for p in iter_order for h in range(p.park_date.hour,p.park_date.hour+p.duration)]
             
+            booked_hours=[h+1 for p in iter_order for h in range(p.park_date.hour,p.park_date.hour+p.duration)]
+            print iter_order
+            print booked_hours
+            print '*'*100
             # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
             for hr in range(self.fromtime.hour,self.totime.hour+1):                
                 # check number of vacancies for that hour

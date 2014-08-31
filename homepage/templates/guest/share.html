@@ -12,7 +12,7 @@
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
     <div class="well" style="padding:10px">    
-    <form id="parkdetails" method="post" action="" enctype="multipart/form-data">{% csrf_token %}
+    <form id="parkdetails" method="post" action="" onsubmit="return validateForm()" enctype="multipart/form-data">{% csrf_token %}
       <h1>List Your Parking details:</h1>
       <!--
       <input type="text" name="address" class="form-control" id="id_streetaddress">
@@ -132,8 +132,11 @@ $(document).ready(function() {
         var x=$("#id_pic").val();
         var cord=$("#cropcoords").val();
         if (x==null || x==""){
-          alert("Please select an image to upload.");
-          return false;
+          //alert("Please select an image to upload.");
+          // return false
+
+          // picture field is optional
+          return true;
         }else if (cord==null || cord==""){
           alert("Please select the coordinates to crop the image.");
           return false;
