@@ -49,7 +49,7 @@ class Parking(models.Model):
             # make the weekday as a proper datetime object ie: sunday --> Sept-02-2014
             iter_date=TD+relativedelta.relativedelta(weekday=weekdays[day.name])            
             booked_hours=self.hoursBookedOnDate(iter_date)
-            print booked_hours
+            #print booked_hours
             
             # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
             for hr in range(self.fromtime.hour,self.totime.hour+1):                
