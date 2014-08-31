@@ -20,7 +20,7 @@ def get_my_orders(user):
 		<tr>
 			<td>{{forloop.counter}}</td><td>{{order.parking.streetaddress}}</td>
 			<td>{{order.order_date}}</td><td>{{order.park_date}}</td>
-			<td>{{order.duration}}</td><td>{{order.paid}}</td>
+			<td>{{order.duration}} Hours</td><td>{{order.paid}}</td>
 		</tr>
 		{% endfor %}
 	</table>

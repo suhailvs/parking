@@ -54,8 +54,7 @@ class Parking(models.Model):
             # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
             for hr in range(self.fromtime.hour,self.totime.hour+1):                
                 # get number of vacancies for that hour
-                vacants=self.totalspaces - booked_hours.count(hr)
-                print vacants  
+                vacants=self.totalspaces - booked_hours.count(hr)                  
 
                 if vacants > 0 :
                     # convert hr to datetime object
