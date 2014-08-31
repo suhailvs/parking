@@ -33,7 +33,7 @@
   var datas=[];
   function initialize() {
     var mapOptions = { center:new google.maps.LatLng('38.906', '-77.047'),  
-                       zoom: 10,
+                       zoom: 12,minZoom:11,
                        mapTypeId: google.maps.MapTypeId.ROADMAP };  
     map=new google.maps.Map(document.getElementById("googleMap"), mapOptions);
 
@@ -60,6 +60,36 @@
       makeInfoWindowEvent(map, infowindow, "<a class='btn btn-primary btn-xs parkdetails' href='#viewparkingModal' data-toggle='modal' data-pk="+datas[i]['pk']+">view</a><p style='color:#000'><strong>"+datas[i]['address']+"</strong><br>" + txt_booked +'</p>', marker);
       markers.push(marker);
     }
+
+
+    // Bounds for Washington
+    var strictBounds = new google.maps.LatLngBounds(
+     new google.maps.LatLng('38.8', '-77.1'), //'38.906', '-77.047'
+     new google.maps.LatLng('39', '-76.9')
+    );
+
+    // Listen for the dragend event
+    google.maps.event.addListener(map, 'dragend', function() {
+     if (strictBounds.contains(map.getCenter())) return;
+     // We're out of bounds - Move the map back within the bounds
+     var c = map.getCenter(),
+         x = c.lng(),
+         y = c.lat(),
+         maxX = strictBounds.getNorthEast().lng(),
+         maxY = strictBounds.getNorthEast().lat(),
+         minX = strictBounds.getSouthWest().lng(),
+         minY = strictBounds.getSouthWest().lat();
+
+    console.log(x);
+    console.log(y);
+
+     if (x < minX) x = minX;
+     if (x > maxX) x = maxX;
+     if (y < minY) y = minY;
+     if (y > maxY) y = maxY;
+
+     map.setCenter(new google.maps.LatLng(y, x));
+    });
   }
 
   function makeInfoWindowEvent(map, infowindow, contentString, marker) {
@@ -67,15 +97,6 @@
       infowindow.setContent(contentString);
       infowindow.open(map, marker);
     });
-    /*
-    google.maps.event.addListener(marker, 'mouseover', function() {
-      infowindow.setContent(contentString);
-      infowindow.open(map, marker);
-    });
-    google.maps.event.addListener(marker, 'mouseout', function() {
-      infowindow.close(map, this);
-    });
-    */
   }
   google.maps.event.addDomListener(window, 'load', initialize);
 </script>

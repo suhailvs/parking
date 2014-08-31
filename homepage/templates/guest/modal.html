@@ -7,19 +7,10 @@
                 </div>
             </div>
         </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2">
-                    <div class="modal-body"> 
-                        <div id="parkingContent"></div>
-                        <div id="cal-heatmap"></div>
-                        <div id="parkingPhotos"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">          
-            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+        <div class="modal-body"> 
+            <div id="parkingContent"></div>
+            <div id="cal-heatmap"></div>
+            <div id="parkingPhotos"></div>
         </div>
     </div>
 </div>
@@ -31,16 +22,6 @@ $(document).on('click','.parkdetails',function(){
     .done(function(datas) {     
         if (datas.avail){
             var avail_txt ='<hr><p class="lead"> Time Available<br></p> Click Available Timings to book.';
-            //<h3><small>Total Parking Spaces Vacant:</small> <span class="label label-primary">' 
-            //+  datas.spaces +'</span></h3>'
-            //<kbd>' + datas.ftime +'</kbd> - <kbd>' + datas.totime + '</kbd>
-            //
-            //var dts=JSON.parse(datas.avail);
-            //for (var k in dts){
-            //    if (dts.hasOwnProperty(k)) {
-            //         alert("Key is " + k + ", value is" + dts[k]);
-            //    }
-            //}
 
             //HEAT MAP
             $("#cal-heatmap").empty();
@@ -49,7 +30,7 @@ $(document).on('click','.parkdetails',function(){
                 itemSelector: "#cal-heatmap",
                 domain: "day",
                 subDomain: "hour",
-                subDomainTextFormat: "%H",
+                subDomainTextFormat: "%I%p",
                 rowLimit: 1,
                 domainGutter: 0,
                 data: JSON.parse(datas.avail),
@@ -85,17 +66,7 @@ $(document).on('click','.parkdetails',function(){
                               }
                             });
                         }
-                    }
-                    /*
-                    if (sdate.slice(0, 16)=='Wed Jan 05 2000'){
-                        alert('it works');
-                    }else{
-                        $("#onClick-placeholder").html("You just clicked <br/>on <b>" +
-                            date + "</b> <br/>with <b>" +
-                            (nb === null ? "unknown" : nb) + "</b> items"
-                        );
-                    }*/
-                        
+                    }  
                 }
             });
 

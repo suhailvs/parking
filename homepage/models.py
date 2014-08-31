@@ -67,9 +67,7 @@ class Parking(models.Model):
 
                     # mark vacancies on heatmap for that hour                    
                     # sample heat map json--> var data={"946705035":4,...}                    
-                    heatmap_data[str(cur_hour)]=vacants
-                else:
-                    print 'Filled spaces for date: %s' %cur_hour
+                    heatmap_data[str(cur_hour)]=vacants                
 
         # sample heat map json--> var data={"946705035":4,...}   
         return heatmap_data
