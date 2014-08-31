@@ -6,7 +6,10 @@
   	<div class="well">
 	{% if parkings %}
 	<h3> Parkings</h3>
-	<ol>{% for parking in parkings %}<li><a data-pk="{{parking.pk}}" class="parkdetails" href='#viewparkingModal' data-toggle='modal' >{{parking.streetaddress}}</a></li>{% endfor %}</ol>	
+	<ol>{% for parking in parkings %}
+		<li>Show:{{parking.status}}(<a href="#" data-pk="{{parking.pk}}">edit</span>),
+			<strong>{{parking.streetaddress}}</strong></li>
+	{% endfor %}</ol>	
 	{% else %}
 	<p> No parkings listed! please list parkings</p>
 	{% endif %}

@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
+ON_ARVIXE=False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -112,10 +112,13 @@ EMAIL_USE_TLS = True
 #django-user-accounts
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
-ON_ARVIXE=False
+
 if ON_ARVIXE:
     TIME_ZONE = "America/Los_Angeles"
     STATIC_URL="/static/parking/"
     MEDIA_URL = STATIC_URL+'media/'
+    USE_TZ =False
+    STATIC_ROOT = '/home/suhails/public_html/static/parking'
+
     # static files are serving automatically so don't need static_root
     #STATIC_ROOT = '/home/suhails/public_html/static/parking'

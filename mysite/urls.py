@@ -20,4 +20,5 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 	url(r"^account/", include("account.urls")),
 )
-urlpatterns += staticfiles_urlpatterns()
+# for openshift
+#urlpatterns += staticfiles_urlpatterns()
