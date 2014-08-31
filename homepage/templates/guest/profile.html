@@ -7,8 +7,14 @@
 	{% if parkings %}
 	<h3> Parkings</h3>
 	<ol>{% for parking in parkings %}
-		<li>Show:{{parking.status}}(<a href="#" data-pk="{{parking.pk}}">edit</span>),
-			<strong>{{parking.streetaddress}}</strong></li>
+		<li><p><strong>{{parking.streetaddress}}</strong>,</p><strong>Status:</strong>
+		{% if parking.status %}
+			Visible to Public(<a href="#" data-pk="{{parking.pk}}">Hide</a>)
+		{% else %}
+			Hidden(<a href="#" data-pk="{{parking.pk}}">Make Visible</a>)
+		{% endif %}
+		<hr>
+		</li>
 	{% endfor %}</ol>	
 	{% else %}
 	<p> No parkings listed! please list parkings</p>

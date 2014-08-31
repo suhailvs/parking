@@ -11,8 +11,25 @@
 {% block body %}
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
-    <div class="well" style="padding:10px">    
-    <form id="parkdetails" method="post" action="" onsubmit="return validateForm()" enctype="multipart/form-data">{% csrf_token %}
+    <div class="well" style="padding:10px">
+    <script type="text/javascript">
+    function validateForm()
+    {
+        var x=$("#id_pic").val();
+        var cord=$("#cropcoords").val();                
+        if (x==null || x==""){
+          //alert("Please select an image to upload.");
+          // return false
+
+          // picture field is optional
+          return true;
+        }else if (cord==null || cord==""){
+          alert("Please select the coordinates of the Parking Phots to crop.");
+          return false;
+        }
+    }
+    </script>    
+    <form id="parkdetails" method="post" action="." onsubmit="return validateForm()" enctype="multipart/form-data">{% csrf_token %}
       <h1>List Your Parking details:</h1>
       <!--
       <input type="text" name="address" class="form-control" id="id_streetaddress">
@@ -39,7 +56,7 @@
         <input type="text" id="lbl_longitude">-->           
       </div>    
       
-      <button type="submit" class="btn btn-primary btn-lg btn-block">Save</button> 
+      <input type="submit" class="btn btn-primary btn-lg btn-block" value="Save" /> 
       <!--<a class="btn btn-danger" href="{% url 'home' %}">Cancel</a>      -->
     </form>   
     </div>
@@ -107,7 +124,13 @@ $(document).ready(function() {
     //str_vals+=',x2:'+c.x2+',y2:'+c.y2;
     //str_vals+=',w:'+c.w+',h:'+c.h;    
         var csv_vals=c.x+','+c.y+','+c.x2+','+c.y2;
-    $("#cropcoords").val(csv_vals);
+        if (c.w == 0){
+          //console.log('width 0');
+          $("#cropcoords").val('');
+        }else{
+          $("#cropcoords").val(csv_vals);
+        }
+        console.log($("#cropcoords").val());
   };
     function readURL(input) {
         if (input.files && input.files[0]) {
@@ -117,7 +140,8 @@ $(document).ready(function() {
                 //$('#blah').attr('src', e.target.result);
                 $('#previewimage').html(img_preview);
                 $('#blah').Jcrop({                  
-          onSelect: showCoords,
+                  onSelect: showCoords,
+                  onChange: showCoords,
                   aspectRatio: 1
                 });
             }            
@@ -126,22 +150,7 @@ $(document).ready(function() {
     }    
     $("#id_pic").change(function(){
         readURL(this);
-    });
-    function validateForm()
-    {
-        var x=$("#id_pic").val();
-        var cord=$("#cropcoords").val();
-        if (x==null || x==""){
-          //alert("Please select an image to upload.");
-          // return false
-
-          // picture field is optional
-          return true;
-        }else if (cord==null || cord==""){
-          alert("Please select the coordinates to crop the image.");
-          return false;
-        }
-    }
+    });    
 });
 </script>
 {% endblock %} 

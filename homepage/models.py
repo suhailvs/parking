@@ -50,17 +50,17 @@ class Parking(models.Model):
             # [2, 3, 4, 3, 7,9..]
             
             booked_hours=[h+1 for p in iter_order for h in range(p.park_date.hour,p.park_date.hour+p.duration)]
-            print iter_order
-            print booked_hours
-            print '*'*100
+            #print iter_order
+            #print booked_hours
+            #print '*'*100
             # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
             for hr in range(self.fromtime.hour,self.totime.hour+1):                
                 # check number of vacancies for that hour
                 vacants=self.totalspaces - booked_hours.count(hr)
                 # datetime.timedelta(seconds=3600) --> 1hour
                 cur_hour= iter_date+datetime.timedelta(seconds=3600 * hr)
-                print booked_hours
-                print 'hour %d, iter_date %s,cur_hour_ts %s' %(hr,iter_date,cur_hour)
+                #print booked_hours
+                #print 'hour %d, iter_date %s,cur_hour_ts %s' %(hr,iter_date,cur_hour)
                 if vacants > 0 :
                     # to milliseconds
                     cur_hour=int(time.mktime(cur_hour.timetuple()))
