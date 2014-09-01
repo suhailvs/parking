@@ -14,7 +14,14 @@
     <div class="well" style="padding:10px">
     <script type="text/javascript">
     function validateForm()
-    {
+    {   
+      //var ftime= $("#selected_fromtime").val();
+      //var ttime= $("#selected_totime").val();
+      //if (ftime==null || ftime=="" || ttime==null || ttime==""){
+      //  alert("Please select Parking Availablity Time.");
+      //    return false;
+      //}
+
         var x=$("#id_pic").val();
         var cord=$("#cropcoords").val();                
         if (x==null || x==""){
@@ -111,7 +118,7 @@ $(document).ready(function() {
       'showDuration': true,
       'timeFormat': 'h:i A',
       'step':60,
-      //'maxTime': '11:30 PM'
+      'maxTime': '11:30 PM'
   });
   $('#timeOnly .end').timepicker('setTime');//, sel_endtime);
   $('#timeOnly').datepair(); 

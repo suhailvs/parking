@@ -44,12 +44,13 @@ class Parking(models.Model):
         #iter_order=Orders.objects.filter(parking=self,park_date__gte=TODAY)
 
         heatmap_data=dict()
+        new_data=[] #[{year: 2014, month: 15,day:3,hour:4, value:20},...]
+
         # loop through available weekdays ie: sunday, monday....etc
         for day in self.days.all():
             # make the weekday as a proper datetime object ie: sunday --> Sept-02-2014
-            iter_date=TD+relativedelta.relativedelta(weekday=weekdays[day.name])            
-            booked_hours=self.hoursBookedOnDate(iter_date)
-            #print booked_hours
+            ts=TD+relativedelta.relativedelta(weekday=weekdays[day.name])            
+            booked_hours=self.hoursBookedOnDate(ts)            
             
             # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
             for hr in range(self.fromtime,self.totime+1):                
@@ -57,20 +58,11 @@ class Parking(models.Model):
                 vacants=self.totalspaces - booked_hours.count(hr)                  
 
                 if vacants > 0 :
-                    # convert hr to datetime object
-                    # datetime.timedelta(seconds=3600) --> 1hour
-                    iter_datetime=datetime.datetime(year=iter_date.year,month=iter_date.month,day=iter_date.day)
-                    cur_hour= iter_datetime+datetime.timedelta(seconds=3600 * hr)
-
-                    # to milliseconds
-                    cur_hour=int(time.mktime(cur_hour.timetuple()))
-
-                    # mark vacancies on heatmap for that hour                    
-                    # sample heat map json--> var data={"946705035":4,...}                    
-                    heatmap_data[str(cur_hour)]=vacants                
-
-        # sample heat map json--> var data={"946705035":4,...}   
-        return heatmap_data
+                    new_data.append(dict(year=ts.year,month=ts.month,day=ts.day,hour=hr,value=vacants))
+                                
+        # [{year: 2014, month: 15,day:3,hour:4, value:20},...]
+        print new_data
+        return new_data
 
 
 class Orders(models.Model):

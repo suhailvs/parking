@@ -40,8 +40,8 @@
     {% for parking in parkings %}    
     var data = {'pk': '{{ parking.pk }}',              
                 'address':"{{parking.streetaddress|truncatechars:25}}",
-                'from':'{{ parking.fromtime|date:"h a" }}',
-                'to':'{{ parking.totime|date:"h a" }}',
+                'from':'{{ parking.fromtime }}',
+                'to':'{{ parking.totime }}',
                 'lat': {{parking.lat}},
                 'long': {{parking.lng}}
                 };
@@ -55,7 +55,7 @@
         position: new google.maps.LatLng(datas[i]['lat'], datas[i]['long']),
         map: map
       });      
-      var txt_booked='Available between<br>'+datas[i]['from']+'-'+datas[i]['to'];      
+      var txt_booked='Available between<br>'+datas[i]['from']+':00 Hr - '+datas[i]['to'] + ':00 Hr';      
       
       makeInfoWindowEvent(map, infowindow, "<a class='btn btn-primary btn-xs parkdetails' href='#viewparkingModal' data-toggle='modal' data-pk="+datas[i]['pk']+">view</a><p style='color:#000'><strong>"+datas[i]['address']+"</strong><br>" + txt_booked +'</p>', marker);
       markers.push(marker);

@@ -15,8 +15,8 @@
     </div>
 </div>
 <script type="text/javascript">
-$(document).on('click','.parkdetails',function(){
-    //$('#btnBookParking').data('park',$(this).data('pk'));
+$(document).on('click','.parkdetails',function(){  
+
     var park_pk=$(this).data('pk');
     $.get("{% url 'parkingdetails' %}",{pk: $(this).data('pk') })
     .done(function(datas) {     
@@ -24,6 +24,16 @@ $(document).on('click','.parkdetails',function(){
             var avail_txt ='<hr><p class="lead"> Time Available<br></p> Click Available Timings to book.';
 
             //HEAT MAP
+
+            //year,month,day, hour --> var datas=[{year: 2014, month: 15,day:3,...
+            var avail=JSON.parse(datas.avail);
+            var stats = {};
+            var ts;            
+            for (var d in avail) {
+              ts= new Date(avail[d].year,avail[d].month-1, avail[d].day,avail[d].hour).getTime()/1000;
+              stats[ts] = avail[d].value;            
+            }
+            
             $("#cal-heatmap").empty();
             var cal = new CalHeatMap();
             cal.init({
@@ -33,7 +43,7 @@ $(document).on('click','.parkdetails',function(){
                 subDomainTextFormat: "%I%p",
                 rowLimit: 1,
                 domainGutter: 0,
-                data: JSON.parse(datas.avail),
+                data: stats,
                 start: new Date(),
                 cellSize: 30,
                 cellPadding: 5,

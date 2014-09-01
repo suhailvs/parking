@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic.edit import FormView
 from homepage.models import ParkingForm,Parking,Orders
 from django.core.urlresolvers import reverse_lazy
-from datetime import datetime
+import time
 from PIL import Image as PImage
 import os
 from django.conf import settings
@@ -21,8 +21,8 @@ def resize_and_crop(fname,coords):
     region.save(fname[:-4]+'_crop.jpg',"JPEG")
     region.thumbnail((160,160), PImage.ANTIALIAS)
     region.save(fname[:-4]+'_160.jpg', "JPEG")
-    region.thumbnail((48,48), PImage.ANTIALIAS)
-    region.save(fname[:-4]+'_48.jpg', "JPEG")
+    #region.thumbnail((48,48), PImage.ANTIALIAS)
+    #region.save(fname[:-4]+'_48.jpg', "JPEG")
     os.remove(fname)
 
 def FindParking(request):
@@ -41,8 +41,10 @@ class ShareParking(FormView):
 		# This method is called when valid form data has been POSTed.
 		# It should return an HttpResponse.	
 		#form.instance.totalspaces = self.request.POST['totalspaces']
-		form.instance.fromtime = int(self.request.POST['fromtime'][:2])
-		form.instance.totime = int(self.request.POST['totime'][:2])
+		ftime=time.strptime(self.request.POST['fromtime'],'%I:%M %p')
+		ttime=time.strptime(self.request.POST['totime'],'%I:%M %p')		
+		form.instance.fromtime = ftime.tm_hour
+		form.instance.totime = ttime.tm_hour
 		form.instance.user = self.request.user		
 		form.save()
 		if form.instance.pic:
