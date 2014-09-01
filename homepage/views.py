@@ -41,8 +41,8 @@ class ShareParking(FormView):
 		# This method is called when valid form data has been POSTed.
 		# It should return an HttpResponse.	
 		#form.instance.totalspaces = self.request.POST['totalspaces']
-		form.instance.fromtime = datetime.strptime(self.request.POST['fromtime'],'%I:%M %p')#11:30 PM
-		form.instance.totime = datetime.strptime(self.request.POST['totime'],'%I:%M %p')
+		form.instance.fromtime = int(self.request.POST['fromtime'][:2])
+		form.instance.totime = int(self.request.POST['totime'][:2])
 		form.instance.user = self.request.user		
 		form.save()
 		if form.instance.pic:

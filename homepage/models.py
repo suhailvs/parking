@@ -15,8 +15,8 @@ class Weeks(models.Model):
 
 class Parking(models.Model):
     user = models.ForeignKey(User)    
-    fromtime=models.DateTimeField()
-    totime=models.DateTimeField()
+    fromtime=models.PositiveIntegerField(max_length=2)
+    totime=models.PositiveIntegerField(max_length=2)
     days=models.ManyToManyField(Weeks,help_text=None)
     totalspaces=models.PositiveIntegerField(max_length=3)
     pic = models.ImageField("Parking Photos", upload_to="images/",blank=True)
@@ -52,7 +52,7 @@ class Parking(models.Model):
             #print booked_hours
             
             # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
-            for hr in range(self.fromtime.hour,self.totime.hour+1):                
+            for hr in range(self.fromtime,self.totime+1):                
                 # get number of vacancies for that hour
                 vacants=self.totalspaces - booked_hours.count(hr)                  
 

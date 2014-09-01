@@ -32,7 +32,7 @@ def checkBooking(park,parktime,dur):
 
     # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
     avail_hours=[]    
-    for hr in range(park.fromtime.hour,park.totime.hour+1):            
+    for hr in range(park.fromtime,park.totime+1):            
         vacants=park.totalspaces - booked_hours.count(hr)
         if vacants > 0:avail_hours.append(hr)
 
