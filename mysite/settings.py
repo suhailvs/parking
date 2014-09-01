@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-ON_ARVIXE=False
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -24,7 +24,10 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '.flexspot.co',
+    '.flexspot.webfactional.com',
+]
 
 
 # Application definition
@@ -64,14 +67,12 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-DATA_DIR=BASE_DIR
-if 'OPENSHIFT_DATA_DIR' in os.environ:
-    DATA_DIR = os.environ.get('OPENSHIFT_DATA_DIR')
+
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(DATA_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -81,8 +82,6 @@ DATABASES = {
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
-# the server time zone, if local use GMT timezone 
-TIME_ZONE = 'Asia/Calcutta'
 
 USE_I18N = True
 
@@ -94,9 +93,12 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/static/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'homepage','static', 'media')
+STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot/'
+MEDIA_URL = STATIC_URL+'media/'
+STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot/'
+MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')
+#STATIC_ROOT=''
+
 from django.conf import global_settings
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
     "django.core.context_processors.request", "account.context_processors.account",
@@ -112,13 +114,3 @@ EMAIL_USE_TLS = True
 #django-user-accounts
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
-USE_TZ=False
-if ON_ARVIXE:
-    TIME_ZONE = "America/Los_Angeles"
-    STATIC_URL="/static/parking/"
-    MEDIA_URL = STATIC_URL+'media/'
-    USE_TZ =False
-    STATIC_ROOT = '/home/suhails/public_html/static/parking'
-
-    # static files are serving automatically so don't need static_root
-    #STATIC_ROOT = '/home/suhails/public_html/static/parking'
