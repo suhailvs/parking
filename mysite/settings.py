@@ -93,11 +93,16 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot/'
-MEDIA_URL = STATIC_URL+'media/'
-STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot/'
-MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')
-#STATIC_ROOT=''
+on_webfaction=False
+if on_webfaction:
+    STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot/'
+    MEDIA_URL = STATIC_URL+'media/'
+    STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot/'
+    MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')
+else:
+    STATIC_URL = '/static/'
+    MEDIA_URL = '/static/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR,'homepage','static', 'media')
 
 from django.conf import global_settings
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
