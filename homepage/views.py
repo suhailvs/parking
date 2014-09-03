@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic.edit import FormView
-from homepage.models import ParkingForm,Parking,Orders
+from homepage.models import Parking,Orders
+from homepage.forms import ParkingForm
 from django.core.urlresolvers import reverse_lazy
 import time
 from PIL import Image as PImage

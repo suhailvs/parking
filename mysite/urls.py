@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^ajax/', include('ajaxviews.urls')),
     
     url(r'^admin/', include(admin.site.urls)),
+    url(r"^account/signup/$", CustSignupView.as_view(), name="account_signup"),
 	url(r"^account/", include("account.urls")),
 )
 # for openshift

@@ -1,10 +1,17 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django import forms
+#from django.contrib.auth.models import User
+
 from django.utils.safestring import mark_safe
 #from datetime import date
 import calendar,time,datetime
 from dateutil import relativedelta
+
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+    licenceplate = models.CharField(max_length=10, blank=True)
+    states=models.CharField(max_length=2)
+
 
 TD = datetime.date.today()
 TODAY=datetime.datetime(year=TD.year,month=TD.month,day=TD.day) #datetime
@@ -74,22 +81,3 @@ class Orders(models.Model):
     nspace=models.PositiveIntegerField(max_length=3,default=1)
     paid=models.BooleanField(default=False)
 
-#====================================
-# forms                         #####
-#====================================
-
-class MyFileUploadField(forms.ClearableFileInput):
-    def render(self, name, value, attrs=None):
-        html = super(MyFileUploadField, self).render(name, value,attrs)
-        html+= '''<input id="cropcoords" type="hidden" name="cropcoords" value="">
-        <div class="thumbnail" id="previewimage"></div>'''
-        return mark_safe(html);
-        
-class ParkingForm(forms.ModelForm):   
-    def __init__(self, *args, **kwargs):
-        super(ParkingForm, self).__init__(*args, **kwargs)
-        self.fields['days'].help_text = None 
-    class Meta:
-        model=Parking
-        exclude=['user','fromtime','totime']        
-        widgets={'lat': forms.HiddenInput(),'lng': forms.HiddenInput(),'pic':MyFileUploadField()}
