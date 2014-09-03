@@ -9,8 +9,8 @@ from dateutil import relativedelta
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
-    licenceplate = models.CharField(max_length=10, blank=True)
-    states=models.CharField(max_length=2)
+    licenseplate = models.CharField(max_length=10, blank=True)
+    state=models.CharField(max_length=2)
 
 
 TD = datetime.date.today()

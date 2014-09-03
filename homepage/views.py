@@ -7,6 +7,24 @@ import time
 from PIL import Image as PImage
 import os
 from django.conf import settings
+
+
+from account.views import SignupView
+from homepage.forms import CustSignupForm
+
+class CustSignupView(SignupView):
+	form_class = CustSignupForm
+	def after_signup(self, form):
+		self.update_profile(form)
+		super(CustSignupView, self).after_signup(form)
+
+	def update_profile(self, form):
+		profile = self.created_user
+		profile.state = form.cleaned_data["state"]
+		if form.cleaned_data["is_owner"]=='0':
+			profile.licenseplate = form.cleaned_data["licenseplate"]
+		profile.save()
+
 # Create your views here.
 #from os.path import join as pjoin
 def resize_and_crop(fname,coords):

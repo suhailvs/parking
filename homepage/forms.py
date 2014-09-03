@@ -6,6 +6,12 @@ from account.forms import SignupForm
 #====================================
 
 class CustSignupForm(SignupForm):
+    def clean_licenseplate(self):
+        data = self.cleaned_data['licenseplate']
+        if self.cleaned_data["is_owner"]=='0' and not data: 
+            raise forms.ValidationError("Please Enter license Plate Number.")
+        return data
+        
     def __init__(self, *args, **kwargs):
         super(CustSignupForm, self).__init__(*args, **kwargs)
         STATE_CHOICES = (
@@ -60,8 +66,10 @@ class CustSignupForm(SignupForm):
                     ("WV", "West Virginia"),
                     ("WI", "Wisconsin"),
                     ("WY", "Wyoming"),)
-        self.fields["states"] = ChoiceField(choices=STATE_CHOICES,initial=0,label='States:')
-        self.fields["licenceplate"] = CharField(label="Licence Plate", max_length=10)
+        self.fields["state"] = forms.ChoiceField(choices=STATE_CHOICES,initial="WA",label='State')
+        USER_TYPE_CHOICES = ( ('0', "I'm Driver"),('1', "I'm Owner"),)
+        self.fields["is_owner"] = forms.ChoiceField(choices=USER_TYPE_CHOICES,widget=forms.RadioSelect(),initial='0',label='')
+        self.fields["licenseplate"] = forms.CharField(label="license Plate Number", max_length=10,required=False)
         
         #current_order = self.fields.keyOrder
         #print current_order
