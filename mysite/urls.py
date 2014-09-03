@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
 from django.contrib import admin
-from homepage.views import ShareParking
+from homepage.views import ShareParking,CustSignupView
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^ajax/', include('ajaxviews.urls')),
     
     url(r'^admin/', include(admin.site.urls)),
+    url(r"^account/signup/$", CustSignupView.as_view(), name="account_signup"),
 	url(r"^account/", include("account.urls")),
 )
 # for openshift
