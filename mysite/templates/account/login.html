@@ -1,0 +1,18 @@
+{% extends 'account/base_g.html' %}
+{% load bootstrap %}
+{% block head_title %}Log in{% endblock %}
+{% block content %}  
+<div class="panel-heading"><h2>Log in to an existing account</h2></div>
+  <div class="panel-body" style="padding:20px">
+  	<form method="POST" action="{% url "account_login" %}">
+	    {% csrf_token %}
+	    {{ form|bootstrap }}
+	    {% if redirect_field_value %}
+	        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+	    {% endif %}
+	    <a href="{% url "account_password_reset" %}">Forgot your password?</a><br ><br >
+	    <button type="submit" class="btn btn-primary btn-lg btn-block">Log in</button>
+    </form>   
+  </div>    
+</div>    
+{% endblock %}  

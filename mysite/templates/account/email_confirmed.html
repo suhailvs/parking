@@ -1,0 +1,10 @@
+{% extends 'account/base_g.html' %}
+{% block head_title %}Email confirmed{% endblock %}
+{% block content %}  
+<div class="panel-heading"><h1>Confirm your email address</h1></div>
+  <div class="panel-body" style="padding:20px">
+    <h1>Email confirmed</h1>
+    <p class="lead">You have confirmed <b>{{ confirmation.email_address.email }}</b></p>
+  </div>    
+</div>    
+{% endblock %} 
