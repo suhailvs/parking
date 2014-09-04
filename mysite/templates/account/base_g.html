@@ -1,0 +1,12 @@
+{% extends 'base_guest.html' %}
+{% block body %}
+  <div class="container" style="min-height:540px;">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default"> 
+        	{% block content %}
+        	{% endblock %}		              
+      </div>
+    </div>
+  </div>
+{% endblock %}     

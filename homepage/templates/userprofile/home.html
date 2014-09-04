@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<!-- DataTables CSS -->
+<link href="{{ STATIC_URL }}dataTables/css/dataTables.bootstrap.css" rel="stylesheet">
+<style>
+  body{background: #f1f1f1}
+/*ajax loding. please visit http://jsfiddle.net/suhailvs/VpDUG/3453/ 
+======================================================*/
+.ajaxloading {
+    display:    none;
+    position:   absolute;
+    z-index:    1000;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('/static/pIkfp.gif') 
+                50% 50% 
+                no-repeat;
+}
+.loading {
+    overflow: hidden;   
+}
+.loading .ajaxloading {
+    display: block;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissable">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="container">  
+  <div class="row">
+    <div class="col-md-3">
+			<div class="list-group">
+        <!--<span class="list-group-item lead" style="background: #000;color:#fff"> {{request.user.username}}</span>-->
+        {% for key,value in sidemenu.iteritems %}
+        <a href="#" class="ajaxLoad list-group-item{% ifequal key 'fileuploadhistory' %} active{% endifequal %}" data-ajxurl="{{ key }}"> {{ value }}</a>
+        {% endfor %}
+			
+			</div>
+    </div>
+		<div class="col-md-9">  
+    <div class="ajaxloading"><!-- Place at bottom of page --></div>
+        
+      <div id="ajaxBox">
+        <!-- jquery load
+          =================================================================================
+        AJAX LOADING-->
+      </div>
+      </div>
+  </div><!-- row -->
+</div><!-- container -->
+{% endblock %}
+{% block javascripts %}
+<script src="{{ STATIC_URL }}dataTables/js/jquery.dataTables.js"></script>
+<script src="{{ STATIC_URL }}dataTables/js/dataTables.bootstrap.js"></script>
+<script>
+function AjaxLoader(item){
+  var url='{% url "ajax_get" %}?page='+ item; 
+  $('#ajaxBox').load(url, function() {
+    if (item == 'fileuploadhistory' || item == 'orderhistory') {
+      //alert('need to initiate datatables here.');
+      $('.table').dataTable();         
+    }   
+  });
+}
+$('.ajaxLoad').click(function(e){
+  e.preventDefault();
+  AjaxLoader($(this).data('ajxurl')); 
+  //remove class active from all
+  $("a.list-group-item").removeClass('active');
+  //add class active to selected nav button
+  $(this).addClass('active'); 
+});
+
+
+$(document).ajaxStart(function() {
+  $('div.col-md-9').addClass("loading"); 
+});
+$(document).ajaxStop(function() {
+  $('div.col-md-9').removeClass("loading"); 
+});
+AjaxLoader('fileuploadhistory');
+</script>
+{% endblock %}  

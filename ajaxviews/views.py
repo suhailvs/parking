@@ -81,3 +81,26 @@ def ajax_savebooking(request):
     else:
         msg='login'
     return HttpResponse(json.dumps({'msg':msg,'status':flag}), mimetype="application/json")
+
+
+def userhome(request):
+    time.sleep(2)
+    curpage=request.GET['page']
+    context={}
+    if curpage=='editprofile':
+        context['usr']=request.user
+        template_url='userprofile/ajax/profile.html'
+    elif curpage=='purchasecredit': 
+        context['packages']=Package.objects.filter(active=True)
+        template_url='userprofile/ajax/packages.html'
+
+    elif curpage=='orderhistory':
+        context['orders']=Order.objects.filter(user=request.user)
+        template_url='userprofile/ajax/orderhistory.html'
+
+    elif curpage=='fileuploadhistory':
+        context['uploads']=FileUpload.objects.filter(user=request.user)
+        #context['form']=FileUploadForm()
+        template_url='userprofile/ajax/fileuploads.html'
+    #orderhistory,fileuploadhistory,purchasecredit
+    return render(request,template_url,context)

@@ -15,7 +15,7 @@
 </div>    
 {% endblock %}  
 
-{% block javascript %} 
+  {% block extra_script %}
 <script type="text/javascript">
 $(document).ready(function() {
 	if ($("input[name='is_owner']:checked").val()=='1') $("#id_licenseplate").parents('.form-group').hide();

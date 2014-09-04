@@ -1,0 +1,33 @@
+{% url 'home' as home %}
+{% url 'account_logout' as logout %}
+<nav class="navbar navbar-fixed-top" style="border-bottom: 1px solid #e5e5e5;background:#fff" role="navigation">
+    <div class="container">
+        <div class="navbar-header page-scroll">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" style="border:2px solid #ccc"><span class="glyphicon glyphicon-collapse-down"></span>
+          </button>
+          <a class="navbar-brand" href="{% url 'home' %}">
+                <span class="light">Flexspot</span>.co
+            </a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+            <form class="navbar-form navbar-left" role="search">
+                <button href="/" class="btn btn-primary">Find Parking  <span class="glyphicon glyphicon-search"></span></button>
+                <button href="{# url 'fileupload' #}" class="btn btn-warning">Share Parking <span class="glyphicon glyphicon-share-alt"></span></button>
+            </form>
+
+            <ul class="nav navbar-nav">                           
+                          
+                <li{% if request.path == home %} style="background:#f1f1f1"{%endif%}>
+                    <a href="{{ home }}"><span class="glyphicon glyphicon-user"></span> {{request.user.username}} <small><span class="label label-info">3.00 $</span></small></a>
+                </li>     
+                
+                <li{% if request.path == logout %} style="background:#f1f1f1"{%endif%}>                    
+                    <a href="{{logout}}"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>

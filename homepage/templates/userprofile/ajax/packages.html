@@ -1,0 +1,25 @@
+{% extends "userprofile/ajax/ajax_base.html" %}
+{% block title %}Available Packs{% endblock %}
+{% block content %}
+<!-- Table -->
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Plan</th>
+        <th>Price</th>
+        <th>Credits</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for pack in packages %}    
+      <tr>
+        <td><strong>{{pack.name}}</strong></td>
+        <td>{{pack.amount}}$</td>
+        <td>{{pack.credits}}</td>
+        <td><a class="btn btn-default btn-xs" href="{% url 'ask_for_money' %}?packid={{pack.id}}">Buy Now</a></td>
+      </tr>
+    {% endfor %}     
+    </tbody>
+  </table>
+{% endblock %}	
