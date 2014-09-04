@@ -1,0 +1,32 @@
+{% extends "userprofile/ajax/ajax_base.html" %}
+{% block title %}File Uploads{% endblock %}
+{% block content %}
+<table class="table table-striped table-bordered" cellspacing="0" width="100%">
+	<thead>
+		<tr>			
+			<th>Sl.</th>
+			<th>FileName</th>
+			<th>Date</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<!--<tfoot><tr><th>Name</th><th>Position</th></tr></tfoot>-->
+	<tbody>
+	{% for item in uploads %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+			<td>{{ item.filename_only }}</td>
+			<td>{{ item.uploaddate }}</td>
+			<td>{% if item.status == 0 %}
+				<!--<span class="label label-danger"> Not Redered</span>-->
+				<a href="#" class="btn btn-default btn-xs">Render-3d</a>
+				{% else %}
+				<span class="label label-success"><span class="glyphicon glyphicon-ok"></span> Rendered</span>
+				{% endif %}
+			</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endblock %}	
+

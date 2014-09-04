@@ -8,22 +8,24 @@ from PIL import Image as PImage
 import os
 from django.conf import settings
 
+from django.views.generic.base import View
+class MyHome(View):
+	def get(self, request):
+		if not request.user.is_active:
+			return render(request,'home.html')
+		sidemenu={'editprofile':'Profile','bookings':'My Bookings',
+		'listings':'My Parking Areas','credits':'My Credits'}
+		return render(request,'userprofile/home.html',{'sidemenu':sidemenu})
 
-from account.views import SignupView
-from homepage.forms import CustSignupForm
+def FindParking(request):
+	return render(request,'guest/find.html',dict(parkings=Parking.objects.all()))
 
-class CustSignupView(SignupView):
-	form_class = CustSignupForm
-	def after_signup(self, form):
-		self.update_profile(form)
-		super(CustSignupView, self).after_signup(form)
+def userpages(request,nm=None):
+	if not nm and request.user.is_active:nm=request.user.username
+	return render(request,'guest/profile.html',{'orders':Orders.objects.filter(user=request.user),
+		'parkings':Parking.objects.filter(user__username=nm)})
 
-	def update_profile(self, form):
-		profile = self.created_user
-		profile.state = form.cleaned_data["state"]
-		if form.cleaned_data["is_owner"]=='0':
-			profile.licenseplate = form.cleaned_data["licenseplate"]
-		profile.save()
+
 
 # Create your views here.
 #from os.path import join as pjoin
@@ -44,13 +46,6 @@ def resize_and_crop(fname,coords):
     #region.save(fname[:-4]+'_48.jpg', "JPEG")
     os.remove(fname)
 
-def FindParking(request):
-	return render(request,'guest/find.html',dict(parkings=Parking.objects.all()))
-
-def userpage(request,nm=None):
-	if not nm and request.user.is_active:nm=request.user.username
-	return render(request,'guest/profile.html',{'orders':Orders.objects.filter(user=request.user),
-		'parkings':Parking.objects.filter(user__username=nm)})
 class ShareParking(FormView):
 	template_name = 'guest/share.html'
 	form_class = ParkingForm
@@ -70,3 +65,20 @@ class ShareParking(FormView):
 			imfn = os.path.join(settings.MEDIA_ROOT, form.instance.pic.name)	
 			resize_and_crop(imfn,self.request.POST['cropcoords'])
 		return super(ShareParking, self).form_valid(form)
+
+
+from account.views import SignupView
+from homepage.forms import CustSignupForm
+
+class CustSignupView(SignupView):
+	form_class = CustSignupForm
+	def after_signup(self, form):
+		self.update_profile(form)
+		super(CustSignupView, self).after_signup(form)
+
+	def update_profile(self, form):
+		profile = self.created_user
+		profile.state = form.cleaned_data["state"]
+		if form.cleaned_data["is_owner"]=='0':
+			profile.licenseplate = form.cleaned_data["licenseplate"]
+		profile.save()

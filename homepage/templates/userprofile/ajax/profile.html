@@ -1,0 +1,100 @@
+{% extends "userprofile/ajax/ajax_base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<legend>Edit Profile:{{usr.username}}</legend>
+<form method='post' action='' class="form-horizontal" role="form">{% csrf_token %}
+	<div class="form-group">
+	    <label class="col-sm-2 control-label">Email</label>
+	    <div class="col-sm-10">
+	      <input type="text" class="form-control" name="email" placeholder="E-mail" maxlength="30" value="{{usr.email}}">
+	    </div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">First Name:</label>
+	    <div class="col-sm-4">
+			<input type="text" class="form-control" name="first_name" placeholder="Enter your First Name" maxlength="30" value="{{usr.first_name}}">
+		</div>
+		<label class="col-sm-2 control-label">Last Name:</label>
+	    <div class="col-sm-4">
+			<input type="text" class="form-control" name="last_name" placeholder="Last Name" maxlength="30" value="{{usr.last_name}}">
+		</div>		
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Company:</label>
+	    <div class="col-sm-4">
+			<input type="text" class="form-control" name="company_name" placeholder="Company Name" maxlength="30" value="{{usr.userdetails.company_name}}">
+		</div>
+		<label class="col-sm-2 control-label">Phone Number:</label>
+	    <div class="col-sm-4">
+			<input type="text" class="form-control" name="phone_number" placeholder="Phone Number" maxlength="30" value="{{usr.userdetails.phone_number}}">
+		</div>		
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label">City:</label>
+	    <div class="col-sm-4">
+			<input type="text" class="form-control" name="city" placeholder="City" maxlength="30" value="{{usr.userdetails.city}}">
+		</div>
+		<label class="col-sm-2 control-label">Postcode:</label>
+	    <div class="col-sm-4">
+			<input type="text" class="form-control" name="postcode" placeholder="Postcode" maxlength="30" value="{{usr.userdetails.postcode}}">
+		</div>		
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">State:</label>
+	    <div class="col-sm-4">
+			<input type="text" class="form-control" name="state" placeholder="state" maxlength="30" value="{{usr.userdetails.state}}">
+		</div>
+		<label class="col-sm-2 control-label">Country:</label>
+	    <div class="col-sm-4">
+			<input type="text" class="form-control" name="country" placeholder="country" maxlength="30" value="{{usr.userdetails.country}}">
+		</div>		
+	</div>
+	<div class="form-group">
+	    <div class="col-sm-offset-2 col-sm-10">
+	      <button type="submit" name="submit" value="profileupdate" class="btn btn-default">Update</button>
+	    </div>
+	</div>
+</form>
+<!--
+<div class="row">
+	<div class="col-md-8">		
+        <form method='post' action=''>{% csrf_token %}
+			<fieldset>
+		    <div id="legend">
+		      <legend class="">Edit Profile:{{usr.username}}</legend>	
+		    </div>
+		    {% if errors %}
+		  	<div class="errors">{{ errors }}</div>
+			{% endif %}			 		
+			<label>Email:</label>
+			<input type="text" class="form-control" name="email" placeholder="E-mail" maxlength="30" value="{{usr.email}}">
+			<label>First Name:</label>
+			<input type="text" class="form-control" name="first_name" placeholder="Enter your First Name" maxlength="30" value="{{usr.first_name}}">
+			<label>Last Name:</label>
+			<input type="text" class="form-control" name="last_name" placeholder="Last Name" maxlength="30" value="{{usr.last_name}}">
+
+			<label>company_name:</label>
+			<input type="text" class="form-control" name="company_name" placeholder="company_name" maxlength="30" value="{{usr.userdetails.company_name}}">
+
+			<label>phone_number:</label>
+			<input type="text" class="form-control" name="phone_number" placeholder="phone_number" maxlength="30" value="{{usr.userdetails.phone_number}}">
+
+			<label>city:</label>
+			<input type="text" class="form-control" name="city" placeholder="City" maxlength="30" value="{{usr.userdetails.city}}">
+
+			<label>postcode:</label>
+			<input type="text" class="form-control" name="postcode" placeholder="postcode" maxlength="30" value="{{usr.userdetails.postcode}}">
+
+			<label>state:</label>
+			<input type="text" class="form-control" name="state" placeholder="state" maxlength="30" value="{{usr.userdetails.state}}">
+
+			<label>country:</label>
+			<input type="text" class="form-control" name="country" placeholder="country" maxlength="30" value="{{usr.userdetails.country}}">
+			
+		  </fieldset><br />
+		  <input class="btn btn-lg btn-success" type="submit" value="Update"> 
+		</form>                
+    </div>
+</div> /.row -->
+{% endblock %}	
