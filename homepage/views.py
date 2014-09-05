@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.views.generic.edit import FormView
 from homepage.models import Parking,Orders
 from homepage.forms import ParkingForm
@@ -7,15 +9,26 @@ import time
 from PIL import Image as PImage
 import os
 from django.conf import settings
+from django.contrib import messages
 
 from django.views.generic.base import View
 class MyHome(View):
 	def get(self, request):
 		if not request.user.is_active:
-			return render(request,'home.html')
+			return render(request,'home.html')		
 		sidemenu={'editprofile':'Profile','bookings':'My Bookings',
 		'listings':'My Parking Areas','credits':'My Credits'}
 		return render(request,'userprofile/home.html',{'sidemenu':sidemenu})
+	def post(self,request):
+		if not request.user.is_active:
+			return render(request,'home.html')
+		if request.POST['submit']=='profileupdate':
+			for key,value in request.POST.iteritems():
+				if key in ['last_name','first_name','email']:
+					setattr(request.user,key,value)	
+			request.user.save()		
+			messages.success(request, 'Profile updated successfully.')		
+			return HttpResponseRedirect(reverse('home'))
 
 def FindParking(request):
 	return render(request,'guest/find.html',dict(parkings=Parking.objects.all()))

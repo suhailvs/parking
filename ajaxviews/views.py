@@ -90,15 +90,15 @@ def userhome(request):
     if curpage=='editprofile':
         context['usr']=request.user
         template_url='userprofile/ajax/profile.html'
-    elif curpage=='purchasecredit': 
+    elif curpage=='bookings': 
         context['packages']=Package.objects.filter(active=True)
         template_url='userprofile/ajax/packages.html'
 
-    elif curpage=='orderhistory':
+    elif curpage=='listings':
         context['orders']=Order.objects.filter(user=request.user)
         template_url='userprofile/ajax/orderhistory.html'
 
-    elif curpage=='fileuploadhistory':
+    elif curpage=='credits':
         context['uploads']=FileUpload.objects.filter(user=request.user)
         #context['form']=FileUploadForm()
         template_url='userprofile/ajax/fileuploads.html'

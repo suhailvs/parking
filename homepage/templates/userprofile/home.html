@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-
+{% load staticfiles %}
 {% block extra_head %}
 <!-- DataTables CSS -->
-<link href="{{ STATIC_URL }}dataTables/css/dataTables.bootstrap.css" rel="stylesheet">
+<link href="{% static "dataTables/css/dataTables.bootstrap.css" %}" rel="stylesheet">
 <style>
   body{background: #f1f1f1}
 /*ajax loding. please visit http://jsfiddle.net/suhailvs/VpDUG/3453/ 
@@ -61,12 +61,12 @@
   </div><!-- row -->
 </div><!-- container -->
 {% endblock %}
-{% block javascripts %}
-<script src="{{ STATIC_URL }}dataTables/js/jquery.dataTables.js"></script>
-<script src="{{ STATIC_URL }}dataTables/js/dataTables.bootstrap.js"></script>
+{% block javascript %}
+<script src="{% static "dataTables/js/jquery.dataTables.js" %}"></script>
+<script src="{% static "dataTables/js/dataTables.bootstrap.js" %}"></script>
 <script>
 function AjaxLoader(item){
-  var url='{% url "ajax_get" %}?page='+ item; 
+  var url='{% url "ajax_home" %}?page='+ item; 
   $('#ajaxBox').load(url, function() {
     if (item == 'fileuploadhistory' || item == 'orderhistory') {
       //alert('need to initiate datatables here.');
@@ -90,6 +90,6 @@ $(document).ajaxStart(function() {
 $(document).ajaxStop(function() {
   $('div.col-md-9').removeClass("loading"); 
 });
-AjaxLoader('fileuploadhistory');
+AjaxLoader('editprofile');
 </script>
 {% endblock %}  
