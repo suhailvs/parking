@@ -4,7 +4,9 @@ from django.contrib import auth
 import time,json,datetime
 from dateutil import parser
 from homepage.models import Parking,Orders
+from django.contrib.auth.decorators import login_required
 # Create your views here.
+
 def ajax_parkingdetails(request):
     p=Parking.objects.get(pk=request.GET['pk'])
     tformat="%I:%M:%S %p"
@@ -82,7 +84,7 @@ def ajax_savebooking(request):
         msg='login'
     return HttpResponse(json.dumps({'msg':msg,'status':flag}), mimetype="application/json")
 
-
+@login_required
 def userhome(request):
     time.sleep(2)
     curpage=request.GET['page']

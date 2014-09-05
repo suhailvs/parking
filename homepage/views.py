@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse,reverse_lazy
 from django.views.generic.edit import FormView
 from homepage.models import Parking,Orders
 from homepage.forms import ParkingForm
-from django.core.urlresolvers import reverse_lazy
 import time
 from PIL import Image as PImage
 import os
