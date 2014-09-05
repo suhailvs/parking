@@ -6,19 +6,21 @@
 		<tr>			
 			<th>OrderID</th>
 			<th>Date</th>
-			<th>Pack</th>
-			<th>Amount</th>
-			<th>Status</th>
+			<th>Parking Address</th>
+			<th>Park Date</th>
+			<th>Duration</th>
+			<th>Paid</th>
 		</tr>
 	</thead>
 	<!--<tfoot><tr><th>Name</th><th>Position</th></tr></tfoot>-->
 	<tbody>
 	{% for order in orders %}
 		<tr>
-			<td><strong>[#{{order.invoiceid}}]</strong></td>
-			<td>{{order.orderdate}}</td>
-			<td>{{order.pack.name}}</td>
-			<td>{{order.pack.amount}}$</td>
+			<td><strong>[#{{order.id}}]</strong></td>
+			<td>{{order.order_date}}</td>
+			<td>{{order.parking.streetaddress}}</td>
+			<td>{{order.park_date}}</td>
+			<td>{{order.duration}}</td>
 			<td>
 				{% if order.paid == 0 %}
 				<span class="label label-danger"><span class="glyphicon glyphicon-remove"></span> Failed</span>
@@ -31,4 +33,4 @@
 	{% endfor %}
 	</tbody>
 </table>	
-{% endblock %}	
+{% endblock %}

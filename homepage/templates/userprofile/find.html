@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block style_base %}
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+{% endblock %}
+{% block body %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-default">
+      {% if parkings %}
+      <h1>Parking Spaces:</h1>
+      <div id="googleMap" style="height:300px;"></div>
+      <hr>
+      <ol>{% for parking in parkings %}<li><a class='parkdetails' href='#viewparkingModal' data-toggle='modal' data-pk='{{parking.pk}}'>{{parking.streetaddress}}</a></li>{% endfor %}</ol>
+      {% else %}
+      <p class="lead"> No parkings listed! please list parkings</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}  
+
+{% block javascript %}<!-- might need to login from here -->     
+{% if parkings %}
+{% include "userprofile/find_calmap.html" %}
+<!-- HEAT MAP -->
+<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="http://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
+<!-- /heatmap -->
+
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script> 
+  var map;
+  var datas=[];
+  function initialize() {
+    var mapOptions = { center:new google.maps.LatLng('38.906', '-77.047'),  
+                       zoom: 12,minZoom:11,
+                       mapTypeId: google.maps.MapTypeId.ROADMAP };  
+    map=new google.maps.Map(document.getElementById("googleMap"), mapOptions);
+
+    {% for parking in parkings %}    
+    var data = {'pk': '{{ parking.pk }}',              
+                'address':"{{parking.streetaddress|truncatechars:25}}",
+                'from':'{{ parking.fromtime }}',
+                'to':'{{ parking.totime }}',
+                'lat': {{parking.lat}},
+                'long': {{parking.lng}}
+                };
+    datas.push(data);
+    {% endfor %} 
+
+    var markers = [];
+    var infowindow = new google.maps.InfoWindow();
+    for (var i = 0; i < datas.length; i++) {
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(datas[i]['lat'], datas[i]['long']),
+        map: map
+      });      
+      var txt_booked='Available between<br>'+datas[i]['from']+':00 Hr - '+datas[i]['to'] + ':00 Hr';      
+      
+      makeInfoWindowEvent(map, infowindow, "<a class='btn btn-primary btn-xs parkdetails' href='#viewparkingModal' data-toggle='modal' data-pk="+datas[i]['pk']+">view</a><p style='color:#000'><strong>"+datas[i]['address']+"</strong><br>" + txt_booked +'</p>', marker);
+      markers.push(marker);
+    }
+
+
+    // Bounds for Washington
+    var strictBounds = new google.maps.LatLngBounds(
+     new google.maps.LatLng('38.8', '-77.1'), //'38.906', '-77.047'
+     new google.maps.LatLng('39', '-76.9')
+    );
+
+    // Listen for the dragend event
+    google.maps.event.addListener(map, 'dragend', function() {
+     if (strictBounds.contains(map.getCenter())) return;
+     // We're out of bounds - Move the map back within the bounds
+     var c = map.getCenter(),
+         x = c.lng(),
+         y = c.lat(),
+         maxX = strictBounds.getNorthEast().lng(),
+         maxY = strictBounds.getNorthEast().lat(),
+         minX = strictBounds.getSouthWest().lng(),
+         minY = strictBounds.getSouthWest().lat();
+
+    console.log(x);
+    console.log(y);
+
+     if (x < minX) x = minX;
+     if (x > maxX) x = maxX;
+     if (y < minY) y = minY;
+     if (y > maxY) y = maxY;
+
+     map.setCenter(new google.maps.LatLng(y, x));
+    });
+  }
+
+  function makeInfoWindowEvent(map, infowindow, contentString, marker) {
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.setContent(contentString);
+      infowindow.open(map, marker);
+    });
+  }
+  google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+{% endif %}
+{% endblock %} 

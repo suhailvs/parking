@@ -101,13 +101,13 @@ def userhome(request):
     if curpage=='editprofile':
         context['usr']=request.user
         template_url='userprofile/ajax/profile.html'
-    elif curpage=='bookings': 
-        context['packages']=Package.objects.filter(active=True)
-        template_url='userprofile/ajax/packages.html'
+    elif curpage=='bookings':         
+        context['orders']=Orders.objects.filter(user=request.user)
+        template_url='userprofile/ajax/orderhistory.html'
 
     elif curpage=='listings':
-        context['orders']=Order.objects.filter(user=request.user)
-        template_url='userprofile/ajax/orderhistory.html'
+        context['parkings']=Parking.objects.filter(user=request.user)
+        template_url='userprofile/ajax/myparkings.html'
 
     elif curpage=='credits':
         context['uploads']=FileUpload.objects.filter(user=request.user)

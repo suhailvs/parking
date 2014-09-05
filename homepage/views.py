@@ -29,11 +29,10 @@ class MyHome(View):
 			messages.success(request, 'Profile updated successfully.')		
 			return HttpResponseRedirect(reverse('home'))
 
-"""
-# why did these need????
-def FindParking(request):
-	return render(request,'guest/find.html',dict(parkings=Parking.objects.all()))
 
+
+
+"""
 def userpages(request,nm=None):
 	if not nm and request.user.is_active:nm=request.user.username
 	return render(request,'guest/profile.html',{'orders':Orders.objects.filter(user=request.user),
@@ -41,6 +40,12 @@ def userpages(request,nm=None):
 """
 
 
+
+def FindParking(request):
+	return render(request,'userprofile/find.html',
+		dict(parkings=Parking.objects.all())
+		)
+	
 # Create your views here.
 #from os.path import join as pjoin
 def resize_and_crop(fname,coords):

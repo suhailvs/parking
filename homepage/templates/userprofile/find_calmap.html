@@ -1,0 +1,106 @@
+<!-- Portfolio Modal 2 -->
+<div class="portfolio-modal modal fade" id="viewparkingModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+        <div class="close-modal" data-dismiss="modal">
+            <div class="lr">
+                <div class="rl">
+                </div>
+            </div>
+        </div>
+        <div class="modal-body"> 
+            <div id="parkingContent"></div>
+            <div id="cal-heatmap"></div>
+            <div id="parkingPhotos"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).on('click','.parkdetails',function(){  
+
+    var park_pk=$(this).data('pk');
+    $.get("{% url 'parkingdetails' %}",{pk: $(this).data('pk') })
+    .done(function(datas) {     
+        if (datas.avail){
+            var avail_txt ='<hr><p class="lead"> Time Available<br></p> Click Available Timings to book.';
+
+            //HEAT MAP
+
+            //year,month,day, hour --> var datas=[{year: 2014, month: 15,day:3,...
+            var avail=JSON.parse(datas.avail);
+            var stats = {};
+            var ts;            
+            for (var d in avail) {
+              ts= new Date(avail[d].year,avail[d].month-1, avail[d].day,avail[d].hour).getTime()/1000;
+              stats[ts] = avail[d].value;            
+            }
+            
+            $("#cal-heatmap").empty();
+            var cal = new CalHeatMap();
+            cal.init({
+                itemSelector: "#cal-heatmap",
+                domain: "day",
+                subDomain: "hour",
+                subDomainTextFormat: "%I%p",
+                rowLimit: 1,
+                domainGutter: 0,
+                data: stats,
+                start: new Date(),
+                cellSize: 30,
+                cellPadding: 5,
+                range: 7,
+                verticalOrientation: true,
+                label: {
+                    position: "left",
+                    offset: {
+                        x: 20,
+                        y: 12
+                    },
+                    width: 110
+                },
+                onClick: function(date, nb) {
+                    var sdate=date.toLocaleString();
+                    console.log(sdate);//alert(sdate.slice(0, 16));
+                    if (nb){
+                        var dur = prompt("Book Parking Space on "+
+                            sdate+". Please Enter Duration in Hours", '1');
+                        if (dur > 0) {
+                            //redirect to paypal, remember date,duration & park_id
+                            $.get("{% url 'savebooking' %}",
+                                {'park':park_pk,'time':sdate,'duration':dur})
+                            .done(function(data){
+                              alert(data.msg);
+                              if (data.status){
+                                window.location="{% url "home" %}";
+                              }else if(data.msg=='login'){
+                                window.location="{% url "account_login" %}";
+                              }
+                            });
+                        }
+                    }  
+                }
+            });
+
+            
+        }else{
+            var avail_txt ='<h3> <span class="label label-danger">Sorry There is no parking space is available on today</span></h3>';            
+        }
+
+        var str_html='<h2>Parking Details</h2><p class="item-intro text-muted">'+
+        datas.address+'</p>'+'<p><strong>Description:</strong>'+datas.desc+'</p>'+avail_txt;
+
+        if (datas.pic){
+            $("#parkingPhotos").html('<hr><p class="lead">Parking Photos:</p><img class="img-responsive img-centered" src="'+datas.pic+'_crop.jpg" alt="">');
+        }
+
+        $('#parkingContent').html(str_html);
+    });
+});
+$(document).on('click','#btnBookParking',function(){
+  var datas={'park':$(this).data('park'),'time':$('#pfromtime').val(),
+            'duration':$('#pduration').val()};
+  $.get("{% url 'savebooking' %}",datas).done(function(result){
+      alert(result);
+  });
+});
+</script>
+
