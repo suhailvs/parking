@@ -1,6 +1,5 @@
 from django.test import TestCase
-from homepage.models import Parking,Weeks
-from django.contrib.auth.models import User
+from homepage.models import Parking,Weeks,User #from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
 class LoginRequiredTestCase(TestCase):
@@ -9,7 +8,7 @@ class LoginRequiredTestCase(TestCase):
 		from django.test import Client
 		c = Client()
 		response = c.get(reverse('ajax_home'), {'page': 'editprofile'})		
-		self.assertEqual(response.status_code, 302)
+		self.assertEqual(response.content,'login')#response.status_code, 302)
 
 class ListParkingTestCase(TestCase):
 	fixtures = ['somedata.json']

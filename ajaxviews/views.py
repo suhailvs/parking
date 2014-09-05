@@ -7,6 +7,7 @@ from homepage.models import Parking,Orders
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+# parking details for findparking
 def ajax_parkingdetails(request):
     p=Parking.objects.get(pk=request.GET['pk'])
     tformat="%I:%M:%S %p"
@@ -27,6 +28,8 @@ def ajax_login(request):
     	return HttpResponse("1")
     return HttpResponse("Username or Password doesn't exist.")
 
+
+#another function used by `ajax_savebooking`
 def checkBooking(park,parktime,dur):
     if dur < 1 :return ("Please Enter a Valid Duration.",False)
     # [12, 13, 12, 12] - hours already booked on the date
@@ -45,6 +48,7 @@ def checkBooking(park,parktime,dur):
         return ('Success',True)
     return ("Please Enter a Valid Duration.",False)
 
+# this is a Email Sending function for `ajax_savebooking`
 def send_bookingConfirmation(order):
     from django.core.mail import send_mail
     from django import template
@@ -66,6 +70,8 @@ your Order will be automatically deleted.{% endif %}
 
     send_mail('Parking.com: Order for parking Space.',msg,'noreplay@parking.com',[order.user.email],fail_silently=False)
 
+
+# on find parking when user order a parking spacd
 def ajax_savebooking(request):
     flag=False
     if request.user.is_active:
@@ -84,9 +90,12 @@ def ajax_savebooking(request):
         msg='login'
     return HttpResponse(json.dumps({'msg':msg,'status':flag}), mimetype="application/json")
 
-@login_required
+
+
+# for the user home page
 def userhome(request):
     time.sleep(2)
+    if not request.user.is_active: return HttpResponse('login')
     curpage=request.GET['page']
     context={}
     if curpage=='editprofile':

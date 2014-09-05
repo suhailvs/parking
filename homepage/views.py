@@ -29,6 +29,8 @@ class MyHome(View):
 			messages.success(request, 'Profile updated successfully.')		
 			return HttpResponseRedirect(reverse('home'))
 
+"""
+# why did these need????
 def FindParking(request):
 	return render(request,'guest/find.html',dict(parkings=Parking.objects.all()))
 
@@ -36,7 +38,7 @@ def userpages(request,nm=None):
 	if not nm and request.user.is_active:nm=request.user.username
 	return render(request,'guest/profile.html',{'orders':Orders.objects.filter(user=request.user),
 		'parkings':Parking.objects.filter(user__username=nm)})
-
+"""
 
 
 # Create your views here.
@@ -59,9 +61,9 @@ def resize_and_crop(fname,coords):
     os.remove(fname)
 
 class ShareParking(FormView):
-	template_name = 'guest/share.html'
+	template_name = 'userprofile/share.html'
 	form_class = ParkingForm
-	success_url = reverse_lazy('homepage.views.userpage')#parkings/my
+	success_url = '/'#reverse_lazy('homepage.views.userpage')#parkings/my
 
 	def form_valid(self, form):
 		# This method is called when valid form data has been POSTed.
