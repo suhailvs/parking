@@ -4,9 +4,8 @@ from django.core.urlresolvers import reverse,reverse_lazy
 from django.views.generic.edit import FormView
 from homepage.models import Parking,Orders
 from homepage.forms import ParkingForm
-import time
+import time,os
 from PIL import Image as PImage
-import os
 from django.conf import settings
 from django.contrib import messages
 

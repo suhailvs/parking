@@ -27,8 +27,9 @@ Requirements
 
 Email
 -----
-EMAIL_HOST = 'smtpout.secureserver.net'
-EMAIL_HOST_USER = 'info@flexspot.co'
-EMAIL_HOST_PASSWORD = 'Password123' 
-EMAIL_PORT = 80
-EMAIL_USE_TLS = False
+
++ EMAIL_HOST = 'smtpout.secureserver.net'
++ EMAIL_HOST_USER = 'info@flexspot.co'
++ EMAIL_HOST_PASSWORD = 'Password123' 
++ EMAIL_PORT = 80
++ EMAIL_USE_TLS = False
