@@ -16,7 +16,7 @@ class MyHome(View):
 		if not request.user.is_active:
 			return render(request,'home.html')		
 		sidemenu={'editprofile':'Profile','bookings':'My Bookings',
-		'listings':'My Parking Areas','credits':'My Credits'}
+		'listings':'My Parking Areas'}
 		return render(request,'userprofile/home.html',{'sidemenu':sidemenu})
 	def post(self,request):
 		if not request.user.is_active:

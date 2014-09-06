@@ -108,10 +108,4 @@ def userhome(request):
     elif curpage=='listings':
         context['parkings']=Parking.objects.filter(user=request.user)
         template_url='userprofile/ajax/myparkings.html'
-
-    elif curpage=='credits':
-        context['uploads']=FileUpload.objects.filter(user=request.user)
-        #context['form']=FileUploadForm()
-        template_url='userprofile/ajax/fileuploads.html'
-    #orderhistory,fileuploadhistory,purchasecredit
     return render(request,template_url,context)

@@ -1,13 +1,14 @@
 {% extends "userprofile/ajax/ajax_base.html" %}
 {% block title %}My parking Areas{% endblock %}
 {% block content %}
+<div class="table-responsive">
 <!-- Table -->
   <table class="table table-striped table-bordered">
     <thead>
       <tr>
         <th>Sl</th>
         <th>Address</th>
-        <th>No. Spaces</th>
+        <th>Spaces</th>
         <th>Lat/Long</th>
         <th>description</th>
         <th></th>
@@ -17,13 +18,14 @@
     {% for parking in parkings %}    
       <tr>
         <td><strong>{{forloop.counter}}</strong></td>
-        <td>{{parking.streetaddress}}</td>
+        <td>{{parking.streetaddress|truncatechars:20}}</td>
         <td>{{parking.totalspaces}}</td>
-        <td>{{parking.lat|truncatechars:5}},{{parking.lng|truncatechars:5}}</td>
-        <td>{{parking.description}}</td>
+        <td>{{parking.lat|floatformat}},{{parking.lng|floatformat}}</td>
+        <td>{{parking.description|truncatechars:20}}</td>
         <td><a class="btn btn-default btn-xs" data-pk="{{parking.pk}}" href="#">Edit</a></td>
       </tr>
     {% endfor %}     
     </tbody>
   </table>
+</div>
 {% endblock %}	

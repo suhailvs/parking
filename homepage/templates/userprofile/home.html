@@ -44,7 +44,7 @@
 			<div class="list-group">
         <!--<span class="list-group-item lead" style="background: #000;color:#fff"> {{request.user.username}}</span>-->
         {% for key,value in sidemenu.iteritems %}
-        <a href="#" class="ajaxLoad list-group-item{% ifequal key 'fileuploadhistory' %} active{% endifequal %}" data-ajxurl="{{ key }}"> {{ value }}</a>
+        <a href="#" class="ajaxLoad list-group-item{% ifequal key 'editprofile' %} active{% endifequal %}" data-ajxurl="{{ key }}"> {{ value }}</a>
         {% endfor %}
 			
 			</div>
@@ -68,7 +68,7 @@
 function AjaxLoader(item){
   var url='{% url "ajax_home" %}?page='+ item; 
   $('#ajaxBox').load(url, function() {
-    if (item == 'fileuploadhistory' || item == 'orderhistory') {
+    if (item == 'bookings' || item == 'listings') {
       //alert('need to initiate datatables here.');
       $('.table').dataTable();         
     }   

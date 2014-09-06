@@ -1,15 +1,16 @@
 {% extends "userprofile/ajax/ajax_base.html" %}
 {% block title %}Order History{% endblock %}
 {% block content %}
-<table class="table table-striped table-bordered" cellspacing="0" width="100%">
+<div class="table-responsive">
+  <table class="table table-striped table-bordered" cellspacing="0" width="100%">
 	<thead>
 		<tr>			
 			<th>OrderID</th>
-			<th>Date</th>
+			<th>OrderDate</th>
 			<th>Parking Address</th>
 			<th>Park Date</th>
 			<th>Duration</th>
-			<th>Paid</th>
+			<th>Payments</th>
 		</tr>
 	</thead>
 	<!--<tfoot><tr><th>Name</th><th>Position</th></tr></tfoot>-->
@@ -17,14 +18,14 @@
 	{% for order in orders %}
 		<tr>
 			<td><strong>[#{{order.id}}]</strong></td>
-			<td>{{order.order_date}}</td>
+			<td>{{order.order_date|date:"D d M"}}</td>
 			<td>{{order.parking.streetaddress}}</td>
-			<td>{{order.park_date}}</td>
-			<td>{{order.duration}}</td>
+			<td>{{order.park_date|date:"D d M"}} <strong><code>{{order.park_date|date:"g A"}}</code></strong></td>
+			<td>{{order.duration}} Hours</td>
 			<td>
 				{% if order.paid == 0 %}
 				<span class="label label-danger"><span class="glyphicon glyphicon-remove"></span> Failed</span>
-				<!--<a href="#" class="btn btn-warning btn-xs">delete</a>-->
+				<a href="#" class="btn btn-success btn-xs">pay</a>
 				{% else %}
 				<span class="label label-success"><span class="glyphicon glyphicon-ok"></span> Success</span>
 				{% endif %}
@@ -32,5 +33,6 @@
 		</tr>
 	{% endfor %}
 	</tbody>
-</table>	
+  </table>
+</div>
 {% endblock %}
