@@ -1,27 +1,73 @@
 {% extends "base.html" %}
 {% block style_base %}
 <link rel="stylesheet" href="http://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+<style type="text/css">
+  #resultSide{
+    height: 300px;
+    overflow-y:auto
+  }
+  #resultSide > .row {
+    padding-top: 10px
+  }
+  .redcolor{background-color: #ccc;border:1px solid #fcfcfc;}
+  #googleMap{
+    height:300px;
+  }
+</style>
 {% endblock %}
 {% block body %}
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
+<div class="container">
+<!--<div class="row">
+  <div class="col-md-8 col-md-offset-2">-->
     <div class="panel panel-default">
-      {% if parkings %}
-      <h1>Parking Spaces:</h1>
-      <div id="googleMap" style="height:300px;"></div>
-      <hr>
-      <ol>{% for parking in parkings %}<li><a class='parkdetails' href='#viewparkingModal' data-toggle='modal' data-pk='{{parking.pk}}'>{{parking.streetaddress}}</a></li>{% endfor %}</ol>
-      {% else %}
-      <p class="lead"> No parkings listed! please list parkings</p>
-      {% endif %}
+      <div class="panel-heading">
+          <strong><span class="glyphicon glyphicon-th-large"></span> Book a Parking Space</strong>
+      </div><!-- /.panel-heading -->
+      <div class="panel-body">
+        {% if parkings %}
+
+        <p><strong>Step 1: Choose your location</strong></p>
+        <div class="row" style="border:1px solid #ccc">
+          <div class="col-md-4" id="resultSide">
+
+            <!-- using rows -->
+            {% for parking in parkings %} 
+            <div class="row box{{parking.pk}}">
+              <div class="col-md-2">
+                <input data-pk="{{parking.pk}}" type="radio" name="optparking" value="{{parking.pk}}">
+              </div>
+              <div class="col-md-10">
+                <strong>{{parking.streetaddress|truncatechars:50}}</strong><br>{{parking.fromtime}}:00-{{parking.totime}}:00
+              </div>
+            </div>
+            {% endfor %}
+
+          </div>
+          <div class="col-md-8">        
+            <div id="googleMap"></div>
+          </div>
+        </div>
+
+        <hr>        
+        <p id="bookmap_step2"></p>        
+        <div id="cal-heatmap" class="table-responsive"></div>
+
+        <hr>
+        <div id="bookmap_step3"></div>        
+
+        {% else %}
+        <p class="lead"> No parkings listed! please list parkings</p>
+        {% endif %}
+      </div><!-- /.panel-body -->
     </div>
-  </div>
+ <!-- </div>
+</div>-->
 </div>
 {% endblock %}  
 
 {% block javascript %}<!-- might need to login from here -->     
 {% if parkings %}
-{% include "userprofile/find_calmap.html" %}
+{# include "userprofile/find_calmap.html" #}
 <!-- HEAT MAP -->
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="http://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
@@ -29,38 +75,134 @@
 
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script> 
+
+  // Availability HEAT MAP
+  //================================================================
+  function getAvailability(park_pk){      
+    $.get("{% url 'parkingdetails' %}",{pk: park_pk })
+    .done(function(datas) { 
+        $('#bookmap_step3').empty();    
+        if (datas.avail){ 
+          var avail_txt='<strong>Step 2: Choose Date and Time</strong><br><p>Street Address selected:'+
+          datas.address+'<br> Click Available Timings to book.</p>';
+            //HEAT MAP
+            //year,month,day, hour --> var datas=[{year: 2014, month: 15,day:3,...
+            var avail=JSON.parse(datas.avail);
+            var stats = {};
+            var ts;            
+            for (var d in avail) {
+              ts= new Date(avail[d].year,avail[d].month-1, avail[d].day,avail[d].hour).getTime()/1000;
+              stats[ts] = avail[d].value;            
+            }
+            
+            $("#cal-heatmap").empty();
+            var cal = new CalHeatMap();
+            cal.init({
+                itemSelector: "#cal-heatmap",
+                domain: "day",
+                subDomain: "hour",
+                subDomainTextFormat: "%I",
+                rowLimit: 1,
+                domainGutter: 0,
+                data: stats,
+                start: new Date(),
+                cellSize: 15,
+                cellPadding: 5,
+                range: 7,
+                verticalOrientation: true,
+                label: {
+                    position: "left",
+                    offset: {
+                        x: 20,
+                        y: 12
+                    },
+                    width: 110
+                },
+                onClick: function(date, nb) {
+                  //fill step 3 boxes
+                  //============================================================
+                    var sdate=date.toLocaleString();
+                    
+                    var opts='<select class="form-control">';
+                    if (nb){
+                      for (i = 1; i <= nb; i++){
+                        opts+='<option value='+i+'>'+i+' Hour</option>';
+                      }
+                      opts+='</select>';
+
+                      var str_html= '<p><strong>Step 3: Choose Duration in Hours</strong></p>'+
+                      '<p><strong>Date:</strong> <kbd>'+sdate+'</kbd></p>'+
+                      '<div class="row">'+
+                        '<div class="col-md-6">'+
+                          '<div class="input-group">'+
+                            '<input type="number" min="1" class="form-control" id="park_dur" value="1"/>'+
+                            '<span class="input-group-btn">'+
+                              '<button class="btn btn-default" id="btnBookParking" type="button" '+
+                                'data-ppk="'+park_pk+'" data-time="'+sdate+'">PayNow!</button>'+
+                            '</span>'+
+                          '</div><!-- /input-group -->'+
+                        '</div>'+
+                      '</div>';
+                      $('#bookmap_step3').html(str_html);
+                      /*
+                        var dur = prompt("Book Parking Space on "+
+                            sdate+". Please Enter Duration in Hours", '1');
+                        if (dur > 0) {
+                            //redirect to paypal, remember date,duration & park_id
+                            $.get("{% url 'savebooking' %}",
+                                {'park':park_pk,'time':sdate,'duration':dur})
+                            .done(function(data){
+                              alert(data.msg);
+                              if (data.status){
+                                window.location="{% url "home" %}";
+                              }else if(data.msg=='login'){
+                                window.location="{% url "account_login" %}";
+                              }
+                            });
+                        }
+                        */
+                    }  
+                }
+            });
+
+            
+        }else{
+            var avail_txt ='<h3> <span class="label label-danger">Sorry There is no parking space is available</span></h3>';            
+        }
+        $('#bookmap_step2').html(avail_txt);
+    });
+  }
+  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  //++++++++++++++++++END OF AVAILABILITY HEAT MAP FUNCTION++++++++++++
+  //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
   var map;
   var datas=[];
   function initialize() {
     var mapOptions = { center:new google.maps.LatLng('38.906', '-77.047'),  
-                       zoom: 12,minZoom:11,
-                       mapTypeId: google.maps.MapTypeId.ROADMAP };  
+                       zoom: 12,minZoom:11, mapTypeId: google.maps.MapTypeId.ROADMAP };  
     map=new google.maps.Map(document.getElementById("googleMap"), mapOptions);
 
     {% for parking in parkings %}    
-    var data = {'pk': '{{ parking.pk }}',              
-                'address':"{{parking.streetaddress|truncatechars:25}}",
-                'from':'{{ parking.fromtime }}',
-                'to':'{{ parking.totime }}',
-                'lat': {{parking.lat}},
-                'long': {{parking.lng}}
-                };
+    var data = {'pk': '{{ parking.pk }}','lat': {{parking.lat}},'long': {{parking.lng}} };
+    //'pk': '{{ parking.pk }}', 'address':"{{parking.streetaddress|truncatechars:25}}", 'from':'{{ parking.fromtime }}','to':'{{ parking.totime }}',
     datas.push(data);
     {% endfor %} 
 
-    var markers = [];
+    var markers = [],pk;
     var infowindow = new google.maps.InfoWindow();
     for (var i = 0; i < datas.length; i++) {
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(datas[i]['lat'], datas[i]['long']),
-        map: map
+        map: map,
+        color:'blue',
+        label:'H'
       });      
-      var txt_booked='Available between<br>'+datas[i]['from']+':00 Hr - '+datas[i]['to'] + ':00 Hr';      
-      
-      makeInfoWindowEvent(map, infowindow, "<a class='btn btn-primary btn-xs parkdetails' href='#viewparkingModal' data-toggle='modal' data-pk="+datas[i]['pk']+">view</a><p style='color:#000'><strong>"+datas[i]['address']+"</strong><br>" + txt_booked +'</p>', marker);
+      makeClickEvent(marker,datas[i]['pk']);     
       markers.push(marker);
     }
-
 
     // Bounds for Washington
     var strictBounds = new google.maps.LatLngBounds(
@@ -92,13 +234,38 @@
     });
   }
 
-  function makeInfoWindowEvent(map, infowindow, contentString, marker) {
+  function makeClickEvent(marker,pk){    
     google.maps.event.addListener(marker, 'click', function() {
-      infowindow.setContent(contentString);
-      infowindow.open(map, marker);
+      $("#resultSide .row").removeClass('redcolor');
+      $("#resultSide .box"+pk).addClass('redcolor');
+      $("#resultSide .box"+pk+' input[name=optparking]').prop("checked", true);
+      getAvailability(pk);
+      //$('#resultSide').scrollTop($("#box"+pk).offset().top);
     });
-  }
-  google.maps.event.addDomListener(window, 'load', initialize);
+  }  
+  google.maps.event.addDomListener(window, 'load', initialize); 
+
+  $("#resultSide input[name=optparking]").click(function(){
+    if ($(this).is(":checked")){
+      $("#resultSide .row").removeClass('redcolor');
+      $(this).parent().parent().addClass('redcolor');
+      getAvailability($(this).data('pk'));
+
+    }    
+  });
+
+  $(document).on('click','#btnBookParking',function(){
+    var datas={'park':$(this).data('ppk'),'time':$(this).data('time'),
+              'duration':$('#park_dur').val()};
+              console.log(datas)
+    $.get("{% url 'savebooking' %}",datas).done(function(result){
+      if (result.status){
+        window.location="{% url "home" %}";
+      }else if(result.msg=='login'){
+        window.location="{% url "account_login" %}";
+      }
+    });
+  });
 </script>
 {% endif %}
 {% endblock %} 
