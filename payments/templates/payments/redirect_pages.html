@@ -1,0 +1,19 @@
+<html>
+<style>
+.box{
+    margin:30px;	
+    padding:20px;
+    border: 1px solid #ccc;
+}
+</style>
+{% if page == 'success' %}
+<div class="box" style="background:green">
+	<h1>Your payment was success full</h1>
+</div>
+{% else %}
+<div class="box" style="background:red">
+	<h1>Payment cancelled </h1>
+	<p> your order was unsuccessfull</p>
+</div>
+{% endif %}
+</html>

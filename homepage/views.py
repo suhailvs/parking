@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse,reverse_lazy
 from django.views.generic.edit import FormView
-from homepage.models import Parking,Orders
+from homepage.models import Parking
+#from payments import Orders
 from homepage.forms import ParkingForm
 import time,os
 from PIL import Image as PImage
@@ -27,18 +28,6 @@ class MyHome(View):
 			request.user.save()		
 			messages.success(request, 'Profile updated successfully.')		
 			return HttpResponseRedirect(reverse('home'))
-
-
-
-
-"""
-def userpages(request,nm=None):
-	if not nm and request.user.is_active:nm=request.user.username
-	return render(request,'guest/profile.html',{'orders':Orders.objects.filter(user=request.user),
-		'parkings':Parking.objects.filter(user__username=nm)})
-"""
-
-
 
 def FindParking(request):
 	return render(request,'userprofile/find.html',

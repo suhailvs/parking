@@ -33,3 +33,9 @@ Email
 + EMAIL_HOST_PASSWORD = 'Password123' 
 + EMAIL_PORT = 80
 + EMAIL_USE_TLS = False
+
+paypal sandbox url
+------------------
+
++ [accounts](https://developer.paypal.com/webapps/developer/applications/accounts)
++ [ipn url](https://developer.paypal.com/webapps/developer/applications/ipn_simulator)

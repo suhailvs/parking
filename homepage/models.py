@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 #from datetime import date
 import calendar,time,datetime
 from dateutil import relativedelta
-
+#from payments.models import Order
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
@@ -31,12 +31,14 @@ class Parking(models.Model):
     lng=models.CharField(max_length=20)
     date_added=models.DateTimeField(auto_now_add =True)
     description=models.CharField(max_length=140)
-    status=models.BooleanField(default=True)
+    fee=models.PositiveIntegerField(max_length=5, help_text="$ Parking Fee per hour")
+    status=models.BooleanField(default=True, help_text="Visible to Public?")
     streetaddress=models.CharField(max_length=200)
+    
 
     def hoursBookedOnDate(self,dt):
         # filter orders on date
-        order_items=Orders.objects.filter(parking=self,park_date__startswith=dt)
+        order_items=Order.objects.filter(parking=self,park_date__startswith=dt)
         # >>> for od in o: print od.park_date, od.duration
         # [2014-09-01 07:00:00 2, 2014-09-01 06:00:00 4]
         # park.hoursBookedOnDate(date(2014,9,1)) --> [7, 8, 6, 7, 8, 9]
@@ -68,11 +70,10 @@ class Parking(models.Model):
                     new_data.append(dict(year=ts.year,month=ts.month,day=ts.day,hour=hr,value=vacants))
                                 
         # [{year: 2014, month: 15,day:3,hour:4, value:20},...]
-        print new_data
+        #print new_data
         return new_data
 
-
-class Orders(models.Model):
+class Order(models.Model):
     user = models.ForeignKey(User)
     order_date=models.DateTimeField(auto_now_add =True)
     parking=models.ForeignKey(Parking)
@@ -80,4 +81,4 @@ class Orders(models.Model):
     duration=models.PositiveIntegerField(max_length=2,default=1)
     nspace=models.PositiveIntegerField(max_length=3,default=1)
     paid=models.BooleanField(default=False)
-
+    invoiceid=models.CharField(max_length=100,blank=True)

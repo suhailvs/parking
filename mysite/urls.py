@@ -15,10 +15,17 @@ urlpatterns = patterns('',
     #url(r'^user/(\w+)/$', 'homepage.views.userpage', name='users'),
 
     url(r'^ajax/', include('ajaxviews.urls')),
-    
+    url(r'^paypal/', include('paypal.standard.ipn.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r"^account/signup/$", CustSignupView.as_view(), name="account_signup"),
 	url(r"^account/", include("account.urls")),
 )
 # for openshift
 #urlpatterns += staticfiles_urlpatterns()
+
+urlpatterns += patterns('payments.views',    
+    url(r'^payment/ask_for_money/$', 'frm_paypal', name='ask_for_money'),
+    url(r'^payment/(success|cancel)/$', 'paypal_redirect_pages', name='paypal_redirect_pages'),
+    #url(r'^cancel/$', 'frm_paypal', name='ask_for_money'),
+    #url(r'^payment/$','asks_for_money'),
+)

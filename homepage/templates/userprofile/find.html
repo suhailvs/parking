@@ -143,24 +143,7 @@
                           '</div><!-- /input-group -->'+
                         '</div>'+
                       '</div>';
-                      $('#bookmap_step3').html(str_html);
-                      /*
-                        var dur = prompt("Book Parking Space on "+
-                            sdate+". Please Enter Duration in Hours", '1');
-                        if (dur > 0) {
-                            //redirect to paypal, remember date,duration & park_id
-                            $.get("{% url 'savebooking' %}",
-                                {'park':park_pk,'time':sdate,'duration':dur})
-                            .done(function(data){
-                              alert(data.msg);
-                              if (data.status){
-                                window.location="{% url "home" %}";
-                              }else if(data.msg=='login'){
-                                window.location="{% url "account_login" %}";
-                              }
-                            });
-                        }
-                        */
+                      $('#bookmap_step3').html(str_html);                     
                     }  
                 }
             });
@@ -260,7 +243,7 @@
               console.log(datas)
     $.get("{% url 'savebooking' %}",datas).done(function(result){
       if (result.status){
-        window.location="{% url "home" %}";
+        window.location="{% url 'ask_for_money' %}?orderpk="+result.status;
       }else if(result.msg=='login'){
         window.location="{% url "account_login" %}";
       }

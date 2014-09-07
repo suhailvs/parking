@@ -19,7 +19,7 @@
 		<tr>
 			<td><strong>[#{{order.id}}]</strong></td>
 			<td>{{order.order_date|date:"D d M"}}</td>
-			<td>{{order.parking.streetaddress}}</td>
+			<td>{{order.parking.streetaddress|truncatechars:20}}</td>
 			<td>{{order.park_date|date:"D d M"}} <strong><code>{{order.park_date|date:"g A"}}</code></strong></td>
 			<td>{{order.duration}} Hours</td>
 			<td>

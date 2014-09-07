@@ -42,11 +42,14 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
     # apps
+    'homepage',
     "account",
     'bootstrapform',
     'selectize',
+    'paypal.standard.ipn',
     # custom apps
-    'homepage',
+    
+    'payments',    
     'ajaxviews',
 )
 
@@ -60,7 +63,7 @@ MIDDLEWARE_CLASSES = (
     "account.middleware.LocaleMiddleware",
     "account.middleware.TimezoneMiddleware",
 )
-
+AUTH_USER_MODEL = 'homepage.User'
 ROOT_URLCONF = 'mysite.urls'
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
@@ -121,4 +124,8 @@ EMAIL_USE_TLS = True
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
-AUTH_USER_MODEL = 'homepage.User'
+
+
+PAYPAL_RECEIVER_EMAIL = "monomerchant@gmail.com"
+PAYPAL_REDIRECT_URL = "http://61.3.177.102"
+PAYPAL_TEST = True

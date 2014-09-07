@@ -3,7 +3,8 @@ from django.http import HttpResponse
 from django.contrib import auth
 import time,json,datetime
 from dateutil import parser
-from homepage.models import Parking,Orders
+from homepage.models import Parking, Order
+#from payments.models import Order
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
@@ -81,7 +82,7 @@ def ajax_savebooking(request):
         msg,flag=checkBooking(p,ptime,dur)
         if flag:
             #save booking
-            od=Orders(user=request.user,parking=p,park_date=ptime,duration=dur)
+            od=Order(user=request.user,parking=p,park_date=ptime,duration=dur)
             od.save()
             # send confirmation mail
             send_bookingConfirmation(od)
@@ -102,7 +103,7 @@ def userhome(request):
         context['usr']=request.user
         template_url='userprofile/ajax/profile.html'
     elif curpage=='bookings':         
-        context['orders']=Orders.objects.filter(user=request.user)
+        context['orders']=Order.objects.filter(user=request.user)
         template_url='userprofile/ajax/orderhistory.html'
 
     elif curpage=='listings':
