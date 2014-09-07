@@ -12,10 +12,11 @@ def frm_paypal(request):
     #if not 'orderpk' in request.GET: 
     credit_order=Order.objects.get(pk=request.GET['orderpk'])    
     site_url=settings.PAYPAL_REDIRECT_URL
-
+    total=credit_order.parking.fee * credit_order.duration
+    #print total
     paypal_dict = {
         "business": settings.PAYPAL_RECEIVER_EMAIL,
-        "amount": credit_order.parking.fee,#"1.00",
+        "amount": total,
         "item_name": "Flexspot Parking Fee",#"name of the item",
         "invoice": credit_order.invoiceid,#str(credit_order.id).zfill(10)"unique-invoice-id1",
         "notify_url": site_url + reverse('paypal-ipn'),
@@ -25,7 +26,7 @@ def frm_paypal(request):
     }
     # Create the instance.
     form= PayPalPaymentsForm(initial=paypal_dict) 
-    return render(request,'payments/frmpaypal.html',{"form":form})
+    return render(request,'payments/frmpaypal.html',{"form":form,"order":credit_order})
 
 @csrf_exempt
 def paypal_redirect_pages(request,page):
