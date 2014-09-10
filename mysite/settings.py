@@ -99,9 +99,9 @@ SITE_ID = 1
 
 on_webfaction=True
 if on_webfaction:
-    STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot/'
+    STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot_dev/'
     MEDIA_URL = STATIC_URL+'media/'
-    STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot/'
+    STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot_dev/'
     MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')
 else:
     STATIC_URL = '/static/'
@@ -126,6 +126,6 @@ ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
 
 
-PAYPAL_RECEIVER_EMAIL = "info@flexspot.co"
+PAYPAL_RECEIVER_EMAIL = "info-facilitator@flexspot.co"
 PAYPAL_REDIRECT_URL = "http://dev.flexlot.co"
 PAYPAL_TEST = True
