@@ -12,9 +12,21 @@ class CustSignupForm(SignupForm):
         if self.cleaned_data["is_owner"]=='0' and not data: 
             raise forms.ValidationError("Please Enter license Plate Number.")
         return data
-        
+
+    def clean_password(self):
+        #if 'password' in self.cleaned_data and len(self.cleaned_data['password'])<4:
+        data = self.cleaned_data['password']
+        if len(data)<4:
+            raise forms.ValidationError("Password must have minimum 4 characters.")
+        return data
+
+    
     def __init__(self, *args, **kwargs):
         super(CustSignupForm, self).__init__(*args, **kwargs)
+        USER_TYPE_CHOICES = ( ('0', "I'm Driver"),('1', "I'm Owner"),)
+        self.fields["is_owner"] = forms.ChoiceField(choices=USER_TYPE_CHOICES,widget=forms.RadioSelect(),initial='0',label='')
+        self.fields["licenseplate"] = forms.CharField(label="license Plate Number", max_length=10,required=False)
+        
         STATE_CHOICES = (
                     ("AL", "Alabama"),
                     ("AK", "Alaska"),
@@ -68,9 +80,6 @@ class CustSignupForm(SignupForm):
                     ("WI", "Wisconsin"),
                     ("WY", "Wyoming"),)
         self.fields["state"] = forms.ChoiceField(choices=STATE_CHOICES,initial="WA",label='State')
-        USER_TYPE_CHOICES = ( ('0', "I'm Driver"),('1', "I'm Owner"),)
-        self.fields["is_owner"] = forms.ChoiceField(choices=USER_TYPE_CHOICES,widget=forms.RadioSelect(),initial='0',label='')
-        self.fields["licenseplate"] = forms.CharField(label="license Plate Number", max_length=10,required=False)
         
         #current_order = self.fields.keyOrder
         #print current_order
