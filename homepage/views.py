@@ -30,9 +30,10 @@ class MyHome(View):
 			return HttpResponseRedirect(reverse('home'))
 
 def FindParking(request):
-	return render(request,'userprofile/find.html',
-		dict(parkings=Parking.objects.all())
-		)
+	if request.user.is_active:
+		template='userprofile/find.html'
+	else:template='guest_find.html'
+	return render(request,template,dict(parkings=Parking.objects.all()))
 	
 # Create your views here.
 #from os.path import join as pjoin

@@ -27,7 +27,7 @@ class Parking(models.Model):
     fromtime=models.PositiveIntegerField(max_length=2)
     totime=models.PositiveIntegerField(max_length=2)    
     totalspaces=models.PositiveIntegerField(max_length=3)
-    fee=models.PositiveIntegerField(max_length=5, help_text="$ Parking Fee per hour")
+    fee=models.PositiveIntegerField(max_length=5, help_text="Parking Fee per hour")
 
     pic = models.ImageField("Parking Photos", upload_to="images/",blank=True)
     lat=models.CharField(max_length=20)
