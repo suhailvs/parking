@@ -22,7 +22,7 @@
         <td>{{parking.totalspaces}}</td>
         <td>{{parking.lat|floatformat}},{{parking.lng|floatformat}}</td>
         <td>{{parking.description|truncatechars:20}}</td>
-        <td><a class="btn btn-default btn-xs" data-pk="{{parking.pk}}" href="#">Edit</a></td>
+        <td><a class="btn btn-default btn-xs" href="{% url 'editparking' parking.pk %}">Edit</a></td>
       </tr>
     {% endfor %}     
     </tbody>
@@ -37,7 +37,8 @@
       <code>spaces:{{parking.totalspaces}}</code>
       <strong>Lat:{{parking.lat|floatformat}},Long:{{parking.lng|floatformat}}</strong> 
       <br>{{parking.description|truncatechars:40}}
-      <button class="btn btn-default btn-xs" data-pk="{{parking.pk}}">Edit</button>
+      <a class="btn btn-default btn-xs" href="{% url 'editparking' parking.pk %}">Edit</a><!--
+      <button class="btn btn-default btn-xs" data-pk="{{parking.pk}}">Edit</button>-->
   </p>
   </a>
 {% endfor %}  

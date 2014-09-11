@@ -12,14 +12,14 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
             <form class="navbar-form navbar-left" role="search">
-                <a href="{% url 'findparking' %}" class="btn btn-primary">Find Parking  <span class="glyphicon glyphicon-search"></span></a>
-                <a href="{% url 'shareparking' %}" class="btn btn-warning">Share Parking <span class="glyphicon glyphicon-share-alt"></span></a>
+                <a href="{% url 'findparking' %}" class="btn btn-primary"> Find Parking  <span class="glyphicon glyphicon-search"></span></a>
+                <a href="{% url 'shareparking' %}" class="btn btn-warning"> Share Parking <span class="glyphicon glyphicon-share-alt"></span></a>
             </form>
 
             <ul class="nav navbar-nav">
 
                 <li{% if request.path == home %} style="background:#f1f1f1"{%endif%}>
-                    <a href="{{ home }}"><span class="glyphicon glyphicon-user"></span>{{request.user.username}} </a>
+                    <a href="{{ home }}"><span class="glyphicon glyphicon-home"></span> Home({{request.user.username|truncatechars:10}}) </a>
                 </li>     
                 
                 <li{% if request.path == logout %} style="background:#f1f1f1"{%endif%}>                    

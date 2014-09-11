@@ -21,18 +21,21 @@ class Weeks(models.Model):
         return self.name
 
 class Parking(models.Model):
-    user = models.ForeignKey(User)    
+    user = models.ForeignKey(User)
+    days=models.ManyToManyField(Weeks,help_text=None)  
+
     fromtime=models.PositiveIntegerField(max_length=2)
-    totime=models.PositiveIntegerField(max_length=2)
-    days=models.ManyToManyField(Weeks,help_text=None)
+    totime=models.PositiveIntegerField(max_length=2)    
     totalspaces=models.PositiveIntegerField(max_length=3)
+    fee=models.PositiveIntegerField(max_length=5, help_text="$ Parking Fee per hour")
+
     pic = models.ImageField("Parking Photos", upload_to="images/",blank=True)
     lat=models.CharField(max_length=20)
     lng=models.CharField(max_length=20)
     date_added=models.DateTimeField(auto_now_add =True)
-    description=models.CharField(max_length=140)
-    fee=models.PositiveIntegerField(max_length=5, help_text="$ Parking Fee per hour")
-    status=models.BooleanField(default=True, help_text="Visible to Public?")
+    description=models.CharField(max_length=140,help_text="Provide name of location or business, and pertinent details (e.g. use unmarked parking space only, use space with sign marked 'Private' located at end of alley, park off pavement, etc.)")
+    
+    status=models.BooleanField(default=True, help_text="Uncheck to temporarily deactivate listing")
     streetaddress=models.CharField(max_length=200)
     
 
