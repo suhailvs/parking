@@ -1,10 +1,10 @@
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.shortcuts import render,get_object_or_404
+from django.http import HttpResponseRedirect,HttpResponse
 from django.core.urlresolvers import reverse,reverse_lazy
 from django.views.generic.edit import FormView
 from homepage.models import Parking
 #from payments import Orders
-from homepage.forms import ParkingForm
+from homepage.forms import ParkingForm,ParkingSubForm
 import time,os
 from PIL import Image as PImage
 from django.conf import settings
@@ -53,25 +53,38 @@ def resize_and_crop(fname,coords):
     #region.save(fname[:-4]+'_48.jpg', "JPEG")
     os.remove(fname)
 
-class ShareParking(FormView):
-	template_name = 'userprofile/share.html'
-	form_class = ParkingForm
-	success_url = '/'#reverse_lazy('homepage.views.userpage')#parkings/my
+class ShareParkingStuff(View):
+	def get(self, request,id=None):
+		if id:
+			p = get_object_or_404(Parking, pk=id)
+			if p.user != request.user:return HttpResponse('Forbidden')
+			d=dict(first_form=ParkingForm(instance=p),edit=id,
+				second_form=ParkingSubForm({'fromtime': p.fromtime, 'totime': p.totime,'fee':p.fee,'totalspaces':p.totalspaces}))
+		else:
+			d=dict(first_form=ParkingForm(),second_form=ParkingSubForm())		
+		return render(request,'userprofile/share.html',d)
 
-	def form_valid(self, form):
-		# This method is called when valid form data has been POSTed.
-		# It should return an HttpResponse.	
-		#form.instance.totalspaces = self.request.POST['totalspaces']
-		ftime=time.strptime(self.request.POST['fromtime'],'%I:%M %p')
-		ttime=time.strptime(self.request.POST['totime'],'%I:%M %p')		
-		form.instance.fromtime = ftime.tm_hour
-		form.instance.totime = ttime.tm_hour
-		form.instance.user = self.request.user		
-		form.save()
-		if form.instance.pic:
-			imfn = os.path.join(settings.MEDIA_ROOT, form.instance.pic.name)	
-			resize_and_crop(imfn,self.request.POST['cropcoords'])
-		return super(ShareParking, self).form_valid(form)
+	def post(self,request,id=None):
+		if id:#'id' in request.POST:
+			p = get_object_or_404(Parking, pk=id)#request.POST['id'])
+			if p.user != request.user:return HttpResponse('Forbidden')
+		else:p = Parking(user=request.user)
+
+		form1=ParkingForm(request.POST,instance=p)
+		form2=ParkingSubForm(request.POST)
+		if form1.is_valid() and form2.is_valid():
+			form1.instance.fromtime = form2.cleaned_data['fromtime']
+			form1.instance.totime=form2.cleaned_data['totime']
+			form1.instance.totalspaces = form2.cleaned_data['totalspaces']
+			form1.instance.fee=form2.cleaned_data['fee']
+			form1.save()
+			if form1.instance.pic:
+				imfn = os.path.join(settings.MEDIA_ROOT, form.instance.pic.name)
+				resize_and_crop(imfn,request.POST['cropcoords'])
+			
+			return HttpResponseRedirect(reverse('home'))
+		d=dict(first_form=form1,second_form=form2)
+		return render(request,'userprofile/share.html',d)
 
 
 from account.views import SignupView

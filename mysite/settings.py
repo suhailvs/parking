@@ -28,6 +28,7 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'mysite','templates')]
 ALLOWED_HOSTS = [
     '.flexspot.co',
     '.flexspot.webfactional.com',
+    '.flexlot.co',
 ]
 
 
@@ -97,7 +98,7 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-on_webfaction=True
+on_webfaction=False
 if on_webfaction:
     STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot_dev/'
     MEDIA_URL = STATIC_URL+'media/'
@@ -114,12 +115,13 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
 )
 
 # gmail server settings
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'suhailvs@gmail.com'
-EMAIL_HOST_PASSWORD = 'pnaoeogqwtqlgusd'
+EMAIL_HOST = 'smtp.webfaction.com'
+EMAIL_HOST_USER = 'flexspot'
+EMAIL_HOST_PASSWORD = 'Password123'#'pnaoeogqwtqlgusd'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
+DEFAULT_FROM_EMAIL = 'support@flexspot.co'
+SERVER_EMAIL = 'support@www.flexlot.co'
 #django-user-accounts
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True

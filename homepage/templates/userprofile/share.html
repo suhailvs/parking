@@ -5,7 +5,6 @@
 
 {% block style_base %}
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}address/jquery-ui-1.9.2.custom.min.css">
-<link href="{{STATIC_URL}}timepicker/jquery.timepicker.css" rel="stylesheet" />
 <link rel="stylesheet" href="{{ STATIC_URL }}jcrop/jquery.Jcrop.min.css">
 {% selectize_tags_media 'css' 'default' %}
 
@@ -15,12 +14,13 @@
 <script type="text/javascript">
 function validateForm()
 {   
-  //var ftime= $("#selected_fromtime").val();
-  //var ttime= $("#selected_totime").val();
-  //if (ftime==null || ftime=="" || ttime==null || ttime==""){
-  //  alert("Please select Parking Availablity Time.");
-  //    return false;
-  //}
+  /*
+    var ftime= $("#id_fromtime").val();
+    var ttime= $("#id_totime").val();
+    if (ftime >= ttime){
+      alert("Parking start time must be greater than Parking End time.");
+      return false;
+    }*/
     var x=$("#id_pic").val();
     var cord=$("#cropcoords").val();                
     if (x==null || x==""){
@@ -36,6 +36,8 @@ function validateForm()
 }
 </script>  
 
+
+
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
 
@@ -44,22 +46,43 @@ function validateForm()
           <strong><span class="glyphicon glyphicon-th-large"></span>  List Your Parking:</strong>
       </div><!-- /.panel-heading -->
       <div class="panel-body">      
+        
         <form id="parkdetails" method="post" action="." onsubmit="return validateForm()" enctype="multipart/form-data">{% csrf_token %}
-          
-          <!--
-          <input type="text" name="address" class="form-control" id="id_streetaddress">
-          -->
-          <div class="row" id="timeOnly">
-            
-            <div class="col-md-3">
-              From:<input type="text" class="form-control time start" id="selected_fromtime" name="fromtime" required />
+
+          <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
+          <div class="row">
+            <div class="col-xs-12 col-sm-6{% if second_form.totime.errors %} has-error{%endif%}">
+              <label class="control-label">Time:</label>
+              <div class="row">
+                <div class="col-xs-6">                  
+                  {{ second_form.fromtime }}
+                  {{ second_form.fromtime.errors }}
+                </div> 
+                <div class="col-xs-6">                   
+                  {{ second_form.totime }}
+                  <span class="help-block ">{% for error in second_form.totime.errors %}{{ error }}{% endfor %}</span>
+                </div>
+              </div>             
+            </div>   
+            <div class="col-xs-6 col-sm-3{% if second_form.totalspaces.errors %} has-error{%endif%}">
+              <div class="form-group">
+                <label class="control-label">Spaces:</label>                
+                {{ second_form.totalspaces }}
+                <span class="help-block ">{% for error in second_form.totalspaces.errors %}{{ error }}{% endfor %}</span>
+              </div>
             </div>
-            <div class="col-md-3">
-              To:<input type="text" id="selected_totime" class="form-control time end" name="totime" required />
+
+            <div class="col-xs-6 col-sm-3{% if second_form.fee.errors %} has-error{%endif%}">
+              <div class="form-group">
+                <label class="control-label">Parking Fee:</label>               
+                {{ second_form.fee }}
+                <span class="help-block ">{% for error in second_form.fee.errors %}{{ error }}{% endfor %}</span>
+              </div>
             </div>
-          </div><!-- /start Date and start Time End Time-->   
-              
-          {{ form|bootstrap }}
+
+          </div>
+
+          {{ first_form|bootstrap }}
           <p>You can drag and drop the marker to the correct location for precise selection.</p>
           <div class="form-group">    
             <div style="height:300px;">
@@ -70,7 +93,7 @@ function validateForm()
             Longitude:<input type="text" name="lng" class="form-control" id="id_lng">
             <input type="text" id="lbl_longitude">-->           
           </div>    
-          
+          {% if edit %}<input type="hidden" name="id" value="{{edit}}">{% endif %}
           <input type="submit" class="btn btn-primary btn-lg btn-block" value="Save" /> 
           <!--<a class="btn btn-danger" href="{% url 'home' %}">Cancel</a>      -->
         </form> 
@@ -86,9 +109,6 @@ function validateForm()
 <script src="{{STATIC_URL}}address/jquery-ui-1.9.2.custom.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="{{STATIC_URL}}address/ui.addresspicker2.js" type="text/javascript" charset="utf-8"></script>
 <!--/-->
-
-<script src="{{STATIC_URL}}timepicker/jquery.timepicker.js"></script>
-<script src="{{STATIC_URL}}timepicker/jquery.datepair.js"></script>
 <script src="{{ STATIC_URL }}jcrop/jquery.Jcrop.min.js"></script>
 {% selectize_tags_media 'js' %}
 <script type="text/javascript">
@@ -115,26 +135,11 @@ $(document).ready(function() {
   gmarker.setVisible(true);
   addresspickerMap.addresspicker( "updatePosition");
   
-  //End of address picker
-
-  //$('#selected_fromtime').val(sel_time);
-  $('#timeOnly .start').timepicker({
-    //'minTime': '06:30 AM',//sel_time,
-    'step':60,
-    'timeFormat': 'h:i A'//'g:ia'
-  });
-  $('#timeOnly .end').timepicker({
-      'showDuration': true,
-      'timeFormat': 'h:i A',
-      'step':60,
-      'maxTime': '11:30 PM'
-  });
-  $('#timeOnly .end').timepicker('setTime');//, sel_endtime);
-  $('#timeOnly').datepair(); 
-
+  //End of address picker   
   $('#id_days').removeClass('form-control'); 
-  $('#id_days').selectize(); 
+  $('#id_days').selectize({plugins: ['remove_button']}); 
 
+  $("#id_status").parents('.form-group').prepend('<label class="control-label" for="id_status">Listing Status</label>');
 
   function showCoords(c){
     //var str_vals='x:'+c.x+',y:'+c.y;
@@ -149,25 +154,25 @@ $(document).ready(function() {
         }
         console.log($("#cropcoords").val());
   };
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();            
-            reader.onload = function (e) {
-              var img_preview='<img id="blah" src="'+e.target.result+'" height="100" alt="Preview" />';
-                //$('#blah').attr('src', e.target.result);
-                $('#previewimage').html(img_preview);
-                $('#blah').Jcrop({                  
-                  onSelect: showCoords,
-                  onChange: showCoords,
-                  aspectRatio: 1
-                });
-            }            
-            reader.readAsDataURL(input.files[0]);
-        }
-    }    
-    $("#id_pic").change(function(){
-        readURL(this);
-    });    
+  function readURL(input) {
+      if (input.files && input.files[0]) {
+          var reader = new FileReader();            
+          reader.onload = function (e) {
+            var img_preview='<img id="blah" src="'+e.target.result+'" height="100" alt="Preview" />';
+              //$('#blah').attr('src', e.target.result);
+              $('#previewimage').html(img_preview);
+              $('#blah').Jcrop({                  
+                onSelect: showCoords,
+                onChange: showCoords,
+                aspectRatio: 1
+              });
+          }            
+          reader.readAsDataURL(input.files[0]);
+      }
+  }    
+  $("#id_pic").change(function(){
+      readURL(this);
+  });    
 });
 </script>
 {% endblock %} 

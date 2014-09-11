@@ -14,28 +14,13 @@ class Log_errors(models.Model):
 def send_success_payment_mail(order):
     from django.core.mail import send_mail
     from django import template
-    
-    str_html=template.Template("""  
-    	You're ({{order.user}}) Successfully Proccessed the Payment for parking area in 
-    	{{order.parking.streetaddress}}.
+    from django.conf import settings
 
-    	Your Order ID is:{{order.invoiceid}}, please it note down.
+    ctx = {'order':order}
+    subject = template.loader.render_to_string('account/email/order_paid_subject.txt', ctx)
+    message = template.loader.render_to_string("account/email/order_paid.txt", ctx)
 
-
-Order Details
-==================
-
-Order Date: {{order.order_date}}
-Parking Address: {{order.parking.streetaddress}}
-Parking Date:    {{order.park_date}}
-Duration in Hours:  {{order.duration}} Hours
-
-""")
-    msg=str_html.render(template.Context({'order':order}))
-
-    send_mail('Parking.com: Order for parking Space.',msg,'noreplay@parking.com',[order.user.email],fail_silently=False)
-
-
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,[order.user.email],fail_silently=False)
 
 from paypal.standard.ipn.signals import payment_was_successful
 def show_me_the_money(sender, **kwargs):

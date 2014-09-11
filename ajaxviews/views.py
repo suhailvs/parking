@@ -6,6 +6,7 @@ from dateutil import parser
 from homepage.models import Parking, Order
 #from payments.models import Order
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 # Create your views here.
 
 # parking details for findparking
@@ -24,9 +25,12 @@ def ajax_login(request):
     username = request.POST.get('username', '')
     password = request.POST.get('password', '')
     user = auth.authenticate(username=username, password=password)
-    if user is not None and user.is_active:
-    	auth.login(request, user)
-    	return HttpResponse("1")
+    if user is not None:
+        if user.is_active:
+            auth.login(request, user)
+            return HttpResponse("1")
+        else: return HttpResponse("This account is inactive.")
+
     return HttpResponse("Username or Password doesn't exist.")
 
 
@@ -53,24 +57,13 @@ def checkBooking(park,parktime,dur):
 def send_bookingConfirmation(order):
     from django.core.mail import send_mail
     from django import template
-    
-    str_html=template.Template("""
-You're ({{order.user}}) receiving this email because you
-have Successfully ordered a parking area in {{order.parking.streetaddress}}.
+    from django.conf import settings
 
-Order Date: {{order.order_date}}
-Parking Address: {{order.parking.streetaddress}}
-Parking Date:    {{order.park_date}}
-Duration in Hours:  {{order.duration}} Hours
+    ctx = {'order':order}
+    subject = template.loader.render_to_string('account/email/order_not_paid_subject.txt', ctx)
+    message = template.loader.render_to_string("account/email/order_not_paid.txt", ctx)
 
-{% if order.paid %}You have paid the parking fees{% else %}
-Please Pay the parking fee with in 1 hour after Order date or else 
-your Order will be automatically deleted.{% endif %}
-""")
-    msg=str_html.render(template.Context({'order':order}))
-
-    send_mail('Parking.com: Order for parking Space.',msg,'noreplay@parking.com',[order.user.email],fail_silently=False)
-
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,[order.user.email],fail_silently=False)
 
 # on find parking when user order a parking spacd
 def ajax_savebooking(request):
