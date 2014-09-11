@@ -60,8 +60,8 @@
         <ul class="nav navbar-nav navbar-right">          
           <li><a class="page-scroll" href="#services">How it works</a></li>
           <li><a class="page-scroll" href="#contact">Contact</a></li>
-          <li><a href="{# url 'findparking' #}"><i class="fa fa-search"></i> Find</a></li>
-          <li><a href="{# url 'shareparking'#}"><i class="fa fa-share"></i> Share</a></li>
+          <li><a href="{% url 'findparking' %}"><i class="fa fa-search"></i> Find</a></li>
+          <li><a href="{% url 'shareparking'%}"><i class="fa fa-share"></i> Share</a></li>
           <li>
             <a href="#modal-signin" data-toggle="modal">
               <i class="fa fa-sign-in"></i> login
@@ -83,11 +83,11 @@
             <div class="intro-text">
                 <div class="row">
                     <div class="col-md-6">
-                        <a href="{# url 'shareparking' #}" class="intro-heading btn-share">Share <i class="fa fa-share"></i><br><span class="link-sm">Parking Space</span></a>
+                        <a href="{% url 'shareparking' %}" class="intro-heading btn-share">Share <i class="fa fa-share"></i><br><span class="link-sm">Parking Space</span></a>
                         
                     </div>
                     <div class="col-md-6">
-                        <a href="{# url 'findparking' #}" class="intro-heading btn-search">Find <i class="fa fa-search"></i><br><span class="link-sm">Parking Space</span></a>                
+                        <a href="{% url 'findparking' %}" class="intro-heading btn-search">Find <i class="fa fa-search"></i><br><span class="link-sm">Parking Space</span></a>                
                     </div>
                 </div>
                 
