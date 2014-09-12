@@ -157,7 +157,7 @@ class ParkingSubForm(forms.Form):
 
     def clean_totime(self):
         data = self.cleaned_data['totime']
-        if self.cleaned_data["totime"] <= self.cleaned_data["fromtime"]: 
+        if int(self.cleaned_data["totime"]) <= int(self.cleaned_data["fromtime"]): 
             raise forms.ValidationError("Parking End time must be greater than start time.")
         return data   
 
