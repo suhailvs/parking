@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% block style_base %}
-<link rel="stylesheet" href="http://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+<link rel="stylesheet" type="text/css" href="{% static "jqueryui/sunny/jquery-ui.min.css" %}">
 <style type="text/css">
   #resultSide{
     height: 300px;
@@ -12,6 +13,23 @@
   .redcolor{background-color: #ccc;border:1px solid #fcfcfc;}
   #googleMap{
     height:300px;
+  }
+
+
+  
+  .calendar-time {
+      font-size: .85em;
+      background-color: #3b91ad;
+      border-color: #3b91ad;
+      float:left;
+      width:35px;
+      height:20px;
+      margin:2px;
+      text-align:center;
+      border-radius:3px;
+      color:white;
+      cursor: pointer;
+      font-weight: bold;
   }
 </style>
 {% endblock %}
@@ -47,13 +65,15 @@
             <div id="googleMap"></div>
           </div>
         </div>
-
-        <hr>        
-        <p id="bookmap_step2"></p>        
-        <div id="cal-heatmap" class="table-responsive"></div>
-
-        <hr>
-        <div id="bookmap_step3"></div>        
+        <div class="row" style="padding-top:20px">
+          <div class="col-xs-12 col-md-6">
+            <p id="bookmap_step2"></p>    
+            <div id="datepicker"></div>
+          </div>
+          <div class="col-xs-12 col-md-6">
+            <div id="bookmap_step3"></div>
+          </div>
+        </div>
 
         {% else %}
         <p class="lead"> No parkings listed! please list parkings</p>
@@ -67,12 +87,7 @@
 
 {% block javascript %}<!-- might need to login from here -->     
 {% if parkings %}
-{# include "userprofile/find_calmap.html" #}
-<!-- HEAT MAP -->
-<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="http://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
-<!-- /heatmap -->
-
+<script src="{% static "jqueryui/sunny/jquery-ui.min.js" %}" type="text/javascript" charset="utf-8"></script>
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script> 
 
@@ -81,78 +96,49 @@
   function getAvailability(park_pk){      
     $.get("{% url 'parkingdetails' %}",{pk: park_pk })
     .done(function(datas) { 
-        $('#bookmap_step3').empty();    
+        $('#bookmap_step3').empty();  
+        $('#datepicker').empty();   
+
         if (datas.avail){ 
-          var avail_txt='<strong>Step 2: Choose Date and Time</strong><br><p>Street Address selected:'+
-          datas.address+'<br> Click Available Timings to book.</p>';
+          var avail_txt='<strong>Step 2: Choose Date</strong><br><p>Street Address selected:'+
+          datas.address+'<br> Select any linked date to see available timings</p><div id="datepicker"></div>';
             //HEAT MAP
             //year,month,day, hour --> var datas=[{year: 2014, month: 15,day:3,...
             var avail=JSON.parse(datas.avail);
-            var stats = {};
-            var ts;            
-            for (var d in avail) {
-              ts= new Date(avail[d].year,avail[d].month-1, avail[d].day,avail[d].hour).getTime()/1000;
-              stats[ts] = avail[d].value;            
-            }
-            
-            $("#cal-heatmap").empty();
-            var cal = new CalHeatMap();
-            cal.init({
-                itemSelector: "#cal-heatmap",
-                domain: "day",
-                subDomain: "hour",
-                subDomainTextFormat: "%I",
-                rowLimit: 1,
-                domainGutter: 0,
-                data: stats,
-                start: new Date(),
-                cellSize: 15,
-                cellPadding: 5,
-                range: 7,
-                verticalOrientation: true,
-                label: {
-                    position: "left",
-                    offset: {
-                        x: 20,
-                        y: 12
-                    },
-                    width: 110
+            console.log(avail);
+            // create datepicker
+            $('#datepicker').html('<div></div>'); 
+            var availableDates = ["9-9-2014", "14-9-2014", "15-9-2014"];
+            $("#datepicker > div").datepicker({
+                minDate: 0,
+                maxDate: "+7D",
+                showOtherMonths: true,
+                hideIfNoPrevNext: true,
+                selectOtherMonths: true,
+                onSelect: function (date) {
+                    $('#bookmap_step3').html('<strong>Step 3: Choose Time</strong><hr>Available appointments for ' + date + '<div class="calendar-day">' +
+                        '<div class="calendar-time">11p</div>' +
+                        '<div class="calendar-time">12a</div>' +
+                        '<div class="calendar-time">1a</div>' +
+                        '</div>');
                 },
-                onClick: function(date, nb) {
-                  //fill step 3 boxes
-                  //============================================================
-                    var sdate=date.toLocaleString();
+                beforeShowDay: function (date) {
                     
-                    var opts='<select class="form-control">';
-                    if (nb){
-                      for (i = 1; i <= nb; i++){
-                        opts+='<option value='+i+'>'+i+' Hour</option>';
-                      }
-                      opts+='</select>';
-
-                      var str_html= '<p><strong>Step 3: Choose Duration in Hours</strong></p>'+
-                      '<p><strong>Date:</strong> <kbd>'+sdate+'</kbd></p>'+
-                      '<div class="row">'+
-                        '<div class="col-md-6">'+
-                          '<div class="input-group">'+
-                            '<input type="number" min="1" class="form-control" id="park_dur" value="1"/>'+
-                            '<span class="input-group-btn">'+
-                              '<button class="btn btn-default" id="btnBookParking" type="button" '+
-                                'data-ppk="'+park_pk+'" data-time="'+sdate+'">PayNow!</button>'+
-                            '</span>'+
-                          '</div><!-- /input-group -->'+
-                        '</div>'+
-                      '</div>';
-                      $('#bookmap_step3').html(str_html);                     
-                    }  
+                    dmy = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
+                    if ($.inArray(dmy, availableDates) != -1) {
+                        return [true, "", "Available"];
+                    } else {
+                        return [false, "", "unAvailable"];
+                    }
                 }
             });
 
-            
         }else{
-            var avail_txt ='<h3> <span class="label label-danger">Sorry There is no parking space is available</span></h3>';            
+          var avail_txt='<h3> <span class="label label-danger">Sorry There is no parking space is available</span></h3>';
         }
         $('#bookmap_step2').html(avail_txt);
+        
+        
     });
   }
   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
