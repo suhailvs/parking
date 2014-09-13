@@ -80,19 +80,23 @@ function validateForm()
               </div>
             </div>
 
-          </div>
+          </div><!--/row-->
 
           {{ first_form|bootstrap }}
+          <!--<div class="row">
+            <div class="col-xs-6 col-md-12">-->
           <p>You can drag and drop the marker to the correct location for precise selection.</p>
+
           <div class="form-group">    
-            <div style="height:300px;">
+            <div style="height:180px;">
             <div id="map_canvas" style="width:100%; height:100%"></div>
             <div id="location" class=""></div>        
             </div>
             <!--Latitude:<input type="text" name="lat" class="form-control" id="id_lat">
             Longitude:<input type="text" name="lng" class="form-control" id="id_lng">
             <input type="text" id="lbl_longitude">-->           
-          </div>    
+          </div>
+           
           {% if edit %}<input type="hidden" name="id" value="{{edit}}">{% endif %}
           <input type="submit" class="btn btn-primary btn-lg btn-block" value="Save" /> 
           <!--<a class="btn btn-danger" href="{% url 'home' %}">Cancel</a>      -->
