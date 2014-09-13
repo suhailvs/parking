@@ -1,5 +1,7 @@
 from django.db import models
-from homepage.models import User,Order
+from django.contrib.auth import get_user_model
+User = get_user_model()
+from homepage.models import Order
 # Create your models here.
 
 class Log_errors(models.Model):

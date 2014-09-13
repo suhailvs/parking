@@ -6,13 +6,10 @@ from django.utils.safestring import mark_safe
 import calendar,time,datetime
 from dateutil import relativedelta
 #from payments.models import Order
-from django.contrib.auth.models import AbstractUser
-
-class User(AbstractUser):
-    licenseplate = models.CharField(max_length=10, blank=True)
-    state=models.CharField(max_length=2)
+from django.contrib.auth import get_user_model
 
 
+User = get_user_model()
 TD = datetime.date.today()
 TODAY=datetime.datetime(year=TD.year,month=TD.month,day=TD.day) #datetime
 class Weeks(models.Model):

@@ -64,7 +64,7 @@ MIDDLEWARE_CLASSES = (
     "account.middleware.LocaleMiddleware",
     "account.middleware.TimezoneMiddleware",
 )
-AUTH_USER_MODEL = 'homepage.User'
+AUTH_USER_MODEL = 'ajaxviews.MyUser'
 ROOT_URLCONF = 'mysite.urls'
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
