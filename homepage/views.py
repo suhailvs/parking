@@ -23,7 +23,7 @@ class MyHome(View):
 			return render(request,'home.html')
 		if request.POST['submit']=='profileupdate':
 			for key,value in request.POST.iteritems():
-				if key in ['last_name','first_name','email']:
+				if key in ['last_name','first_name']:
 					setattr(request.user,key,value)	
 			request.user.save()		
 			messages.success(request, 'Profile updated successfully.')		

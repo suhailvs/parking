@@ -8,7 +8,7 @@ from homepage.models import Parking, Order
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 # Create your views here.
-
+from homepage.choices import STATE_CHOICES
 # parking details for findparking
 def ajax_parkingdetails(request):
     p=Parking.objects.get(pk=request.GET['pk'])
@@ -95,6 +95,8 @@ def userhome(request):
     context={}
     if curpage=='editprofile':
         context['usr']=request.user
+        # the text of state choice, for eg:- "AL"--> "Alabama"
+        context['state_lbl'] =dict(STATE_CHOICES)[request.user.state]
         template_url='userprofile/ajax/profile.html'
     elif curpage=='bookings':         
         context['orders']=Order.objects.filter(user=request.user)
