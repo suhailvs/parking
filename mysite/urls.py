@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
 from django.contrib import admin
-from homepage.views import ShareParkingStuff,CustSignupView,MyHome
+from homepage.views import ShareParkingStuff,CustSignupView,MyHome,FindParkings
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 admin.autodiscover()
@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^$', MyHome.as_view(), name='home'),
     url(r'^share/$', login_required(ShareParkingStuff.as_view(),login_url='/account/login/'), name='shareparking'),
     url(r'^edit/(\d+)/$', login_required(ShareParkingStuff.as_view(),login_url='/account/login/'), name='editparking'),
-    url(r'^find/$', 'homepage.views.FindParking', name='findparking'),
+    url(r'^find/$', FindParkings.as_view(), name='findparking'),
     #url(r'^user/$', 'homepage.views.userpage', name='users'),
     #url(r'^user/(\w+)/$', 'homepage.views.userpage', name='users'),
 

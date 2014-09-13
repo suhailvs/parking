@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block style_base %}
+  <style type="text/css">
+    .wizard a {
+        padding: 10px 12px 10px;
+        margin-right: 5px;
+        background: #efefef;
+        position: relative;
+        display: inline-block;
+    }
+    .wizard .current {
+        background: #007ACC;
+        color: #fff;
+    }
+    .wizard a:before {
+        width: 0;
+        height: 0;
+        border-top: 20px inset transparent;
+        border-bottom: 20px inset transparent;
+        border-left: 20px solid #fff;
+        position: absolute;
+        content: "";
+        top: 0;
+        left: 0;
+    }
+    .wizard a:after {
+        width: 0;
+        height: 0;
+        border-top: 20px inset transparent;
+        border-bottom: 20px inset transparent;
+        border-left: 20px solid #efefef;
+        position: absolute;
+        content: "";
+        top: 0;
+        right: -20px;
+        z-index: 2;
+    }
+    .wizard .badge {
+        margin: 0 5px 0 18px;
+        position: relative;
+        top: -1px;
+    }
+    .wizard .current:after {
+        border-left-color: #007ACC;
+    }
+  </style>
+  {% block extra_head %}
+  {% endblock %}
+{% endblock %}
+
+
+{% block navbar %} 
+  {% if request.user.is_active %}
+    {% include "userprofile/navbar.html" %}
+  {% else %}
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <a class="navbar-brand" href="{% url "home" %}">Home</a>
+        <a href="{% url "account_login" %}" class="btn btn-default navbar-btn">Log in</a>
+        <a href="{% url "account_signup" %}" class="btn btn-default navbar-btn">Sign up</a>
+      </div>
+    </nav>
+  {% endif %}
+{% endblock %}
+{% block body %}
+<div class="container">
+<!--<div class="row">
+  <div class="col-md-8 col-md-offset-2">-->
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          <strong><span class="glyphicon glyphicon-th-large"></span> Book a Parking Space</strong>
+      </div><!-- /.panel-heading -->
+      <div class="panel-body">
+        <!--<div class="wizard">
+          <a><span class="badge">1</span> Location</a>
+          <a><span class="badge">2</span> Date &amp; Time</a>
+          <a class="current"><span class="badge badge-inverse">3</span> Payment</a>
+        </div>-->
+        {% block content %} {% endblock %} 
+      </div><!-- /.panel-body -->
+    </div>
+ <!-- </div>
+</div>-->
+</div>
+{% endblock %}  

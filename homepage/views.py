@@ -29,11 +29,15 @@ class MyHome(View):
 			messages.success(request, 'Profile updated successfully.')		
 			return HttpResponseRedirect(reverse('home'))
 
-def FindParking(request):
-	if request.user.is_active:
-		template='userprofile/find.html'
-	else:template='guest_find.html'
-	return render(request,template,dict(parkings=Parking.objects.all()))
+
+class FindParkings(View):
+	def get(self, request):
+		return render(request,'userprofile/find_w1.html',{'parkings':Parking.objects.all()})
+	def post(self,request):
+		if 'park_pk' in request.POST:
+			p=Parking.objects.get(pk=request.POST['park_pk'])
+			return render(request,'userprofile/find_w2.html',{'avail':p.days.all(),'parking':p})
+
 	
 # Create your views here.
 #from os.path import join as pjoin

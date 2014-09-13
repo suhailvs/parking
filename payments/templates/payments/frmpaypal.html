@@ -1,21 +1,20 @@
-{% extends "base.html" %}
+{% extends "userprofile/find_base.html" %}
 
-{% block body %}
-<div class="container">
-<!--<div class="row">
-  <div class="col-md-8 col-md-offset-2">-->
-    <div class="panel panel-default">
-      <div class="panel-heading">
-          <strong><span class="glyphicon glyphicon-th-large"></span> Book a Parking Space</strong>
-      </div><!-- /.panel-heading -->
-      <div class="panel-body">
-	      <div class="well">
-	      	<h2>Pay for Parking Space:</h2>  <p class="lead"> <strong>On: </strong>{{order.park_date}} for {{order.duration}}hour</p>
-	      	<p><strong>Address:</strong>{{order.parking.streetaddress}}</p>
-	      	<p><strong>Description:</strong>{{order.parking.description}}</p>
-	     </div>
-      {{ form.render }}
-      </div>
-   </div>
+{% block content %}
+<div class="wizard">
+  <a><span class="badge">1</span> Location</a>
+  <a><span class="badge">2</span> Date &amp; Time</a>
+  <a class="current"><span class="badge badge-inverse">3</span> Payment</a>
+</div>
+
+
+<h3>Step 3: <small>Payment/Checkout</small></h3>
+<div class="well">
+	<h2>Pay for Parking Space:</h2>  <p class="lead"> <strong>On: </strong>{{order.park_date}} for {{order.duration}}hour</p>
+	<p><strong>Address:</strong>{{order.parking.streetaddress}}</p>
+	<p><strong>Description:</strong>{{order.parking.description}}</p>
+</div>
+<div class="pull-right">
+  {{ form.render }}
 </div>
 {% endblock %}

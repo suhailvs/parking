@@ -1,0 +1,120 @@
+{% extends "userprofile/find_base.html" %}
+{% load staticfiles %}
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{% static "jqueryui/sunny/jquery-ui.min.css" %}">
+<style type="text/css">
+  .calendar-time {
+      font-size: .85em;
+      background-color: #3b91ad;
+      border-color: #3b91ad;
+      float:left;
+      width:35px;
+      height:20px;
+      margin:2px;
+      text-align:center;
+      border-radius:3px;
+      color:white;
+      cursor: pointer;
+      font-weight: bold;
+  }
+  .ptop{ padding-top:20px}
+</style>
+{% endblock %}
+
+{% block content %}
+  <div class="wizard">
+    <a><span class="badge">1</span> Location</a>
+    <a class="current"><span class="badge badge-inverse">2</span> Date &amp; Time</a>
+    <a><span class="badge">3</span> Payment</a>
+  </div>
+  
+  {% if avail %}
+  <h3>Step 2: <small>Choose Date &amp; Time</small></h3>
+  <div class="row">
+    <div class="col-xs-12 col-md-4 ptop">
+      <strong>Step 2.1: Choose Date</strong><hr>
+      <p>[#<span id="park_pk">{{parking.pk}}</span>] Select any linked date to see available timings</p>
+      <div class="ptop"><div id="datepicker"></div></div>
+      <br>Available Days: {% for d in avail %}<span class="label label-info">{{d.name}}</span> {% endfor %}
+    </div>
+    <div class="col-xs-12 col-md-4 ptop" id="box_availabletimings"></div>
+    <div class="col-xs-12 col-md-4 ptop" id="box_makepayment"></div>
+  </div>
+  {% else %}
+  <p class="lead"> Not available</p>
+  {% endif %}
+  <div class="pull-right">{% csrf_token %} 
+    <input type="hidden" name="park_pk" />
+    <a class="btn btn-default" href="{% url 'findparking' %}"><span class="glyphicon glyphicon-chevron-left"></span> back</a>
+    <button type="button" class="btn btn-primary btn-next" disabled="disabled">Next <span class="glyphicon glyphicon-chevron-right"></span></button>    
+  </div>
+{% endblock %}  
+
+{% block javascript %}<!-- might need to login from here -->     
+{% if avail %}
+<script src="{% static "jqueryui/sunny/jquery-ui.min.js" %}" type="text/javascript" charset="utf-8"></script>
+<script> 
+$("#datepicker").datepicker({
+  minDate: 0,
+  maxDate: "+7D",
+  showOtherMonths: true,
+  hideIfNoPrevNext: true,
+  selectOtherMonths: true,
+  onSelect: function (date) {    
+    $.get("{% url 'parkingavailability' %}",{pk: $('#park_pk').text(),date:date})
+    .done(function(datas) { 
+    //get data by ajax
+      console.log(datas.hours);
+      var hrs = datas.hours, str_timelabel='';
+      if (hrs){
+        for (var i = 0; i < hrs.length; i++) {
+          str_timelabel+= '<div class="calendar-time" data-hr="'+hrs[i]+'" data-date="'+date+'">'+
+          hrs[i]+':00</div>';
+        }
+        str_timelabel= '<strong>Step 2.2: Choose Parking Start Time</strong>'+
+          '<hr>Click on a time label below for selection.<div class="ptop">'+str_timelabel+'</div>';
+      }else{
+        str_timelabel="<h3><span class='label label-danger'>Sorry! The Parking space is not Available for "+date+".</span>"
+      }
+
+      //on date selection
+      $('#box_availabletimings').html(str_timelabel);
+      $('#box_makepayment').empty();
+    });
+  }
+});
+
+
+// the hour buttons
+$(document).on('click','.calendar-time',function(){  
+  var dt=$(this).data('date')+'/'+$(this).data('hr');
+  //console.log('pk'+ppk+',date:'+dt+',hour:'+hr);
+  $('#box_makepayment').html('<strong>Step 2.3: Duration in Hours</strong>'+
+    '<hr><strong>Date:</strong> <kbd>'+$(this).data('date')+'</kbd>, Time:<code>'+
+    $(this).data('hr')+':00</code>'+
+      '<div class="form-group ptop">'+
+        '<label>Duration in Hours:</label>'+
+        '<input type="number" min="1" class="form-control" id="park_dur" value="1"/>'+
+      '</div>');
+
+  $('.btn-next').prop("disabled", false);
+  $('.btn-next').data("time",dt);
+});
+
+$('.btn-next').click(function(){
+    var datas={'park':$('#park_pk').text(),'time':$(this).data('time'),'duration':$('#park_dur').val()};
+    console.log(datas)    
+    $.get("{% url 'savebooking' %}",datas).done(function(result){
+      if (result.status){
+        window.location="{% url 'ask_for_money' %}?orderpk="+result.status;
+      }else if(result.msg=='login'){
+        window.location="{% url "account_login" %}";
+      }else{
+        alert(result.msg);
+      }
+    });    
+  });
+</script>
+{% endif %}
+{% endblock %} 
+

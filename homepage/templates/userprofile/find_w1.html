@@ -1,0 +1,144 @@
+{% extends "userprofile/find_base.html" %}
+{% block extra_head %}
+<style type="text/css">
+  #resultSide{
+    height: 300px;
+    overflow-y:auto
+  }
+  #resultSide > .row {
+    padding-top: 10px
+  }
+  .redcolor{background-color: #ccc;border:1px solid #fcfcfc;}
+  #googleMap{
+    height:300px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+  <div class="wizard">
+    <a class="current"><span class="badge badge-inverse">1</span> Location</a>
+    <a><span class="badge">2</span> Date &amp; Time</a>
+    <a><span class="badge">3</span> Payment</a>
+  </div>
+  
+  {% if parkings %}  
+  <h3>Step 1: <small>Choose your location</small></h3>
+  <div class="row" style="border:1px solid #ccc">
+    <div class="col-md-4" id="resultSide">
+      <!-- using rows -->
+      {% for parking in parkings %} 
+      <div class="row box{{parking.pk}}">
+        <div class="col-md-2">
+          <input data-pk="{{parking.pk}}" type="radio" name="optparking" value="{{parking.pk}}">
+        </div>
+        <div class="col-md-10">
+          <strong>{{parking.streetaddress|truncatechars:50}}</strong><br>{{parking.fromtime}}:00-{{parking.totime}}:00
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="col-md-8">        
+      <div id="googleMap"></div>
+    </div>
+  </div>
+  <hr>
+  <form action="." method="post" class="pull-right">{% csrf_token %} 
+    <input type="hidden" name="park_pk" />
+    <button type="submit" class="btn btn-primary" disabled="disabled">Next <span class="glyphicon glyphicon-chevron-right"></span></button>    
+  </form>
+  {% else %}
+  <p class="lead"> No parkings listed! please list parkings</p>
+  {% endif %}
+{% endblock %}  
+
+{% block javascript %}<!-- might need to login from here -->     
+{% if parkings %}
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script>
+  // show the view moreinfo and next buttons
+  function getAvailability(park_pk){
+    console.log(park_pk);
+    if (park_pk){
+      $("form > button").prop("disabled", false);  
+      $("input[name=park_pk]").val(park_pk);
+    }
+  }
+
+  var map;
+  var datas=[];
+  function initialize() {
+    var mapOptions = { center:new google.maps.LatLng('38.906', '-77.047'),  
+                       zoom: 12,minZoom:11, mapTypeId: google.maps.MapTypeId.ROADMAP };  
+    map=new google.maps.Map(document.getElementById("googleMap"), mapOptions);
+
+    {% for parking in parkings %}    
+    var data = {'pk': '{{ parking.pk }}','lat': {{parking.lat}},'long': {{parking.lng}} };
+    //'pk': '{{ parking.pk }}', 'address':"{{parking.streetaddress|truncatechars:25}}", 'from':'{{ parking.fromtime }}','to':'{{ parking.totime }}',
+    datas.push(data);
+    {% endfor %} 
+
+    var markers = [],pk;
+    var infowindow = new google.maps.InfoWindow();
+    for (var i = 0; i < datas.length; i++) {
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(datas[i]['lat'], datas[i]['long']),
+        map: map,
+        color:'blue',
+        label:'H'
+      });      
+      makeClickEvent(marker,datas[i]['pk']);     
+      markers.push(marker);
+    }
+
+    // Bounds for Washington
+    var strictBounds = new google.maps.LatLngBounds(
+     new google.maps.LatLng('38.8', '-77.1'), //'38.906', '-77.047'
+     new google.maps.LatLng('39', '-76.9')
+    );
+
+    // Listen for the dragend event
+    google.maps.event.addListener(map, 'dragend', function() {
+     if (strictBounds.contains(map.getCenter())) return;
+     // We're out of bounds - Move the map back within the bounds
+     var c = map.getCenter(),
+         x = c.lng(),
+         y = c.lat(),
+         maxX = strictBounds.getNorthEast().lng(),
+         maxY = strictBounds.getNorthEast().lat(),
+         minX = strictBounds.getSouthWest().lng(),
+         minY = strictBounds.getSouthWest().lat();
+
+    console.log(x);
+    console.log(y);
+
+     if (x < minX) x = minX;
+     if (x > maxX) x = maxX;
+     if (y < minY) y = minY;
+     if (y > maxY) y = maxY;
+
+     map.setCenter(new google.maps.LatLng(y, x));
+    });
+  }
+
+  function makeClickEvent(marker,pk){    
+    google.maps.event.addListener(marker, 'click', function() {
+      $("#resultSide .row").removeClass('redcolor');
+      $("#resultSide .box"+pk).addClass('redcolor');
+      $("#resultSide .box"+pk+' input[name=optparking]').prop("checked", true);
+      getAvailability(pk);
+      //$('#resultSide').scrollTop($("#box"+pk).offset().top);
+    });
+  }  
+  google.maps.event.addDomListener(window, 'load', initialize); 
+
+  $("#resultSide input[name=optparking]").click(function(){
+    if ($(this).is(":checked")){
+      $("#resultSide .row").removeClass('redcolor');
+      $(this).parent().parent().addClass('redcolor');
+      getAvailability($(this).data('pk'));
+    }    
+  });
+</script>
+{% endif %}
+{% endblock %} 
