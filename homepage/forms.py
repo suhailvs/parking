@@ -6,7 +6,7 @@ from homepage.choices import STATE_CHOICES,FEE_CHOICES,TIME_CHOICES
 #====================================
 # forms                         #####
 #====================================
-
+from captcha.fields import ReCaptchaField
 class CustSignupForm(SignupForm):
     def clean_licenseplate(self):
         data = self.cleaned_data['licenseplate']
@@ -23,13 +23,14 @@ class CustSignupForm(SignupForm):
 
     
     def __init__(self, *args, **kwargs):
-        super(CustSignupForm, self).__init__(*args, **kwargs)
+        super(CustSignupForm, self).__init__(*args, **kwargs)        
         USER_TYPE_CHOICES = ( ('0', "I'm Driver"),('1', "I'm Owner"),)
         self.fields["is_owner"] = forms.ChoiceField(choices=USER_TYPE_CHOICES,widget=forms.RadioSelect(),initial='0',label='')
         self.fields["licenseplate"] = forms.CharField(label="license Plate Number", max_length=10,required=False)
         
         
         self.fields["state"] = forms.ChoiceField(choices=STATE_CHOICES,initial="WA",label='State')
+        captcha = ReCaptchaField()
         
         #current_order = self.fields.keyOrder
         #print current_order
