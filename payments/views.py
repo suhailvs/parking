@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from mysite import settings 
 from django.core.urlresolvers import reverse
 # Create your views here.
@@ -6,7 +7,7 @@ from paypal.standard.forms import PayPalPaymentsForm
 
 from homepage.models import Order
 from django.views.decorators.csrf import csrf_exempt 
-
+from django.contrib import messages
 def frm_paypal(request):
     # What you want the button to do.
     #if not 'orderpk' in request.GET: 
@@ -30,4 +31,11 @@ def frm_paypal(request):
 
 @csrf_exempt
 def paypal_redirect_pages(request,page):
-    return render(request,'payments/redirect_pages.html',{'page':page})
+    url=reverse('home')
+    if request.user.is_active:
+        if page=='success':
+            messages.success(request, 'Your payment was proccessed successfully.')
+        elif page=="cancel":
+            #url= reverse('findparking')
+            messages.warning(request, 'Your Transaction Failed!')
+    return HttpResponseRedirect(url)
