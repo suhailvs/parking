@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from mysite import settings 
 from django.core.urlresolvers import reverse
 # Create your views here.
@@ -11,7 +11,10 @@ from django.contrib import messages
 def frm_paypal(request):
     # What you want the button to do.
     #if not 'orderpk' in request.GET: 
-    credit_order=Order.objects.get(pk=request.GET['orderpk'])    
+    credit_order=Order.objects.get(pk=request.GET['orderpk'])
+    if credit_order.is_expired():
+        return HttpResponse("Payment Time Expired. The maximum time for completing an order is 7 minutes")
+    
     site_url=settings.PAYPAL_REDIRECT_URL
     total=credit_order.parking.fee * credit_order.duration
     #print total

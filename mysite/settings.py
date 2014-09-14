@@ -92,7 +92,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
@@ -104,6 +104,9 @@ if on_webfaction:
     MEDIA_URL = STATIC_URL+'media/'
     STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot_dev/'
     MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')
+    TIME_ZONE = 'UTC'
+    
+
 else:
     STATIC_URL = '/static/'
     MEDIA_URL = '/static/media/'

@@ -78,3 +78,7 @@ class Order(models.Model):
     nspace=models.PositiveIntegerField(max_length=3,default=1)
     paid=models.BooleanField(default=False)
     invoiceid=models.CharField(max_length=100,blank=True)
+    def is_expired(self):
+        diff=datetime.datetime.today()- self.order_date  
+        # 7minutes -> 420 seconds      
+        return True if diff.seconds == 420 else False
