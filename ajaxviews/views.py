@@ -34,8 +34,13 @@ def ajax_parkingavailability(request):
     return HttpResponse(json.dumps({'hours':p.hoursAvailableOnDate(request.GET['date'])}), mimetype="application/json")
 
 def ajax_parkingdetails(request):
-    p=Parking.objects.get(pk=request.GET['pk'])    
-    return HttpResponse(json.dumps({'desc':p.description}), mimetype="application/json")
+    p=Parking.objects.get(pk=request.GET['pk'])
+    avail=[i.name for i in p.days.all()]
+    d=dict(address=p.streetaddress,desc=p.description,avail=','.join(avail),
+        ftime=p.fromtime,totime=p.totime,fees=p.fee)
+        #ftime=p.fromtime.strftime(tformat),totime=p.totime.strftime(tformat))
+    if p.pic: d['pic']=p.pic.url[:-4]
+    return HttpResponse(json.dumps(d), mimetype="application/json")
 
 def ajax_login(request):
     time.sleep(2)   #slowit 

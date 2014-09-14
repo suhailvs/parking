@@ -43,10 +43,12 @@
     </div>
   </div>
   <hr>
+  <div id="box_moreinfo"></div>
   <form action="." method="post" class="pull-right">{% csrf_token %} 
     <input type="hidden" name="park_pk" />
-    <button type="submit" class="btn btn-primary" disabled="disabled">Next <span class="glyphicon glyphicon-chevron-right"></span></button>    
-  </form>
+    <a class='btn btn-primary btn-moreinfo disabled' href='#box_moreinfo'>More Info</a>
+    <button type="submit" class="btn btn-primary" disabled="disabled">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+  </form>  
   {% else %}
   <p class="lead"> No parkings listed! please list parkings</p>
   {% endif %}
@@ -62,6 +64,9 @@
     if (park_pk){
       $("form > button").prop("disabled", false);  
       $("input[name=park_pk]").val(park_pk);
+      $(".btn-moreinfo").data('pk',park_pk);
+      $(".btn-moreinfo").removeClass("disabled"); 
+      $("#box_moreinfo").empty(); 
     }
   }
 
@@ -139,6 +144,27 @@
       getAvailability($(this).data('pk'));
     }    
   });
+
+  $('.btn-moreinfo').click(function(){
+    $(this).addClass("disabled");  
+    var ppk= $(this).data('pk');
+    if (ppk){
+      $.get("{% url 'parkingdetails' %}",{pk: ppk})
+      .done(function(datas) {     
+        var str_html='<p> Address:<small> '+datas.address+'</small></p>'+
+        '<p> Description:<small>'+datas.desc+'</small></p>'+
+        '<p> Days Available:<small>'+datas.avail+'</small></p>'+
+        '<p> Time:<small><kbd>'+datas.ftime+':00 - '+datas.totime+':00</kbd></small></p>';
+
+        if (datas.pic){
+          str_html+='<hr><p class="lead">Parking Photos:</p><img class="img-responsive img-centered" src="'+datas.pic+'_crop.jpg" alt="">';
+        }
+        $("#box_moreinfo").html(str_html);
+
+      });
+    }
+  });
+ 
 </script>
 {% endif %}
 {% endblock %} 
