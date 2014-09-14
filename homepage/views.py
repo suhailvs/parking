@@ -32,7 +32,7 @@ class MyHome(View):
 
 class FindParkings(View):
 	def get(self, request):
-		return render(request,'userprofile/find_w1.html',{'parkings':Parking.objects.all()})
+		return render(request,'userprofile/find_w1.html',{'parkings':Parking.objects.filter(status=True)})
 	def post(self,request):
 		if 'park_pk' in request.POST:
 			p=Parking.objects.get(pk=request.POST['park_pk'])
