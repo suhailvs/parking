@@ -81,4 +81,4 @@ class Order(models.Model):
     def is_expired(self):
         diff=datetime.datetime.today()- self.order_date  
         # 7minutes -> 420 seconds      
-        return True if diff.seconds == 420 else False
+        return True if diff.seconds > 420 else False

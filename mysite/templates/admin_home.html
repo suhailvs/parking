@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+ {% block navbar %} 
+ {% endblock %}
+
+{% block content %}
+<div class="container">  <a class="btn btn-primary" href="{% url 'removeOrders' %}"> Delete Expired Orders</a></div>
+ {% endblock %}

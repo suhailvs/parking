@@ -14,7 +14,9 @@ from django.views.generic.base import View
 class MyHome(View):
 	def get(self, request):
 		if not request.user.is_active:
-			return render(request,'home.html')		
+			return render(request,'home.html')
+		elif request.user.is_superuser:
+			return render(request,'admin_home.html')
 		sidemenu={'editprofile':'Profile','bookings':'My Bookings',
 		'listings':'My Parking Areas'}
 		return render(request,'userprofile/home.html',{'sidemenu':sidemenu})
@@ -66,7 +68,7 @@ class ShareParkingStuff(View):
 			d=dict(first_form=ParkingForm(instance=p),edit=id,
 				second_form=ParkingSubForm({'fromtime': p.fromtime, 'totime': p.totime,'fee':p.fee,'totalspaces':p.totalspaces}))
 		else:
-			d=dict(first_form=ParkingForm(),second_form=ParkingSubForm())		
+			d=dict(first_form=ParkingForm(),second_form=ParkingSubForm())
 		return render(request,'userprofile/share.html',d)
 
 	def post(self,request,id=None):

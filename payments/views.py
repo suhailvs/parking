@@ -32,6 +32,17 @@ def frm_paypal(request):
     form= PayPalPaymentsForm(initial=paypal_dict) 
     return render(request,'payments/frmpaypal.html',{"form":form,"order":credit_order})
 
+from django.contrib.auth.decorators import user_passes_test
+@user_passes_test(lambda u: u.is_superuser)
+def remove_inactive_orders(request):    
+    msg='<ul>'
+    orders=Order.objects.all()
+    for od in orders:        
+        if od.is_expired():
+            msg+='<li>{0},OrderBy:{1}, OrderOn: {2}</li>'.format(od.pk,od.user.username,od.order_date)
+            od.delete()
+    return HttpResponse(msg+'</ul>')
+
 @csrf_exempt
 def paypal_redirect_pages(request,page):
     url=reverse('home')
