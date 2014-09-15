@@ -30,7 +30,7 @@ class CustSignupForm(SignupForm):
         
         
         self.fields["state"] = forms.ChoiceField(choices=STATE_CHOICES,initial="WA",label='State')
-        captcha = ReCaptchaField()
+        self.fields["captcha"] = ReCaptchaField()
         
         #current_order = self.fields.keyOrder
         #print current_order
