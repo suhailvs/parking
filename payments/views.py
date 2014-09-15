@@ -35,13 +35,13 @@ def frm_paypal(request):
 from django.contrib.auth.decorators import user_passes_test
 @user_passes_test(lambda u: u.is_superuser)
 def remove_inactive_orders(request):    
-    msg='<ul>'
+    msg='<ul>Deleted Unpaid orders more than 7minutes old(because somebody goes to PayPal but changes their mind and decides not to purchase)'
     orders=Order.objects.all()
     for od in orders:        
         if od.is_expired():
             msg+='<li>{0},OrderBy:{1}, OrderOn: {2}</li>'.format(od.pk,od.user.username,od.order_date)
             od.delete()
-    return HttpResponse(msg+'</ul>')
+    return HttpResponse(msg+'</ul><a href="/admin/">back</a>')
 
 @csrf_exempt
 def paypal_redirect_pages(request,page):
