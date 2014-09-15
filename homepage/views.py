@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse,Http404
 from django.core.urlresolvers import reverse,reverse_lazy
 from django.views.generic.edit import FormView
 from homepage.models import Parking
@@ -113,3 +113,12 @@ class CustSignupView(SignupView):
 		if form.cleaned_data["is_owner"]=='0':
 			profile.licenseplate = form.cleaned_data["licenseplate"]
 		profile.save()
+
+
+def parking_info(request,pk):
+	if request.user.is_active:
+		p = get_object_or_404(Parking, pk=pk)
+		if request.user.is_superuser or request.user==p.user:
+			return render(request,'userprofile/parkinginfo.html',{'park':p})
+
+	raise Http404

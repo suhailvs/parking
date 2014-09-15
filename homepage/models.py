@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils.safestring import mark_safe
-import calendar,time,datetime
+import calendar,time,datetime,os
 from dateutil import relativedelta,parser
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 User = get_user_model()
 TD = datetime.date.today()
@@ -67,6 +68,13 @@ class Parking(models.Model):
                 break
         return datas if datas else False
 
+    def get_picurl(self):
+        url=None
+        if self.pic:
+            fname=os.path.join(settings.MEDIA_ROOT, self.pic.name)
+            url=fname[:-4]+'_crop.jpg'
+        return url
+
     
 
 class Order(models.Model):
@@ -84,8 +92,7 @@ class Order(models.Model):
         return True if diff.seconds > 420 else False
 
 from django.db.models.signals import pre_delete
-import os
-from django.conf import settings
+
 def delete_parking_images(sender, instance, using, **kwargs):
     if instance.pic:
         fname=os.path.join(settings.MEDIA_ROOT, instance.pic.name)

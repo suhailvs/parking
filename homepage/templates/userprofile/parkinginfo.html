@@ -1,0 +1,10 @@
+{% extends 'account/base_u.html' %}
+{% block head_title %}Parking Information{% endblock %}
+{% block content %}   
+<div class="panel-heading">{{park.streetaddress}}</div>
+<div class="panel-body">      
+  <a href="{% url 'home' %}" class="btn btn-default btn-lg">Home</a>
+  <p>need to display cal map, picture, discription... etc </p>
+  {% if park.url %}<img src="{{park.get_picurl}}" />{% endif %}
+</div>
+{% endblock %}

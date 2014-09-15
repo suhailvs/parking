@@ -14,7 +14,7 @@ urlpatterns = patterns('',
     
    
     url(r'^find/$', FindParkings.as_view(), name='findparking'),
-    #url(r'^user/$', 'homepage.views.userpage', name='users'),
+    url(r'^p/(\d+)/$', 'homepage.views.parking_info', name='parkingInfo'),
     #url(r'^user/(\w+)/$', 'homepage.views.userpage', name='users'),
 
     url(r'^ajax/', include('ajaxviews.urls')),
