@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'selectize',
     'paypal.standard.ipn',
+    'captcha',
     # custom apps
     
     'payments',    
@@ -134,3 +135,11 @@ ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 PAYPAL_RECEIVER_EMAIL = "info-facilitator@flexspot.co"
 PAYPAL_REDIRECT_URL = "http://dev.flexlot.co"
 PAYPAL_TEST = True
+
+
+
+#DJango recaptcha(https://www.google.com/recaptcha/admin)
+
+RECAPTCHA_PUBLIC_KEY = '6Le3SvoSAAAAAEHQJb6qJG9hYxlvOX8lThY9jLG3'
+RECAPTCHA_PRIVATE_KEY = '6Le3SvoSAAAAAJ6EHmWZZcFBwkrezCWCLT3CxvR7'
+RECAPTCHA_USE_SSL = False
