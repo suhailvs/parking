@@ -53,7 +53,7 @@ def resize_and_crop(fname,coords):
     #box = (50, 50, 200, 300) #x1,y1,x2,y2
     box=[int(i) for i in coords.split(',')]
     region = im.crop(box)
-    region.save(fname[:-4]+'_crop.jpg',"JPEG")
+    #region.save(fname[:-4]+'_crop.jpg',"JPEG")
     region.thumbnail((160,160), PImage.ANTIALIAS)
     region.save(fname[:-4]+'_160.jpg', "JPEG")
     #region.thumbnail((48,48), PImage.ANTIALIAS)
@@ -77,7 +77,7 @@ class ShareParkingStuff(View):
 			if p.user != request.user:return HttpResponse('Forbidden')
 		else:p = Parking(user=request.user)
 
-		form1=ParkingForm(request.POST,instance=p)
+		form1=ParkingForm(request.POST,request.FILES,instance=p)
 		form2=ParkingSubForm(request.POST)
 		if form1.is_valid() and form2.is_valid():
 			form1.instance.fromtime = form2.cleaned_data['fromtime']
@@ -86,7 +86,7 @@ class ShareParkingStuff(View):
 			form1.instance.fee=form2.cleaned_data['fee']
 			form1.save()
 			if form1.instance.pic:
-				imfn = os.path.join(settings.MEDIA_ROOT, form.instance.pic.name)
+				imfn = os.path.join(settings.MEDIA_ROOT, form1.instance.pic.name)
 				resize_and_crop(imfn,request.POST['cropcoords'])
 			
 			return HttpResponseRedirect(reverse('home'))
