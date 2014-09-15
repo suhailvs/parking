@@ -53,9 +53,13 @@ def resize_and_crop(fname,coords):
     #box = (50, 50, 200, 300) #x1,y1,x2,y2
     box=[int(i) for i in coords.split(',')]
     region = im.crop(box)
-    #region.save(fname[:-4]+'_crop.jpg',"JPEG")
+    try:
+        region.save(fname[:-4]+'_crop.jpg',"JPEG")
+    except IOError:
+        region.convert('RGB').save(fname[:-4]+'_crop.jpg',"JPEG")
     region.thumbnail((160,160), PImage.ANTIALIAS)
-    region.save(fname[:-4]+'_160.jpg', "JPEG")
+    try:region.save(fname[:-4]+'_160.jpg', "JPEG")
+    except IOError:region.convert('RGB').save(fname[:-4]+'_160.jpg', "JPEG")
     #region.thumbnail((48,48), PImage.ANTIALIAS)
     #region.save(fname[:-4]+'_48.jpg', "JPEG")
     os.remove(fname)

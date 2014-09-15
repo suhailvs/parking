@@ -99,7 +99,7 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-on_webfaction=False
+on_webfaction=True
 if on_webfaction:
     STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot_dev/'
     MEDIA_URL = STATIC_URL+'media/'

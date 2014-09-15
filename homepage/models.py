@@ -82,3 +82,17 @@ class Order(models.Model):
         diff=datetime.datetime.today()- self.order_date  
         # 7minutes -> 420 seconds      
         return True if diff.seconds > 420 else False
+
+from django.db.models.signals import pre_delete
+import os
+from django.conf import settings
+def delete_parking_images(sender, instance, using, **kwargs):
+    if instance.pic:
+        fname=os.path.join(settings.MEDIA_ROOT, instance.pic.name)
+        try:
+            os.remove(fname[:-4]+'_160.jpg')
+            os.remove(fname[:-4]+'_crop.jpg')
+        except:
+            pass
+pre_delete.connect(delete_parking_images, sender=Parking)
+

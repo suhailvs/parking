@@ -43,10 +43,26 @@
     </div>
   </div>
   <hr>
-  <div id="box_moreinfo"></div>
+  
+
+
+<div id="modal-moreinfo" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title">MoreInfo</h4>
+        </div>
+        <div class="modal-body" id="loading_moreinfo" style="width: 100%;height: 100%;">
+          <div class="errormsg"></div>          
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <form action="." method="post" class="pull-right">{% csrf_token %} 
     <input type="hidden" name="park_pk" />
-    <a class='btn btn-primary btn-moreinfo disabled' href='#box_moreinfo'>More Info</a>
+    <a class='btn btn-primary btn-moreinfo' href='#box_moreinfo'>More Info</a>
     <button type="submit" class="btn btn-primary" disabled="disabled">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
   </form>  
   {% else %}
@@ -65,8 +81,8 @@
       $("form > button").prop("disabled", false);  
       $("input[name=park_pk]").val(park_pk);
       $(".btn-moreinfo").data('pk',park_pk);
-      $(".btn-moreinfo").removeClass("disabled"); 
-      $("#box_moreinfo").empty(); 
+      //$(".btn-moreinfo").removeClass("disabled"); 
+     // $("#box_moreinfo").empty(); 
     }
   }
 
@@ -146,7 +162,7 @@
   });
 
   $('.btn-moreinfo').click(function(){
-    $(this).addClass("disabled");  
+    //$(this).addClass("disabled");  
     var ppk= $(this).data('pk');
     if (ppk){
       $.get("{% url 'parkingdetails' %}",{pk: ppk})
@@ -157,9 +173,10 @@
         '<p> Time:<small><kbd>'+datas.ftime+':00 - '+datas.totime+':00</kbd></small></p>';
 
         if (datas.pic){
-          str_html+='<hr><p class="lead">Parking Photos:</p><img class="img-responsive img-centered" src="'+datas.pic+'_160.jpg" alt="">';
+          str_html+='<hr><img class="img-responsive img-centered" src="'+datas.pic+'_160.jpg" alt="">';
         }
-        $("#box_moreinfo").html(str_html);
+       $('#modal-moreinfo').modal('show');
+       $("#loading_moreinfo").html(str_html);
 
       });
     }
