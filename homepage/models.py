@@ -6,8 +6,8 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 
 User = get_user_model()
-TD = datetime.date.today()
-TODAY_TS =datetime.datetime.today()
+
+
 WEEKDAY_DICT={'sunday':calendar.SUNDAY,'monday':calendar.MONDAY,
             'tuesday':calendar.TUESDAY,'wednesday':calendar.WEDNESDAY,'thursday':calendar.THURSDAY,
             'friday':calendar.FRIDAY,'saturday':calendar.SATURDAY}
@@ -48,7 +48,8 @@ class Parking(models.Model):
     def hoursAvailableOnDate(self,dt):
         #conver dt to proper datestamp
         clean_dt=parser.parse(dt).date()
-
+        TD = datetime.date.today()
+        TODAY_TS =datetime.datetime.today()
         datas=[]
         for day in self.days.all():
             # make the weekday as a proper datetime object ie: sunday --> Sept-02-2014
@@ -83,8 +84,9 @@ class Order(models.Model):
     paid=models.BooleanField(default=False)
     invoiceid=models.CharField(max_length=100,blank=True)
     def is_expired(self):
-        diff=TODAY_TS- self.order_date  
-        # 7minutes -> 420 seconds      
+        diff=datetime.datetime.today()- self.order_date  
+        # 7minutes -> 420 seconds
+        #print 'Server Time:{0} - OrderTime:{1} - Difference:{2} - seconds {3}'.format(datetime.datetime.today(),self.order_date,diff,diff.seconds)
         return True if diff.seconds > 420 else False
 
 from django.db.models.signals import pre_delete

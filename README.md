@@ -39,3 +39,14 @@ paypal sandbox url
 
 + [accounts](https://developer.paypal.com/webapps/developer/applications/accounts)
 + [ipn url](https://developer.paypal.com/webapps/developer/applications/ipn_simulator)
+
+for paypal testing use:
+
++ email: parkingbuyer@testing.com
++ password: suhail412
+
+captcha
+-------
+
+https://www.google.com/recaptcha/admin
+

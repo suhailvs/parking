@@ -13,7 +13,7 @@ def frm_paypal(request):
     #if not 'orderpk' in request.GET: 
     credit_order=Order.objects.get(pk=request.GET['orderpk'])
     if credit_order.is_expired():
-        return HttpResponse("Payment Time Expired. The maximum time for completing an order is 7 minutes")
+        return HttpResponse("Payment Time Expired. The maximum time for completing an order is 7 minutes. <a href='/'>home</a>")
     
     site_url=settings.PAYPAL_REDIRECT_URL
     total=credit_order.parking.fee * credit_order.duration

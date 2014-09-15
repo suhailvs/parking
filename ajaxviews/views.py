@@ -104,7 +104,7 @@ def ajax_savebooking(request):
             #save booking
             od=Order(user=request.user,parking=p,park_date=ptime,duration=dur)
             od.save()
-            od.invoiceid=str(od.id).zfill(11)# send confirmation mail
+            od.invoiceid=str(od.id).zfill(5)# send confirmation mail
             od.save()
             send_bookingConfirmation(od)
             msg,flag="Successfully saved your order:%d" %od.pk, od.pk
