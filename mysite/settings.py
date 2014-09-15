@@ -99,7 +99,7 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-on_webfaction=False
+on_webfaction=True
 if on_webfaction:
     STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot_dev/'
     MEDIA_URL = STATIC_URL+'media/'
@@ -138,6 +138,6 @@ PAYPAL_TEST = True
 
 #DJango recaptcha(https://www.google.com/recaptcha/admin)
 
-RECAPTCHA_PUBLIC_KEY = '6Le3SvoSAAAAAEHQJb6qJG9hYxlvOX8lThY9jLG3'
-RECAPTCHA_PRIVATE_KEY = '6Le3SvoSAAAAAJ6EHmWZZcFBwkrezCWCLT3CxvR7'
+RECAPTCHA_PUBLIC_KEY = '6LfgU_oSAAAAAABjYNwiprQV-9BO9yH7C9pkGDkt'
+RECAPTCHA_PRIVATE_KEY = '6LfgU_oSAAAAAORVMk6HGflbZx0rbShkn2sNjlXY'
 RECAPTCHA_USE_SSL = False

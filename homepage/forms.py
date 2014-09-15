@@ -8,6 +8,7 @@ from homepage.choices import STATE_CHOICES,FEE_CHOICES,TIME_CHOICES
 #====================================
 from captcha.fields import ReCaptchaField
 class CustSignupForm(SignupForm):
+    captcha = ReCaptchaField()
     def clean_licenseplate(self):
         data = self.cleaned_data['licenseplate']
         if self.cleaned_data["is_owner"]=='0' and not data: 
@@ -30,7 +31,7 @@ class CustSignupForm(SignupForm):
         
         
         self.fields["state"] = forms.ChoiceField(choices=STATE_CHOICES,initial="WA",label='State')
-        self.fields["captcha"] = ReCaptchaField()
+        #self.fields["captcha"] = ReCaptchaField()
         
         #current_order = self.fields.keyOrder
         #print current_order
