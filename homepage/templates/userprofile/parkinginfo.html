@@ -1,10 +1,21 @@
 {% extends 'account/base_u.html' %}
 {% block head_title %}Parking Information{% endblock %}
+{% load extra_tags %}
 {% block content %}   
 <div class="panel-heading">{{park.streetaddress}}</div>
 <div class="panel-body">      
-  <a href="{% url 'home' %}" class="btn btn-default btn-lg">Home</a>
-  <p>need to display cal map, picture, discription... etc </p>
-  {% if park.url %}<img src="{{park.get_picurl}}" />{% endif %}
+  <a href="{% url 'home' %}?next=listings" class="btn btn-default btn-sm">Back</a>
+  <p>{{ park.feedescription}}</p>
+  <p>Fee(per hour):{{park.fee}}</p>
+  <p>latitude:{{park.lat}}, longitude:{{park.lng}}</p>
+  {% if park.url %}<img src="{{ park|get_imgurl}}" />{% endif %}
+
+  <hr><p class="lead">Orders</p>
+  {% for order in orders %}
+    <h4>{% if order.paid %}<span class="label label-success">paid</span>{% endif %}{{order.user}}</h4>
+	<strong>Order Date:</strong>{{order.order_date}}<br>
+	<strong>Parking Date:</strong>{{order.park_date}} for {{order.duration}} Hours<br>
+	<hr>
+  {% endfor %}
 </div>
 {% endblock %}

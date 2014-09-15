@@ -33,18 +33,17 @@
   </table>
 </div>
 
-<div class="list-group visible-xs"> 
+<div class="visible-xs">  
 {% for parking in parkings %} 
-  <a href="#" class="list-group-item">
-    <h4 class="list-group-item-heading">{{parking.streetaddress|truncatechars:40}}</h4>
-    <p class="list-group-item-text">
-      <code>spaces:{{parking.totalspaces}}</code>
-      <strong>Lat:{{parking.lat|floatformat}},Long:{{parking.lng|floatformat}}</strong> 
-      <br>{{parking.description|truncatechars:40}}
-      <a class="btn btn-default btn-xs" href="{% url 'editparking' parking.pk %}">Edit</a><!--
-      <button class="btn btn-default btn-xs" data-pk="{{parking.pk}}">Edit</button>-->
-  </p>
-  </a>
+  <h4>{{parking.streetaddress|truncatechars:40}}</h4>
+
+  <code>spaces:{{parking.totalspaces}}</code>
+  <strong>Lat:{{parking.lat|floatformat}},Long:{{parking.lng|floatformat}}</strong> 
+  <br>{{parking.description|truncatechars:40}}
+  <a class="btn btn-default btn-xs" href="{% url 'parkingInfo' parking.pk %}">Show</a>
+  <!--<a class="btn btn-danger btn-xs" href="{% url 'editparking' parking.pk %}?f=del"><span class="glyphicon glyphicon-trash"></span></a>-->
+  <a class="btn btn-default btn-xs" href="{% url 'editparking' parking.pk %}?f=act">{% if parking.status %}Deactivate</a> <span class="label label-success"><span class="glyphicon glyphicon-ok"></span></span>{% else %}Activate</a> <span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span>{% endif %}
+  <hr>
 {% endfor %}  
 </div>
 {% endblock %}	

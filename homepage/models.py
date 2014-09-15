@@ -68,22 +68,12 @@ class Parking(models.Model):
                 break
         return datas if datas else False
 
-    def get_picurl(self):
-        url=None
-        if self.pic:
-            fname=os.path.join(settings.MEDIA_ROOT, self.pic.name)
-            url=fname[:-4]+'_crop.jpg'
-        return url
-
-    
-
 class Order(models.Model):
     user = models.ForeignKey(User)
     order_date=models.DateTimeField(auto_now_add =True)
     parking=models.ForeignKey(Parking)
     park_date=models.DateTimeField()
-    duration=models.PositiveIntegerField(max_length=2,default=1)
-    nspace=models.PositiveIntegerField(max_length=3,default=1)
+    duration=models.PositiveIntegerField(max_length=2,default=1)    
     paid=models.BooleanField(default=False)
     invoiceid=models.CharField(max_length=100,blank=True)
     def is_expired(self):

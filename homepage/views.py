@@ -2,7 +2,7 @@ from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponseRedirect,HttpResponse,Http404
 from django.core.urlresolvers import reverse,reverse_lazy
 from django.views.generic.edit import FormView
-from homepage.models import Parking
+from homepage.models import Parking,Order
 #from payments import Orders
 from homepage.forms import ParkingForm,ParkingSubForm
 import time,os
@@ -118,7 +118,7 @@ class CustSignupView(SignupView):
 def parking_info(request,pk):
 	if request.user.is_active:
 		p = get_object_or_404(Parking, pk=pk)
-		if request.user.is_superuser or request.user==p.user:
-			return render(request,'userprofile/parkinginfo.html',{'park':p})
+		if request.user.is_superuser or request.user==p.user:			
+			return render(request,'userprofile/parkinginfo.html',{'park':p,'orders':Order.objects.filter(parking=p)})
 
 	raise Http404
