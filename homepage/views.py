@@ -19,7 +19,7 @@ class MyHome(View):
 			return render(request,'admin_home.html')
 		sidemenu={'editprofile':'Profile','bookings':'My Bookings',
 		'listings':'My Parking Areas'}
-		return render(request,'userprofile/home.html',{'sidemenu':sidemenu})
+		return render(request,'userprofile/home.html',{'sidemenu':sidemenu,'next':request.GET.get('next','editprofile')})
 	def post(self,request):
 		if not request.user.is_active:
 			return render(request,'home.html')

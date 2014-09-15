@@ -1,12 +1,13 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render,get_object_or_404
+from django.http import HttpResponse,HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.contrib import auth
 import time,json
 from datetime import datetime
 from homepage.models import Parking, Order
 from django.conf import settings
 from homepage.choices import STATE_CHOICES
-
+from django.contrib import messages
 
 # for the user home page
 def userhome(request):
@@ -110,3 +111,21 @@ def ajax_savebooking(request):
     else:
         msg='login'
     return HttpResponse(json.dumps({'msg':msg,'status':flag}), mimetype="application/json")
+
+def editparking(request,id):
+    p = get_object_or_404(Parking, pk=id,user=request.user)
+    #'?next=listings' p.streetaddress + request.GET['f']
+    if request.GET['f']=='del':
+        msg="Deleted your Parking with streetname: {0}".format(p.streetaddress)
+    elif request.GET['f']=='act':
+        if p.status:
+            p.status=False
+            msg="Deactivated your Parking with streetname: {0}".format(p.streetaddress)
+        else:
+            p.status=True
+            msg="Activated your Parking with streetname: {0}".format(p.streetaddress)
+        p.save()
+        
+
+    messages.success(request,msg)
+    return HttpResponseRedirect(reverse('home')+'?next=listings')

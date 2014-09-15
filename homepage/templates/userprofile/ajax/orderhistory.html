@@ -24,10 +24,10 @@
 			<td>{{order.duration}} Hours</td>
 			<td>
 				{% if order.paid == 0 %}
-				<span class="label label-danger"><span class="glyphicon glyphicon-remove"></span> Failed</span>
+				<span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span>
 				<a href="{% url 'ask_for_money' %}?orderpk={{order.pk}}" class="btn btn-success btn-xs">pay</a>
 				{% else %}
-				<span class="label label-success"><span class="glyphicon glyphicon-ok"></span> Success</span>
+				<span class="label label-success"><span class="glyphicon glyphicon-ok"></span></span>
 				{% endif %}
 			</td>
 		</tr>

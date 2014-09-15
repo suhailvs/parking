@@ -22,7 +22,9 @@
         <td>{{parking.totalspaces}}</td>
         <td>{{parking.lat|floatformat}},{{parking.lng|floatformat}}</td>
         <td>{{parking.description|truncatechars:20}}</td>
-        <td><a class="btn btn-default btn-xs" href="{% url 'editparking' parking.pk %}">Edit</a></td>
+        <td>
+          <!--<a class="btn btn-danger btn-xs" href="{% url 'editparking' parking.pk %}?f=del"><span class="glyphicon glyphicon-trash"></span></a>-->
+          <a class="btn btn-default btn-xs" href="{% url 'editparking' parking.pk %}?f=act">{% if parking.status %}Deactivate</a> <span class="label label-success"><span class="glyphicon glyphicon-ok"></span></span>{% else %}Activate</a> <span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span>{% endif %}</td>
       </tr>
     {% endfor %}     
     </tbody>

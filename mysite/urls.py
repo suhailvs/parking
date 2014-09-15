@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^$', MyHome.as_view(), name='home'),
     url(r'^share/$', login_required(ShareParkingStuff.as_view(),login_url='/account/login/'), name='shareparking'),
     #url(r'^edit/(\d+)/$', login_required(ShareParkingStuff.as_view(),login_url='/account/login/'), name='editparking'),
-    url(r'^edit/(\d+)/$',TemplateView.as_view(template_name='userprofile/editnotallowed.html'), name='editparking'),
+    
    
     url(r'^find/$', FindParkings.as_view(), name='findparking'),
     #url(r'^user/$', 'homepage.views.userpage', name='users'),

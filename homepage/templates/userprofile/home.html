@@ -44,7 +44,7 @@
 			<div class="list-group">
         <!--<span class="list-group-item lead" style="background: #000;color:#fff"> {{request.user.username}}</span>-->
         {% for key,value in sidemenu.iteritems %}
-        <a href="#" class="ajaxLoad list-group-item{% ifequal key 'editprofile' %} active{% endifequal %}" data-ajxurl="{{ key }}"> {{ value }}</a>
+        <a href="#" class="ajaxLoad list-group-item{% ifequal key next %} active{% endifequal %}" data-ajxurl="{{ key }}"> {{ value }}</a>
         {% endfor %}
 			
 			</div>
@@ -90,6 +90,6 @@ $(document).ajaxStart(function() {
 $(document).ajaxStop(function() {
   $('div.col-md-9').removeClass("loading"); 
 });
-AjaxLoader('editprofile');
+AjaxLoader('{{next}}');
 </script>
 {% endblock %}  
