@@ -5,7 +5,7 @@ from django.views.generic.edit import FormView
 from homepage.models import Parking,Order
 #from payments import Orders
 from homepage.forms import ParkingForm,ParkingSubForm
-import time,os
+import time,os,datetime
 from PIL import Image as PImage
 from django.conf import settings
 from django.contrib import messages
@@ -38,7 +38,7 @@ class FindParkings(View):
 	def post(self,request):
 		if 'park_pk' in request.POST:
 			p=Parking.objects.get(pk=request.POST['park_pk'])
-			return render(request,'userprofile/find_w2.html',{'avail':p.days.all(),'parking':p})
+			return render(request,'userprofile/find_w2.html',{'avail':p.days.all(),'parking':p,'servertime':datetime.datetime.today()})
 
 	
 # Create your views here.

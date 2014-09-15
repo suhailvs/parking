@@ -7,6 +7,7 @@ from django.conf import settings
 
 User = get_user_model()
 TD = datetime.date.today()
+TODAY_TS =datetime.datetime.today()
 WEEKDAY_DICT={'sunday':calendar.SUNDAY,'monday':calendar.MONDAY,
             'tuesday':calendar.TUESDAY,'wednesday':calendar.WEDNESDAY,'thursday':calendar.THURSDAY,
             'friday':calendar.FRIDAY,'saturday':calendar.SATURDAY}
@@ -51,18 +52,23 @@ class Parking(models.Model):
         datas=[]
         for day in self.days.all():
             # make the weekday as a proper datetime object ie: sunday --> Sept-02-2014
-            ts= TD+relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name])
-
+            ts= TD+relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name])            
             if clean_dt == TD+relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name]):
                 booked_hours=self.hoursBookedOnDate(clean_dt)
-
+                print relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name]).day
                 # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
                 for hr in range(self.fromtime,self.totime+1):  
 
                     vacants=self.totalspaces - booked_hours.count(hr)
                     if vacants > 0 :
-                        # append hours available
-                        datas.append(hr)
+                        #if today
+                        if ts==TD:
+                            if TODAY_TS.hour < hr:
+                                # only add available hour if server time hour is smaller than current hour
+                                datas.append(hr)
+                        else:
+                            # append hours available
+                            datas.append(hr)
 
                 # the weekday is not repeated, so break here
                 break
@@ -77,7 +83,7 @@ class Order(models.Model):
     paid=models.BooleanField(default=False)
     invoiceid=models.CharField(max_length=100,blank=True)
     def is_expired(self):
-        diff=datetime.datetime.today()- self.order_date  
+        diff=TODAY_TS- self.order_date  
         # 7minutes -> 420 seconds      
         return True if diff.seconds > 420 else False
 
