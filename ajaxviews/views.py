@@ -42,7 +42,7 @@ def ajax_parkingdetails(request):
         #ftime=p.fromtime.strftime(tformat),totime=p.totime.strftime(tformat))
     if p.pic: d['pic']=p.pic.url[:-4]
     return HttpResponse(json.dumps(d), mimetype="application/json")
-
+"""
 def ajax_login(request):
     time.sleep(2)   #slowit 
     username = request.POST.get('username', '')
@@ -56,7 +56,7 @@ def ajax_login(request):
 
     return HttpResponse("Username or Password doesn't exist.")
 
-
+"""
 
 
 

@@ -9,11 +9,21 @@ from homepage.choices import STATE_CHOICES,FEE_CHOICES,TIME_CHOICES
 from captcha.fields import ReCaptchaField
 class CustSignupForm(SignupForm):
     captcha = ReCaptchaField()
+    
+        
     def clean_licenseplate(self):
         data = self.cleaned_data['licenseplate']
         if self.cleaned_data["is_owner"]=='0' and not data: 
             raise forms.ValidationError("Please Enter license Plate Number.")
         return data
+    def clean_state(self):
+        data = self.cleaned_data['state']
+        if self.cleaned_data["is_owner"]=='0': 
+            if data:return data
+            else:raise forms.ValidationError("Please Enter Your State.")
+        # we don't want to save state for an owner.right?
+        return ''
+
 
     def clean_password(self):
         #if 'password' in self.cleaned_data and len(self.cleaned_data['password'])<4:
@@ -24,18 +34,18 @@ class CustSignupForm(SignupForm):
 
     
     def __init__(self, *args, **kwargs):
-        super(CustSignupForm, self).__init__(*args, **kwargs)        
+        super(CustSignupForm, self).__init__(*args, **kwargs)    
+        del self.fields["username"]    
         USER_TYPE_CHOICES = ( ('0', "I'm Driver"),('1', "I'm Owner"),)
         self.fields["is_owner"] = forms.ChoiceField(choices=USER_TYPE_CHOICES,widget=forms.RadioSelect(),initial='0',label='')
-        self.fields["licenseplate"] = forms.CharField(label="license Plate Number", max_length=10,required=False)
-        
-        
+        self.fields["licenseplate"] = forms.CharField(label="License Plate Number", max_length=10,required=False)
+        self.fields['email'].help_text="*Paypal Account Email"        
         self.fields["state"] = forms.ChoiceField(choices=STATE_CHOICES,initial="WA",label='State')
         #self.fields["captcha"] = ReCaptchaField()
         
-        #current_order = self.fields.keyOrder
-        #print current_order
-        #self.fields.keyOrder = ["full_name",'email'] + [field for field in current_order if not field in ('full_name','email')]
+        current_order = self.fields.keyOrder
+        print current_order
+        self.fields.keyOrder = ['email'] + [field for field in current_order if not field in ('captcha','email')]+['captcha']
 
 
 class MyFileUploadField(forms.ClearableFileInput):

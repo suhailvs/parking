@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
 from django.contrib import admin
-from homepage.views import ShareParkingStuff,CustSignupView,MyHome,FindParkings
+from homepage.views import ShareParkingStuff,CustSignupView,MyHome,FindParkings,CustLoginView
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 admin.autodiscover()
@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^paypal/', include('paypal.standard.ipn.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r"^account/signup/$", CustSignupView.as_view(), name="account_signup"),
+    url(r"^account/login/$", CustLoginView.as_view(), name="account_login"),    
 	url(r"^account/", include("account.urls")),
 )
 # for openshift

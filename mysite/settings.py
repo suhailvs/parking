@@ -115,6 +115,9 @@ from django.conf import global_settings
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
     "django.core.context_processors.request", "account.context_processors.account",
 )
+AUTHENTICATION_BACKENDS = global_settings.AUTHENTICATION_BACKENDS+(
+    "account.auth_backends.EmailAuthenticationBackend",
+)
 
 # gmail server settings
 EMAIL_HOST = 'smtp.webfaction.com'

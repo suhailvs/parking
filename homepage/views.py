@@ -99,7 +99,7 @@ class ShareParkingStuff(View):
 		return render(request,'userprofile/share.html',d)
 
 
-from account.views import SignupView
+from account.views import SignupView,LoginView
 from homepage.forms import CustSignupForm
 
 class CustSignupView(SignupView):
@@ -110,10 +110,21 @@ class CustSignupView(SignupView):
 
 	def update_profile(self, form):
 		profile = self.created_user
+		profile.username=str(profile.id)
 		profile.state = form.cleaned_data["state"]
 		if form.cleaned_data["is_owner"]=='0':
 			profile.licenseplate = form.cleaned_data["licenseplate"]
 		profile.save()
+		print ('send Welcome')
+
+	def generate_username(self, form):
+		# do something to generate a unique username (required by the
+		# Django User model, unfortunately)		
+		return '0.0'
+
+from account.forms import LoginEmailForm
+class CustLoginView(LoginView):
+    form_class = LoginEmailForm
 
 
 def parking_info(request,pk):
