@@ -42,7 +42,7 @@ class FindParkings(View):
 			if request.user==p.user:
 				return render(request,'errorpages/error_404.html',{'error_msg':'Why are you Booking your own Parking Area?'})
 			elif request.user.licenseplate=='':
-				return render(request,'errorpages/error_404.html',{'error_msg':'You seems login as Parking Owner. To book parking, please <a href="#">add</a> your state and a licenseplate number first.'})
+				return render(request,'userprofile/add_driver_details.html')
 			return render(request,'userprofile/find_w2.html',{'avail':p.AvailableDays(),'parking':p,'servertime':datetime.datetime.today()})
 
 	
@@ -137,4 +137,16 @@ def parking_info(request,pk):
 		if request.user.is_superuser or request.user==p.user:			
 			return render(request,'userprofile/parkinginfo.html',{'park':p,'orders':Order.objects.filter(parking=p)})
 
+	raise Http404
+
+def add_driver_details(request):
+	if request.user.is_active:
+		state = request.POST.get('state', '')
+		licenseplate = request.POST.get('licenseplate', '')
+		if state and licenseplate:
+			request.user.state=state
+			request.user.licenseplate=licenseplate
+			request.user.save()
+			return HttpResponseRedirect(reverse('home'))
+		return render(request,'userprofile/add_driver_details.html',{'error_msg':'State or License Plate Number must not be blank'})
 	raise Http404

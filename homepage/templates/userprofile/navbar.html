@@ -19,7 +19,7 @@
             <ul class="nav navbar-nav">
 
                 <li{% if request.path == home %} style="background:#f1f1f1"{%endif%}>
-                    <a href="{{ home }}"><span class="glyphicon glyphicon-home"></span> Home({{request.user.username|truncatechars:10}}) </a>
+                    <a href="{{ home }}"><span class="glyphicon glyphicon-home"></span> Home </a>
                 </li>     
                 
                 <li{% if request.path == logout %} style="background:#f1f1f1"{%endif%}>                    

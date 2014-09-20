@@ -1,5 +1,9 @@
-A user on {{ current_site.name }} has created an account using this email address.
+Howdy and welcome to {{ current_site.name }}. We know you're busy, so we'll keep this real simple.
+
+The following link will help us verify your email address
+==========================================================
 
 To confirm this email address, go to {{ activate_url }}
+
 
 If you did not sign up for this site, you can ignore this message.

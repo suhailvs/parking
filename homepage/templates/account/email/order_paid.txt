@@ -1,4 +1,4 @@
-You({{order.user}}) have Successfully Proccessed the Payment for 
+You({{order.user.email}}) have Successfully Proccessed the Payment for 
 parking area in {{order.parking.streetaddress}}.
 
 

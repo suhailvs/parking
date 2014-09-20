@@ -18,7 +18,10 @@ def userhome(request):
     if curpage=='editprofile':
         context['usr']=request.user
         # the text of state choice, for eg:- "AL"--> "Alabama"
-        context['state_lbl'] =dict(STATE_CHOICES)[request.user.state]
+        if request.user.state:
+            context['state_lbl'] =dict(STATE_CHOICES)[request.user.state]
+        elif request.user.licenseplate:
+            context['licenseplate'] =request.user.licenseplate
         template_url='userprofile/ajax/profile.html'
     elif curpage=='bookings':         
         context['orders']=Order.objects.filter(user=request.user)

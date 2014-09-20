@@ -11,11 +11,10 @@ urlpatterns = patterns('',
     url(r'^$', MyHome.as_view(), name='home'),
     url(r'^share/$', login_required(ShareParkingStuff.as_view(),login_url='/account/login/'), name='shareparking'),
     #url(r'^edit/(\d+)/$', login_required(ShareParkingStuff.as_view(),login_url='/account/login/'), name='editparking'),
-    
-   
     url(r'^find/$', FindParkings.as_view(), name='findparking'),
     url(r'^p/(\d+)/$', 'homepage.views.parking_info', name='parkingInfo'),
-    #url(r'^user/(\w+)/$', 'homepage.views.userpage', name='users'),
+    url(r'^driverinfo/$', 'homepage.views.add_driver_details', name='driver_info'),
+
 
     url(r'^ajax/', include('ajaxviews.urls')),
     url(r'^paypal/', include('paypal.standard.ipn.urls')),
