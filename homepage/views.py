@@ -39,6 +39,10 @@ class FindParkings(View):
 		if 'park_pk' in request.POST:
 			if not request.user.is_active:return HttpResponseRedirect(reverse('account_login')+"?next="+reverse('findparking'))
 			p=Parking.objects.get(pk=request.POST['park_pk'])
+			if request.user==p.user:
+				return render(request,'errorpages/error_404.html',{'error_msg':'Why are you Booking your own Parking Area?'})
+			elif request.user.licenseplate=='':
+				return render(request,'errorpages/error_404.html',{'error_msg':'You seems login as Parking Owner. To book parking, please <a href="#">add</a> your state and a licenseplate number first.'})
 			return render(request,'userprofile/find_w2.html',{'avail':p.AvailableDays(),'parking':p,'servertime':datetime.datetime.today()})
 
 	

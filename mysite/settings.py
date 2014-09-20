@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'v^qhk(gj==5tlr&%e-76b_#3l*rd#!=x72xnyxcfdeq^lk(%9('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False#True
 
 TEMPLATE_DEBUG = DEBUG
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'mysite','templates')]
@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     '.flexspot.co',
     '.flexspot.webfactional.com',
     '.flexlot.co',
+    '127.0.0.1', 'localhost'
 ]
 
 
@@ -99,7 +100,7 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-on_webfaction=False
+on_webfaction=True
 if on_webfaction:
     STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot_dev/'
     MEDIA_URL = STATIC_URL+'media/'

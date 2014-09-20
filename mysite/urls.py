@@ -33,3 +33,7 @@ urlpatterns += patterns('payments.views',
     url(r'^payment/remove_inactive_orders/$', 'remove_inactive_orders', name='removeOrders'),
     #url(r'^payment/$','asks_for_money'),
 )
+
+handler404 = 'mysite.views.my_custom_404_view'
+handler500 = 'mysite.views.my_custom_404_view'
+handler403 = 'mysite.views.my_custom_404_view'

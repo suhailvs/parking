@@ -1,0 +1,19 @@
+{% extends "errorpages/error_base.html" %}
+
+{% block content %} 
+<h1>Page not found</h1><hr>
+{% if error_msg %}
+<div class="alert alert-warning" role="alert">
+  <strong>Warning!</strong> {{ error_msg }}
+</div>
+{% else %}
+<div class="alert alert-danger" role="alert">
+  <strong>Warning!</strong> <p class="lead">We couldn&#39;t find the page you requested.</p>
+</div>
+
+<p>If you feel something is missing that should be here, <a href="{% url 'home' %}#contact">contact us</a>.</p>
+{% endif %}
+
+
+<small>Use the links at the top to get back.</small>
+{% endblock %} 

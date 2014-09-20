@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block head_title %}Oops, you've found a dead link. - {% endblock %}
+{% block navbar %} 
+  {% if request.user.is_active %}
+    {% include "userprofile/navbar.html" %}
+  {% else %}
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <a class="navbar-brand" href="{% url "home" %}">Home</a>
+        <a href="{% url "account_login" %}" class="btn btn-default navbar-btn">Log in</a>
+        <a href="{% url "account_signup" %}" class="btn btn-default navbar-btn">Sign up</a>
+      </div>
+    </nav>
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+        <strong><span class="glyphicon glyphicon-th-large"></span> Page Not Found</strong>
+    </div><!-- /.panel-heading -->
+    <div class="panel-body">
+      {% block content %} {% endblock %} 
+    </div><!-- /.panel-body -->
+  </div>
+</div>
+{% endblock %} 
