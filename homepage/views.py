@@ -98,7 +98,7 @@ class ShareParkingStuff(View):
 				imfn = os.path.join(settings.MEDIA_ROOT, form1.instance.pic.name)
 				resize_and_crop(imfn,request.POST['cropcoords'])
 			
-			return HttpResponseRedirect(reverse('home'))
+			return HttpResponseRedirect(reverse('home')+'?next=listings')
 		d=dict(first_form=form1,second_form=form2)
 		return render(request,'userprofile/share.html',d)
 

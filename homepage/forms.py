@@ -75,7 +75,7 @@ class ParkingSubForm(forms.Form):
     totime=forms.ChoiceField(choices=TIME_CHOICES, required=True, initial=16)
     totalspaces=forms.IntegerField(max_value=20, min_value=1, initial=1)
     
-    fee=forms.ChoiceField(choices=FEE_CHOICES, required=True, initial=3)
+    fee=forms.ChoiceField(choices=FEE_CHOICES, required=True, initial=1)
     def __init__(self, *args, **kwargs):
         super(ParkingSubForm, self).__init__(*args, **kwargs)
         for f in ['fromtime','totime','totalspaces','fee']:self.fields[f].widget.attrs['class'] = 'form-control'

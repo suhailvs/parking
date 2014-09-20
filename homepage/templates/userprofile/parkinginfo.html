@@ -8,7 +8,7 @@
   <p>{{ park.feedescription}}</p>
   <p>Fee(per hour):{{park.fee}}</p>
   <p>latitude:{{park.lat}}, longitude:{{park.lng}}</p>
-  {% if park.url %}<img src="{{ park|get_imgurl}}" />{% endif %}
+  {% if park.pic %}<img src="{{ park|get_imgurl}}" />{% endif %}
 
   <hr><p class="lead">Orders</p>
   {% for order in orders %}
