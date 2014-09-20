@@ -39,7 +39,7 @@ class FindParkings(View):
 		if 'park_pk' in request.POST:
 			if not request.user.is_active:return HttpResponseRedirect(reverse('account_login')+"?next="+reverse('findparking'))
 			p=Parking.objects.get(pk=request.POST['park_pk'])
-			return render(request,'userprofile/find_w2.html',{'avail':p.days.all(),'parking':p,'servertime':datetime.datetime.today()})
+			return render(request,'userprofile/find_w2.html',{'avail':p.AvailableDays(),'parking':p,'servertime':datetime.datetime.today()})
 
 	
 # Create your views here.

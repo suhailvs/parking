@@ -3,21 +3,27 @@
 {% block extra_head %}
 <link rel="stylesheet" type="text/css" href="{% static "jqueryui/sunny/jquery-ui.min.css" %}">
 <style type="text/css">
-  .calendar-time {
-      font-size: .85em;
-      background-color: #3b91ad;
-      border-color: #3b91ad;
-      float:left;
-      width:35px;
-      height:20px;
-      margin:2px;
-      text-align:center;
-      border-radius:3px;
-      color:white;
-      cursor: pointer;
-      font-weight: bold;
+  
+  .lblparktime{
+    cursor: pointer;
+  }
+  .lblparktime.active{
+    background-color: green
   }
   .ptop{ padding-top:20px}
+
+
+#cover {
+   position: absolute;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   opacity: 0.80;
+   background: #aaa;
+   z-index: 10;
+   display: none;
+}
 </style>
 {% endblock %}
 
@@ -32,36 +38,89 @@
   <h3>Step 2: <small>Choose Date &amp; Time</small></h3>
   <p>All times are in <strong>EST</strong>. Current <strong>EST</strong> time:<code>{{servertime}}</code></p>
   <div class="row">
-    <div class="col-xs-12 col-md-4 ptop">
-      <strong>Step 2.1: Choose Date</strong><hr>
-      <p>[#<span id="park_pk">{{parking.pk}}</span>] Select any linked date to see available timings</p>
-      <div class="ptop"><div id="datepicker"></div></div>
-      <br>Available Days: {% for d in avail %}<span class="label label-info">{{d.name}}</span> {% endfor %}
+    <div class="col-xs-12 col-md-6 ptop">
+      
+      <strong>Step 2.1: Choose Date</strong><hr>      
+      <div class="row"><div class="col-md-6 col-md-offset-3">
+        <p>[#<span id="park_pk">{{parking.pk}}</span>] Select any linked date to see available timings</p>
+        <div id="datepicker"></div>
+      </div></div>
+      <!--<br>Available Days: {% for d in avail %}<span class="label label-info">{{d}}</span> {% endfor %}-->
+      
     </div>
-    <div class="col-xs-12 col-md-4 ptop" id="box_availabletimings"></div>
-    <div class="col-xs-12 col-md-4 ptop" id="box_makepayment"></div>
+    <div class="col-xs-12 col-md-6 ptop">
+      <div id="box_availabletimings"></div>
+      <div id="box_makepayment"></div>
+      <div class="errormsg"></div>
+    </div>
+    
   </div>
+  
   {% else %}
   <p class="lead"> Not available</p>
   {% endif %}
-  <div class="pull-right">{% csrf_token %} 
+  <div class="pull-right">    
     <input type="hidden" name="park_pk" />
     <a class="btn btn-default" href="{% url 'findparking' %}"><span class="glyphicon glyphicon-chevron-left"></span> back</a>
     <button type="button" class="btn btn-primary btn-next" disabled="disabled">Next <span class="glyphicon glyphicon-chevron-right"></span></button>    
+
+    <!-- TOC Modal-->
+    <div class="modal fade" id="ModalTOC" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">Terms of Service</h4>
+          </div>
+          <div class="modal-body" id="loadingOrder">
+            <p class='lead'>I agree to the <a href='#'>terms of service.</a></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" id="btn-iagree" class="btn btn-success">Yes. I Agree!</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
   </div>
+  <div id="cover"> </div>
 {% endblock %}  
 
 {% block javascript %}<!-- might need to login from here -->     
 {% if avail %}
 <script src="{% static "jqueryui/sunny/jquery-ui.min.js" %}" type="text/javascript" charset="utf-8"></script>
+<!--<script src="http://bootboxjs.com/bootbox.js"></script>-->
+<script src="{% static "spin.min.js" %}"></script>
 <script> 
+var availableDates = [{% for d in avail %} "{{d}}"{% if not forloop.last %},{% endif %} {% endfor %}];
+var spinner = new Spinner({
+        lines: 10,
+        length: 25,
+        width: 20,
+        radius: 40
+      });
+
+function available(date) {
+  dmy = date.getDate() + "-" + (date.getMonth()+1) + "-" + date.getFullYear();
+  console.log(dmy+' : '+($.inArray(dmy, availableDates)));
+  if ($.inArray(dmy, availableDates) != -1) {
+    return [true, "","Available"];
+  } else {
+    return [false,"","unAvailable"];
+  }
+}
+
 $("#datepicker").datepicker({
   minDate: 0,
-  maxDate: "+7D",
+  maxDate: "+14D",
   showOtherMonths: true,
   hideIfNoPrevNext: true,
   selectOtherMonths: true,
-  onSelect: function (date) {    
+  onSelect: function (date) { 
+    var target = document.getElementById("box_availabletimings");//document.getElementById('loadingOrder');
+    spinner.spin(target);   
     $.get("{% url 'parkingavailability' %}",{pk: $('#park_pk').text(),date:date})
     .done(function(datas) { 
     //get data by ajax
@@ -69,52 +128,76 @@ $("#datepicker").datepicker({
       var hrs = datas.hours, str_timelabel='';
       if (hrs){
         for (var i = 0; i < hrs.length; i++) {
-          str_timelabel+= '<div class="calendar-time" data-hr="'+hrs[i]+'" data-date="'+date+'">'+
-          hrs[i]+':00</div>';
+          str_timelabel+= '<span class="label label-info lblparktime" data-hr="'+hrs[i]+'" data-date="'+date+'">'+
+          hrs[i]+':00</span> ';
         }
         str_timelabel= '<strong>Step 2.2: Choose Parking Start Time</strong>'+
-          '<hr>Click on a time label below for selection.<div class="ptop">'+str_timelabel+'</div>';
+          '<hr>Click on a label below for start time selection.<div class="ptop">'+str_timelabel+'</div>';
       }else{
         str_timelabel="<h3><span class='label label-danger'>Sorry! The Parking space is not Available for "+date+".</span>"
       }
-
+      spinner.stop(); 
       //on date selection
       $('#box_availabletimings').html(str_timelabel);
       $('#box_makepayment').empty();
     });
-  }
+  },
+  beforeShowDay: available
 });
 
 
 // the hour buttons
-$(document).on('click','.calendar-time',function(){  
+$(document).on('click','.lblparktime',function(){  
   var dt=$(this).data('date')+'/'+$(this).data('hr');
+  $('.lblparktime').removeClass('active');
+  $(this).addClass('active');
   //console.log('pk'+ppk+',date:'+dt+',hour:'+hr);
-  $('#box_makepayment').html('<strong>Step 2.3: Duration in Hours</strong>'+
-    '<hr><strong>Date:</strong> <kbd>'+$(this).data('date')+'</kbd>, Time:<code>'+
-    $(this).data('hr')+':00</code>'+
-      '<div class="form-group ptop">'+
-        '<label>Duration in Hours:</label>'+
-        '<input type="number" min="1" class="form-control" id="park_dur" value="1"/>'+
-      '</div>');
+  $('#box_makepayment').html('<div class="form-group ptop">Enter Duration in Hours:<div class="row"><div class="col-md-6">'+
+        '<div class="input-group">'+
+          '<input type="number" min="1" max="'+(24-parseInt($(this).data('hr')))+'" class="form-control" id="park_dur" value="1"/>'+
+          '<span class="input-group-addon">'+$(this).data('hr')+':00 to '+$(this).data('hr')+':59 EST</span>'+
+        '</div>'+
+      '</div></div></div>');
 
   $('.btn-next').prop("disabled", false);
   $('.btn-next').data("time",dt);
 });
 
+//on change the duration NOT Neccassary
+$(document).on('change','#park_dur',function(){
+  var dur=parseInt($('.lblparktime.active').data('hr'));
+  $(this).next().html(dur+':00 to '+(dur+parseInt($(this).val()-1))+':59 EST');
+  //$(".lblparktime.active").next().addClass("active");
+
+});
+
 $('.btn-next').click(function(){
-    var datas={'park':$('#park_pk').text(),'time':$(this).data('time'),'duration':$('#park_dur').val()};
-    console.log(datas)    
-    $.get("{% url 'savebooking' %}",datas).done(function(result){
-      if (result.status){
-        window.location="{% url 'ask_for_money' %}?orderpk="+result.status;
-      }else if(result.msg=='login'){
-        window.location="{% url "account_login" %}";
-      }else{
-        alert(result.msg);
-      }
-    });    
-  });
+  $('#ModalTOC').modal('show');
+});
+ $("#btn-iagree").click(function(){
+  $('#ModalTOC').modal('hide');
+  $("#cover").fadeIn(100);
+  var target = document.getElementById("cover");//document.getElementById('loadingOrder');
+  spinner.spin(target);
+  var datas={'park':$('#park_pk').text(),'time':$('.btn-next').data("time"),'duration':$('#park_dur').val()};
+       
+    // console.log(datas)    
+  $.get("{% url 'savebooking' %}",datas).done(function(result){
+    if (result.status){
+      window.location="{% url 'ask_for_money' %}?orderpk="+result.status;
+    }else if(result.msg=='login'){
+      window.location="{% url "account_login" %}";
+    }else{
+      spinner.stop();
+      $("#cover").fadeOut(100);
+      $('.errormsg').html('<div class="alert alert-danger fade in"><h2>Error!</h2>' +
+                result.msg + '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                '</div>');
+    }
+  }); 
+
+ 
+});
 </script>
 {% endif %}
 {% endblock %} 
