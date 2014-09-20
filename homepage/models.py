@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.safestring import mark_safe
-import calendar,time,datetime,os
+import calendar,time,datetime,os,json
 from dateutil import relativedelta,parser
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -45,34 +45,48 @@ class Parking(models.Model):
 
         return [h for i in order_items for h in range(i.park_date.hour,i.park_date.hour+i.duration)]
 
+    def AvailableDays(self):
+        TD = datetime.date.today()
+        datas=[]#["9-5-2011","14-5-2011","15-5-2011"]
+        for day in self.days.all():
+            wk1=TD+relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name])
+            wk2=wk1+relativedelta.relativedelta(weeks=+1)
+            for dt in [wk1,wk2]:datas.append('{0}-{1}-{2}'.format(dt.day,dt.month,dt.year))
+        return datas
+
     def hoursAvailableOnDate(self,dt):
         #conver dt to proper datestamp
         clean_dt=parser.parse(dt).date()
         TD = datetime.date.today()
         TODAY_TS =datetime.datetime.today()
         datas=[]
-        for day in self.days.all():
-            # make the weekday as a proper datetime object ie: sunday --> Sept-02-2014
-            ts= TD+relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name])            
-            if clean_dt == TD+relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name]):
-                booked_hours=self.hoursBookedOnDate(clean_dt)
-                print relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name]).day
-                # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
-                for hr in range(self.fromtime,self.totime+1):  
+        for i in range(2):# 2 weeks
+            for day in self.days.all():
+                # make the weekday as a proper datetime object ie: sunday --> Sept-02-2014
+                ts= TD+relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name])            
+                
+                if i==1:
+                    #week2
+                    ts+=relativedelta.relativedelta(weeks=+1)
+                if clean_dt == ts:
+                    booked_hours=self.hoursBookedOnDate(clean_dt)
+                    print relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name]).day
+                    # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
+                    for hr in range(self.fromtime,self.totime+1):  
 
-                    vacants=self.totalspaces - booked_hours.count(hr)
-                    if vacants > 0 :
-                        #if today
-                        if ts==TD:
-                            if TODAY_TS.hour < hr:
-                                # only add available hour if server time hour is smaller than current hour
+                        vacants=self.totalspaces - booked_hours.count(hr)
+                        if vacants > 0 :
+                            #if today
+                            if ts==TD:
+                                if TODAY_TS.hour < hr:
+                                    # only add available hour if server time hour is smaller than current hour
+                                    datas.append(hr)
+                            else:
+                                # append hours available
                                 datas.append(hr)
-                        else:
-                            # append hours available
-                            datas.append(hr)
 
-                # the weekday is not repeated, so break here
-                break
+                    # the weekday is not repeated, so break here
+                    break
         return datas if datas else False
 
 class Order(models.Model):

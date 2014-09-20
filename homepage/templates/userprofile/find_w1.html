@@ -12,6 +12,15 @@
   #googleMap{
     height:300px;
   }
+
+  .map-marker-label{
+    position: absolute;
+    color: #fff;
+    font-weight: bold;
+    padding:2px;
+    background-color:#d9534f;
+    border-radius: .25em;
+  }
 </style>
 {% endblock %}
 
@@ -29,11 +38,12 @@
       <!-- using rows -->
       {% for parking in parkings %} 
       <div class="row box{{parking.pk}}">
-        <div class="col-md-2">
+        <div class="col-md-1">
           <input data-pk="{{parking.pk}}" type="radio" name="optparking" value="{{parking.pk}}">
+          <span class="label label-danger">{{parking.pk}}</span>
         </div>
-        <div class="col-md-10">
-          <strong>{{parking.streetaddress|truncatechars:50}}</strong><br>{{parking.fromtime}}:00-{{parking.totime}}:00
+        <div class="col-md-11">
+          <strong>{{parking.streetaddress|truncatechars:50}}</strong><br>{{parking.fromtime}}:00-{{parking.totime}}:00, <small>${{parking.fee}}:00/hour</small>
         </div>
       </div>
       {% endfor %}
@@ -74,6 +84,41 @@
 {% if parkings %}
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script>
+//see -->http://stackoverflow.com/questions/11096094/
+var markerSize = { x: 22, y: 40 };
+google.maps.Marker.prototype.setLabel = function(label){
+    this.label = new MarkerLabel({
+      map: this.map,
+      marker: this,
+      text: label
+    });
+    this.label.bindTo('position', this, 'position');
+};
+
+var MarkerLabel = function(options) {
+    this.setValues(options);
+    this.span = document.createElement('span');
+    this.span.className = 'map-marker-label';
+};
+
+MarkerLabel.prototype = $.extend(new google.maps.OverlayView(), {
+    onAdd: function() {
+        this.getPanes().overlayImage.appendChild(this.span);
+        var self = this;
+        this.listeners = [
+        google.maps.event.addListener(this, 'position_changed', function() { self.draw();    })];
+    },
+    draw: function() {
+        var text = String(this.get('text'));
+        var position = this.getProjection().fromLatLngToDivPixel(this.get('position'));
+        this.span.innerHTML = text;
+        this.span.style.left = (position.x - (markerSize.x / 2)) - (text.length * 3) + 10 + 'px';
+        this.span.style.top = (position.y - markerSize.y) + 'px'; //(position.y - markerSize.y +40) + 'px';
+    }
+});
+
+//-----------------------------------------------------
+
   // show the view moreinfo and next buttons
   function getAvailability(park_pk){
     console.log(park_pk);
@@ -104,9 +149,8 @@
     for (var i = 0; i < datas.length; i++) {
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(datas[i]['lat'], datas[i]['long']),
-        map: map,
-        color:'blue',
-        label:'H'
+        map: map,        
+        label:datas[i]['pk']
       });      
       makeClickEvent(marker,datas[i]['pk']);     
       markers.push(marker);

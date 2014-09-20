@@ -99,13 +99,13 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-on_webfaction=True
+on_webfaction=False
 if on_webfaction:
     STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot_dev/'
     MEDIA_URL = STATIC_URL+'media/'
     STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot_dev/'
     MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')
-    TIME_ZONE = 'UTC'
+    TIME_ZONE = 'US/Eastern'
 else:
     STATIC_URL = '/static/'
     MEDIA_URL = '/static/media/'
