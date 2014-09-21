@@ -1,9 +1,4 @@
-Howdy and welcome to {{ current_site.name }}. We know you're busy, so we'll keep this real simple.
+Thank you for registering with {{ current_site.name }}. You're almost ready to start booking!
 
-The following link will help us verify your email address
-==========================================================
+Just click on the following link to activate your account {{ activate_url }}
 
-To confirm this email address, go to {{ activate_url }}
-
-
-If you did not sign up for this site, you can ignore this message.
