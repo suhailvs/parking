@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block extra_head %}
+<!-- DataTables CSS -->
+<link href="{% static "dataTables/css/dataTables.bootstrap.css" %}" rel="stylesheet">
+<style>
+  
+/*ajax loding. please visit http://jsfiddle.net/suhailvs/VpDUG/3453/ 
+======================================================*/
+.ajaxloading {
+    display:    none;
+    position:   absolute;
+    z-index:    1000;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url("{% static "pIkfp.gif" %}") 
+                50% 50% 
+                no-repeat;
+}
+.loading {
+    overflow: hidden;   
+}
+.loading .ajaxloading {
+    display: block;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissable">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="container">  
+  <div class="row">
+    <div class="col-md-3">
+			<div class="list-group">
+        <!--<span class="list-group-item lead" style="background: #000;color:#fff"> {{request.user.username}}</span>-->
+        {% for key,value in sidemenu.iteritems %}
+        <a href="#" class="ajaxLoad list-group-item{% ifequal key next %} active{% endifequal %}" data-ajxurl="{{ key }}"> {{ value }}</a>
+        {% endfor %}
+			
+			</div>
+    </div>
+		<div class="col-md-9">  
+    <div class="ajaxloading"><!-- Place at bottom of page --></div>
+        
+      <div id="ajaxBox" style="min-height:100px;">
+        <!-- jquery load
+          =================================================================================
+        AJAX LOADING-->
+      </div>
+      </div>
+  </div><!-- row -->
+</div><!-- container -->
+{% endblock %}
+{% block javascript %}
+<script src="{% static "dataTables/js/jquery.dataTables.js" %}"></script>
+<script src="{% static "dataTables/js/dataTables.bootstrap.js" %}"></script>
+<script>
+function AjaxLoader(item){
+  var url='{% url "ajax_home" %}?page='+ item; 
+  $('#ajaxBox').load(url, function() {
+    if (item == 'bookings' || item == 'listings') {
+      //alert('need to initiate datatables here.');
+      $('.table').dataTable();         
+    }   
+  });
+}
+$('.ajaxLoad').click(function(e){
+  e.preventDefault();
+  AjaxLoader($(this).data('ajxurl')); 
+  //remove class active from all
+  $("a.list-group-item").removeClass('active');
+  //add class active to selected nav button
+  $(this).addClass('active'); 
+});
+
+
+$(document).ajaxStart(function() {
+  $('div.col-md-9').addClass("loading"); 
+});
+$(document).ajaxStop(function() {
+  $('div.col-md-9').removeClass("loading"); 
+});
+AjaxLoader('{{next}}');
+</script>
+{% endblock %}  

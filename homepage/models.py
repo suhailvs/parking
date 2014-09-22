@@ -1,95 +1,117 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django import forms
 from django.utils.safestring import mark_safe
-#from datetime import date
-import calendar,time,datetime
-from dateutil import relativedelta
+import calendar,time,datetime,os,json
+from dateutil import relativedelta,parser
+from django.contrib.auth import get_user_model
+from django.conf import settings
 
-TD = datetime.date.today()
-TODAY=datetime.datetime(year=TD.year,month=TD.month,day=TD.day) #datetime
+User = get_user_model()
+
+
+WEEKDAY_DICT={'sunday':calendar.SUNDAY,'monday':calendar.MONDAY,
+            'tuesday':calendar.TUESDAY,'wednesday':calendar.WEDNESDAY,'thursday':calendar.THURSDAY,
+            'friday':calendar.FRIDAY,'saturday':calendar.SATURDAY}
+
 class Weeks(models.Model):
     name=models.CharField(max_length=10)
     def __unicode__(self):
         return self.name
 
 class Parking(models.Model):
-    user = models.ForeignKey(User)    
+    user = models.ForeignKey(User)
+    days=models.ManyToManyField(Weeks,help_text=None)  
+
     fromtime=models.PositiveIntegerField(max_length=2)
-    totime=models.PositiveIntegerField(max_length=2)
-    days=models.ManyToManyField(Weeks,help_text=None)
+    totime=models.PositiveIntegerField(max_length=2)    
     totalspaces=models.PositiveIntegerField(max_length=3)
+    fee=models.PositiveIntegerField(max_length=5, help_text="Parking Fee per hour")
+
     pic = models.ImageField("Parking Photos", upload_to="images/",blank=True)
     lat=models.CharField(max_length=20)
     lng=models.CharField(max_length=20)
     date_added=models.DateTimeField(auto_now_add =True)
-    description=models.CharField(max_length=140)
-    status=models.BooleanField(default=True)
+    description=models.CharField(max_length=140,help_text="Provide name of location or business, and pertinent details (e.g. use unmarked parking space only, use space with sign marked 'Private' located at end of alley, park off pavement, etc.)")
+    
+    status=models.BooleanField(default=True, help_text="Uncheck to temporarily deactivate listing")
     streetaddress=models.CharField(max_length=200)
+    
 
     def hoursBookedOnDate(self,dt):
         # filter orders on date
-        order_items=Orders.objects.filter(parking=self,park_date__startswith=dt)
+        order_items=Order.objects.filter(parking=self,park_date__startswith=dt)
         # >>> for od in o: print od.park_date, od.duration
         # [2014-09-01 07:00:00 2, 2014-09-01 06:00:00 4]
         # park.hoursBookedOnDate(date(2014,9,1)) --> [7, 8, 6, 7, 8, 9]
 
         return [h for i in order_items for h in range(i.park_date.hour,i.park_date.hour+i.duration)]
-        
-    def weekAvailability(self):
-        """ return data for heat map for a parking"""
-        weekdays={'sunday':calendar.SUNDAY,'monday':calendar.MONDAY,
-            'tuesday':calendar.TUESDAY,'wednesday':calendar.WEDNESDAY,'thursday':calendar.THURSDAY,
-            'friday':calendar.FRIDAY,'saturday':calendar.SATURDAY}
-        #iter_order=Orders.objects.filter(parking=self,park_date__gte=TODAY)
 
-        heatmap_data=dict()
-        new_data=[] #[{year: 2014, month: 15,day:3,hour:4, value:20},...]
-
-        # loop through available weekdays ie: sunday, monday....etc
+    def AvailableDays(self):
+        TD = datetime.date.today()
+        datas=[]#["9-5-2011","14-5-2011","15-5-2011"]
         for day in self.days.all():
-            # make the weekday as a proper datetime object ie: sunday --> Sept-02-2014
-            ts=TD+relativedelta.relativedelta(weekday=weekdays[day.name])            
-            booked_hours=self.hoursBookedOnDate(ts)            
-            
-            # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
-            for hr in range(self.fromtime,self.totime+1):                
-                # get number of vacancies for that hour
-                vacants=self.totalspaces - booked_hours.count(hr)                  
+            wk1=TD+relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name])
+            wk2=wk1+relativedelta.relativedelta(weeks=+1)
+            for dt in [wk1,wk2]:datas.append('{0}-{1}-{2}'.format(dt.day,dt.month,dt.year))
+        return datas
 
-                if vacants > 0 :
-                    new_data.append(dict(year=ts.year,month=ts.month,day=ts.day,hour=hr,value=vacants))
-                                
-        # [{year: 2014, month: 15,day:3,hour:4, value:20},...]
-        print new_data
-        return new_data
+    def hoursAvailableOnDate(self,dt):
+        #conver dt to proper datestamp
+        clean_dt=parser.parse(dt).date()
+        TD = datetime.date.today()
+        TODAY_TS =datetime.datetime.today()
+        datas=[]
+        for i in range(2):# 2 weeks
+            for day in self.days.all():
+                # make the weekday as a proper datetime object ie: sunday --> Sept-02-2014
+                ts= TD+relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name])            
+                
+                if i==1:
+                    #week2
+                    ts+=relativedelta.relativedelta(weeks=+1)
+                if clean_dt == ts:
+                    booked_hours=self.hoursBookedOnDate(clean_dt)
+                    print relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name]).day
+                    # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
+                    for hr in range(self.fromtime,self.totime+1):  
 
+                        vacants=self.totalspaces - booked_hours.count(hr)
+                        if vacants > 0 :
+                            #if today
+                            if ts==TD:
+                                if TODAY_TS.hour < hr:
+                                    # only add available hour if server time hour is smaller than current hour
+                                    datas.append(hr)
+                            else:
+                                # append hours available
+                                datas.append(hr)
 
-class Orders(models.Model):
+                    # the weekday is not repeated, so break here
+                    break
+        return datas if datas else False
+
+class Order(models.Model):
     user = models.ForeignKey(User)
     order_date=models.DateTimeField(auto_now_add =True)
     parking=models.ForeignKey(Parking)
     park_date=models.DateTimeField()
-    duration=models.PositiveIntegerField(max_length=2,default=1)
-    nspace=models.PositiveIntegerField(max_length=3,default=1)
+    duration=models.PositiveIntegerField(max_length=2,default=1)    
     paid=models.BooleanField(default=False)
+    invoiceid=models.CharField(max_length=100,blank=True)
+    def is_expired(self):
+        diff=datetime.datetime.today()- self.order_date  
+        # 7minutes -> 420 seconds
+        #print 'Server Time:{0} - OrderTime:{1} - Difference:{2} - seconds {3}'.format(datetime.datetime.today(),self.order_date,diff,diff.seconds)
+        return True if diff.seconds > 420 else False
 
-#====================================
-# forms                         #####
-#====================================
+from django.db.models.signals import pre_delete
 
-class MyFileUploadField(forms.ClearableFileInput):
-    def render(self, name, value, attrs=None):
-        html = super(MyFileUploadField, self).render(name, value,attrs)
-        html+= '''<input id="cropcoords" type="hidden" name="cropcoords" value="">
-        <div class="thumbnail" id="previewimage"></div>'''
-        return mark_safe(html);
-        
-class ParkingForm(forms.ModelForm):   
-    def __init__(self, *args, **kwargs):
-        super(ParkingForm, self).__init__(*args, **kwargs)
-        self.fields['days'].help_text = None 
-    class Meta:
-        model=Parking
-        exclude=['user','fromtime','totime']        
-        widgets={'lat': forms.HiddenInput(),'lng': forms.HiddenInput(),'pic':MyFileUploadField()}
+def delete_parking_images(sender, instance, using, **kwargs):
+    if instance.pic:
+        fname=os.path.join(settings.MEDIA_ROOT, instance.pic.name)
+        try:
+            os.remove(fname[:-4]+'_160.jpg')
+            os.remove(fname[:-4]+'_crop.jpg')
+        except:
+            pass
+pre_delete.connect(delete_parking_images, sender=Parking)
+

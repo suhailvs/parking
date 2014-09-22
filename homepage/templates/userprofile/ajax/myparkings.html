@@ -1,0 +1,49 @@
+{% extends "userprofile/ajax/ajax_base.html" %}
+{% block title %}My parking Areas{% endblock %}
+{% block content %}
+<div class="table-responsive hidden-xs">
+<!-- Table -->
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Sl</th>
+        <th>Address</th>
+        <th>Spaces</th>
+        <th>Lat/Long</th>
+        <th>description</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for parking in parkings %}    
+      <tr>
+        <td><strong>{{forloop.counter}}</strong></td>
+        <td>{{parking.streetaddress|truncatechars:20}}</td>
+        <td>{{parking.totalspaces}}</td>
+        <td>{{parking.lat|floatformat}},{{parking.lng|floatformat}}</td>
+        <td>{{parking.description|truncatechars:20}}</td>
+        <td>
+          <a class="btn btn-default btn-xs" href="{% url 'parkingInfo' parking.pk %}">more-info</a>
+          <!--<a class="btn btn-danger btn-xs" href="{% url 'editparking' parking.pk %}?f=del"><span class="glyphicon glyphicon-trash"></span></a>-->
+          <a class="btn btn-default btn-xs" href="{% url 'editparking' parking.pk %}?f=act">{% if parking.status %}Deactivate</a> <span class="label label-success"><span class="glyphicon glyphicon-ok"></span></span>{% else %}Activate</a> <span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span>{% endif %}
+        </td>
+      </tr>
+    {% endfor %}     
+    </tbody>
+  </table>
+</div>
+
+<div class="visible-xs">  
+{% for parking in parkings %} 
+  <h4>{{parking.streetaddress|truncatechars:40}}</h4>
+
+  <code>spaces:{{parking.totalspaces}}</code>
+  <strong>Lat:{{parking.lat|floatformat}},Long:{{parking.lng|floatformat}}</strong> 
+  <br>{{parking.description|truncatechars:40}}
+  <a class="btn btn-default btn-xs" href="{% url 'parkingInfo' parking.pk %}">more-info</a>
+  <!--<a class="btn btn-danger btn-xs" href="{% url 'editparking' parking.pk %}?f=del"><span class="glyphicon glyphicon-trash"></span></a>-->
+  <a class="btn btn-default btn-xs" href="{% url 'editparking' parking.pk %}?f=act">{% if parking.status %}Deactivate</a> <span class="label label-success"><span class="glyphicon glyphicon-ok"></span></span>{% else %}Activate</a> <span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span>{% endif %}
+  <hr>
+{% endfor %}  
+</div>
+{% endblock %}	

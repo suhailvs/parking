@@ -20,13 +20,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'v^qhk(gj==5tlr&%e-76b_#3l*rd#!=x72xnyxcfdeq^lk(%9('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'mysite','templates')]
 
 ALLOWED_HOSTS = [
     '.flexspot.co',
     '.flexspot.webfactional.com',
+    '.flexlot.co',
+   # '127.0.0.1', 'localhost'
 ]
 
 
@@ -41,11 +44,15 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
     # apps
+    'homepage',
     "account",
     'bootstrapform',
     'selectize',
+    'paypal.standard.ipn',
+    'captcha',
     # custom apps
-    'homepage',
+    
+    'payments',    
     'ajaxviews',
 )
 
@@ -58,8 +65,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "account.middleware.LocaleMiddleware",
     "account.middleware.TimezoneMiddleware",
+    'homepage.custom_middleware.RestrictAdminMiddleware',
 )
-
+AUTH_USER_MODEL = 'ajaxviews.MyUser'
 ROOT_URLCONF = 'mysite.urls'
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
@@ -87,18 +95,29 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-on_webfaction=False
+on_webfaction=True
 if on_webfaction:
     STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot/'
     MEDIA_URL = STATIC_URL+'media/'
     STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot/'
     MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')
+    TIME_ZONE = 'US/Eastern'
+    DATABASES = {
+	'default': {
+		'ENGINE': 'django.db.backends.mysql', 
+		'NAME': 'flexspotdb',
+		'USER': 'flexspot_user',
+		'PASSWORD': 'Flexspot123',
+		'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+		'PORT': '3306',
+	}
+    }
 else:
     STATIC_URL = '/static/'
     MEDIA_URL = '/static/media/'
@@ -108,14 +127,32 @@ from django.conf import global_settings
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
     "django.core.context_processors.request", "account.context_processors.account",
 )
+AUTHENTICATION_BACKENDS = global_settings.AUTHENTICATION_BACKENDS+(
+    "account.auth_backends.EmailAuthenticationBackend",
+)
 
 # gmail server settings
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'suhailvs@gmail.com'
-EMAIL_HOST_PASSWORD = 'pnaoeogqwtqlgusd'
+EMAIL_HOST = 'smtp.webfaction.com'
+EMAIL_HOST_USER = 'flexspot'
+EMAIL_HOST_PASSWORD = 'Password123'#'pnaoeogqwtqlgusd'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
+DEFAULT_FROM_EMAIL = 'support@flexspot.co'
+SERVER_EMAIL = 'support@www.flexlot.co'
 #django-user-accounts
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
+
+
+
+PAYPAL_RECEIVER_EMAIL = "info@flexspot.co"
+PAYPAL_REDIRECT_URL = "http://www.flexspot.co"
+PAYPAL_TEST = False
+
+
+
+#DJango recaptcha(https://www.google.com/recaptcha/admin)
+
+RECAPTCHA_PUBLIC_KEY = '6LfgU_oSAAAAAABjYNwiprQV-9BO9yH7C9pkGDkt'
+RECAPTCHA_PRIVATE_KEY = '6LfgU_oSAAAAAORVMk6HGflbZx0rbShkn2sNjlXY'
+RECAPTCHA_USE_SSL = False

@@ -3,7 +3,7 @@ import sys
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
 
-virtenv =os.path.join(os.environ['HOME'],'webapps','parking','Envs','flexspotenv','bin','activate_this.py')
+virtenv =os.path.join(os.environ['HOME'],'webapps','flexspot_dev','Envs','devenv','bin','activate_this.py')
 #virtualenv = os.path.join(virtenv, 'bin/activate_this.py')
 try:
     execfile(virtenv, dict(__file__=virtenv))

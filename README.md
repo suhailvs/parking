@@ -23,3 +23,30 @@ Requirements
 	django-user-accounts==1.0b18
 	django-bootstrap-form
 	Pillow
+
+
+Email
+-----
+
++ EMAIL_HOST = 'smtpout.secureserver.net'
++ EMAIL_HOST_USER = 'info@flexspot.co'
++ EMAIL_HOST_PASSWORD = 'Password123' 
++ EMAIL_PORT = 80
++ EMAIL_USE_TLS = False
+
+paypal sandbox url
+------------------
+
++ [accounts](https://developer.paypal.com/webapps/developer/applications/accounts)
++ [ipn url](https://developer.paypal.com/webapps/developer/applications/ipn_simulator)
+
+for paypal testing use:
+
++ email: parkingbuyer@testing.com
++ password: suhail412
+
+captcha
+-------
+
+https://www.google.com/recaptcha/admin
+

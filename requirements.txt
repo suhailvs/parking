@@ -4,3 +4,5 @@ django-user-accounts==1.0b18
 Pillow
 django-selectize
 python-dateutil
+django-recaptcha
+MySQL-python

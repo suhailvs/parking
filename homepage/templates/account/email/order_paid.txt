@@ -1,0 +1,16 @@
+You({{order.user.email}}) have Successfully Proccessed the Payment for 
+parking area in {{order.parking.streetaddress}}.
+
+
+Your Order ID is:{{order.invoiceid}}.
+
+
+Order Details
+==================
+
+Order Date: {{order.order_date}}
+Parking Address: {{order.parking.streetaddress}}
+Parking Date:    {{order.park_date}}
+Duration in Hours:  {{order.duration}} Hours
+
+Thanks

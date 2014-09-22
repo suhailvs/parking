@@ -1,4 +1,4 @@
-{% extends 'account/base_g.html' %}
+{% extends 'account/base_u.html' %}
 {% block head_title %}Log out{% endblock %}
 {% block content %}   
 <div class="panel-heading">Log out</div>
@@ -6,7 +6,8 @@
   <form method="POST" action="{% url "account_logout" %}">                
       {% csrf_token %}
       <p class="lead">Are you sure you want to log out?</p>
-      <button type="submit" class="btn btn-danger btn-lg"><span class="glyphicon glyphicon-log-out"></span> Log out</button>                
+      <button type="submit" class="btn btn-danger btn-lg"><span class="glyphicon glyphicon-log-out"></span> Log out</button>
+      <a href="{% url 'home' %}" class="btn btn-default btn-lg">Cancel</a>
   </form>
 </div>
 {% endblock %}

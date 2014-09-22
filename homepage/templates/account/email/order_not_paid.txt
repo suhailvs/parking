@@ -1,0 +1,14 @@
+Hello ({{order.user.email}})
+
+You have Successfully ordered a parking area in {{order.parking.streetaddress}}.
+
+Order Date: {{order.order_date}}
+Parking Address: {{order.parking.streetaddress}}
+Parking Date:    {{order.park_date}}
+Duration in Hours:  {{order.duration}} Hours
+
+{% if order.paid %}
+You have paid the parking fees
+{% else %}
+Please Pay the parking fee inorder to complete the order.
+{% endif %}
