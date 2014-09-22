@@ -5,7 +5,7 @@ from django.views.generic.edit import FormView
 from homepage.models import Parking,Order
 #from payments import Orders
 from homepage.forms import ParkingForm,ParkingSubForm
-import time,os,datetime
+import time,os,datetime,json
 from PIL import Image as PImage
 from django.conf import settings
 from django.contrib import messages
@@ -130,12 +130,34 @@ from account.forms import LoginEmailForm
 class CustLoginView(LoginView):
     form_class = LoginEmailForm
 
-
+import itertools
 def parking_info(request,pk):
 	if request.user.is_active:
 		p = get_object_or_404(Parking, pk=pk)
-		if request.user.is_superuser or request.user==p.user:			
-			return render(request,'userprofile/parkinginfo.html',{'park':p,'orders':Order.objects.filter(parking=p)})
+
+		if request.user.is_superuser or request.user==p.user:
+			porders= Order.objects.filter(parking=p)
+			#calmap_data={}
+			#for porder in porders:
+			#	ts=int(time.mktime(porder.park_date.timetuple()))
+			#	try:calmap_data[ts]+=1
+			#	except KeyError:calmap_data[ts]=1
+
+			
+			# calmap origin
+			# so question http://stackoverflow.com/questions/1236865/
+			porders_confirmed= Order.objects.filter(parking=p,paid=True)
+			calmap_data_or=[]
+			for key,group in itertools.groupby(porders_confirmed, key=lambda x: x.park_date):				
+				count=0
+				for element in group:count+=1
+				dt={'year': key.year, 'month': key.month,'day':key.day,'hour':key.hour, 'value':count}
+				calmap_data_or.append(dt)
+
+			return render(request,'userprofile/parkinginfo.html',{'park':p,'orders':porders,
+				'calmap_data':calmap_data_or,
+				#'calmap_data2':calmap_data
+				})
 
 	raise Http404
 

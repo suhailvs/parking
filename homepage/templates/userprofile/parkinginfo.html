@@ -1,6 +1,10 @@
 {% extends 'account/base_u.html' %}
 {% block head_title %}Parking Information{% endblock %}
 {% load extra_tags %}
+{% load staticfiles %}
+ {% block extra_head %}
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+ {% endblock %}
 {% block content %}   
 <div class="panel-heading">{{park.streetaddress}}</div>
 <div class="panel-body">      
@@ -9,13 +13,86 @@
   <p>Fee(per hour):{{park.fee}}</p>
   <p>latitude:{{park.lat}}, longitude:{{park.lng}}</p>
   {% if park.pic %}<img src="{{ park|get_imgurl}}" />{% endif %}
+  
+  <hr><p class="lead" style="background: orange">Confirmed Bookings</p>
+  <div class="row">
+    <div class="col-md-6">
+      <button type="button" id="btn-previous-heatmap" class="btn btn-default btn-xs">
+        <span class="glyphicon glyphicon-chevron-left"></span> 
+      </button>
+      <button type="button" id="btn-next-heatmap" class="btn btn-default btn-xs">
+        <span class="glyphicon glyphicon-chevron-right"></span> 
+      </button>
 
-  <hr><p class="lead">Orders</p>
-  {% for order in orders %}
-    <h4>{% if order.paid %}<span class="label label-success">paid</span>{% endif %}{{order.user}}</h4>
-	<strong>Order Date:</strong>{{order.order_date}}<br>
-	<strong>Parking Date:</strong>{{order.park_date}} for {{order.duration}} Hours<br>
-	<hr>
+      
+      <div id="cal-heatmap" class="table-responsive"></div>
+    </div>
+    <div class="col-md-6" id="onClick-placeholder">
+    </div>
+  </div>
+
+  <hr><p class="lead" style="background: orange">All Bookings</p>
+  <div style="border: 1px solid #ccc;padding: 5px">    
+  {% for order in orders %}    
+  	<strong>Booking Date:</strong> {{order.order_date}}<br>
+  	<strong>Parking Date:</strong> {{order.park_date}} for {{order.duration}} Hours<br>
+    <h4><strong>Status:</strong> {% if order.paid %}<span class="label label-success">paid</span>{% else %}<span class="label label-danger">Not Paid</span>{% endif %}</h4>
+	   <hr>
   {% endfor %}
+  </div>
 </div>
+{% endblock %}
+
+{% block extra_script %}
+<!-- HEAT MAP -->
+<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="http://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
+
+
+<script type="text/javascript">
+var stats = {};
+var ts;
+{% for dt in calmap_data %}
+  ts= new Date({{ dt.year }},{{ dt.month }}-1, {{ dt.day }},{{ dt.hour }}).getTime()/1000;
+  stats[ts] = {{dt.value}};
+{% endfor %}
+
+{% comment %}
+var stats2= {};
+{% for key,val in calmap_data2.items %}
+  ts= new Date(parseInt('{{key}}')).getTime();
+  stats2[ts] = {{val}};
+  console.log(ts)
+{% endfor %}
+{% endcomment %}
+
+var cal = new CalHeatMap();
+cal.init({
+  itemSelector: "#cal-heatmap",
+  domain: "day",
+  data: stats,
+  start: new Date(),
+  range: 4,
+  previousSelector: "#btn-previous-heatmap",
+  nextSelector: "#btn-next-heatmap",
+  
+  //subDomain: "hour",
+  //subDomainTextFormat: "%I",
+  //rowLimit: 1,
+  //domainGutter: 0,  
+  //cellSize: 15,
+  //cellPadding: 5,
+  //verticalOrientation: true,  
+  //label: {
+  //    position: "left",
+  //    offset: {x: 20,y: 12},
+  //    width: 110
+  //},
+  onClick: function(date, nb) {      
+    $("#onClick-placeholder").html("<h1><span class='label label-success'>"+(nb === null ? "unknown" : nb) + "</span></h1> Parking was confirmed on <br/><b> " +
+      date.toDateString()+' at <kbd>'+date.getHours() + ":00</kbd></b>");
+    $("#onClick-placeholder").fadeOut('slow').fadeIn('slow');
+  }
+});
+</script>
 {% endblock %}
