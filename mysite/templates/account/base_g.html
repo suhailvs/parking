@@ -1,0 +1,16 @@
+{% extends 'base_guest.html' %}
+{% block body %}
+  <div class="container" style="min-height:540px;padding-top: 40px">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default"> 
+        	<div class="panel-heading"><h3>{% block head_title %}{% endblock %}</h3></div>
+  				<div class="panel-body" style="padding:20px">
+	        	{% block content %}
+	        	{% endblock %}
+	        	</div>
+	        </div>		              
+      </div>
+    </div>
+  </div>
+{% endblock %}     

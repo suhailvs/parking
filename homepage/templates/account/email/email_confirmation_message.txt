@@ -1,5 +1,4 @@
-A user on {{ current_site.name }} has created an account using this email address.
+Thank you for registering with {{ current_site.name }}. You're almost ready to start booking!
 
-To confirm this email address, go to {{ activate_url }}
+Just click on the following link to activate your account {{ activate_url }}
 
-If you did not sign up for this site, you can ignore this message.

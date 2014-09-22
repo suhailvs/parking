@@ -1,0 +1,33 @@
+{% url 'home' as home %}
+{% url 'account_logout' as logout %}
+<nav class="navbar navbar-fixed-top" style="border-bottom: 1px solid #e5e5e5;background:#fff" role="navigation">
+    <div class="container">
+        
+        <div class="navbar-toggle">
+          <a href="{{ home }}" class="btn btn-default btn-navbar" title="Home"><span class="glyphicon glyphicon-home"></span></a>
+          <a href="{% url 'findparking' %}" class="btn btn-primary btn-navbar" title="Find Parking"><span class="glyphicon glyphicon-search"></span></a>
+          <a href="{% url 'shareparking' %}" class="btn btn-warning btn-navbar" title="Share Parking"><span class="glyphicon glyphicon-share-alt"></span></a>
+          <a href="{{logout}}" class="btn btn-default btn-navbar" title="Logout"><span class="glyphicon glyphicon-log-out"></span></a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+            <form class="navbar-form navbar-left" role="search">
+                <a href="{% url 'findparking' %}" class="btn btn-primary"> Find Parking  <span class="glyphicon glyphicon-search"></span></a>
+                <a href="{% url 'shareparking' %}" class="btn btn-warning"> Share Parking <span class="glyphicon glyphicon-share-alt"></span></a>
+            </form>
+
+            <ul class="nav navbar-nav">
+
+                <li{% if request.path == home %} style="background:#f1f1f1"{%endif%}>
+                    <a href="{{ home }}"><span class="glyphicon glyphicon-home"></span> Home </a>
+                </li>     
+                
+                <li{% if request.path == logout %} style="background:#f1f1f1"{%endif%}>                    
+                    <a href="{{logout}}"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>

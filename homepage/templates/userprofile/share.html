@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap %}
+{% load selectize_tags %}
+
+{% block style_base %}
+<link rel="stylesheet" type="text/css" href="{% static "jqueryui/sunny/jquery-ui.min.css" %}">
+<link rel="stylesheet" href="{% static "jcrop/jquery.Jcrop.min.css" %}">
+{% selectize_tags_media 'css' 'default' %}
+
+{% endblock %}
+
+{% block body %}
+<script type="text/javascript">
+function validateForm()
+{   
+  /*
+    var ftime= $("#id_fromtime").val();
+    var ttime= $("#id_totime").val();
+    if (ftime >= ttime){
+      alert("Parking start time must be greater than Parking End time.");
+      return false;
+    }*/
+    var x=$("#id_pic").val();
+    var cord=$("#cropcoords").val();                
+    if (x==null || x==""){
+      //alert("Please select an image to upload.");
+      // return false
+
+      // picture field is optional
+      return true;
+    }else if (cord==null || cord==""){
+      alert("Please select the coordinates of the Parking Phots to crop.");
+      return false;
+    }
+}
+</script>  
+
+
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          <strong><span class="glyphicon glyphicon-th-large"></span>  List Your Parking:</strong>
+      </div><!-- /.panel-heading -->
+      <div class="panel-body">      
+        
+        <form id="parkdetails" method="post" action="." onsubmit="return validateForm()" enctype="multipart/form-data">{% csrf_token %}
+
+          <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
+          <div class="row">
+            <div class="col-xs-12 col-sm-6{% if second_form.totime.errors %} has-error{%endif%}">
+              <label class="control-label">Time:</label>
+              <div class="row">
+                <div class="col-xs-6">                  
+                  {{ second_form.fromtime }}
+                  {{ second_form.fromtime.errors }}
+                </div> 
+                <div class="col-xs-6">                   
+                  {{ second_form.totime }}
+                  <span class="help-block ">{% for error in second_form.totime.errors %}{{ error }}{% endfor %}</span>
+                </div>
+              </div>             
+            </div>   
+            <div class="col-xs-6 col-sm-3{% if second_form.totalspaces.errors %} has-error{%endif%}">
+              <div class="form-group">
+                <label class="control-label">Spaces:</label>                
+                {{ second_form.totalspaces }}
+                <span class="help-block ">{% for error in second_form.totalspaces.errors %}{{ error }}{% endfor %}</span>
+              </div>
+            </div>
+
+            <div class="col-xs-6 col-sm-3{% if second_form.fee.errors %} has-error{%endif%}">
+              <div class="form-group">
+                <label class="control-label">Parking Fee:</label>               
+                {{ second_form.fee }}
+                <span class="help-block ">{% for error in second_form.fee.errors %}{{ error }}{% endfor %}</span>
+              </div>
+            </div>
+
+          </div><!--/row-->
+
+          {{ first_form|bootstrap }}
+          <!--<div class="row">
+            <div class="col-xs-6 col-md-12">-->
+          <p>You can drag and drop the marker to the correct location for precise selection.</p>
+
+          <div class="form-group">    
+            <div style="height:180px;">
+            <div id="map_canvas" style="width:100%; height:100%"></div>
+            <div id="location" class=""></div>        
+            </div>
+            <!--Latitude:<input type="text" name="lat" class="form-control" id="id_lat">
+            Longitude:<input type="text" name="lng" class="form-control" id="id_lng">
+            <input type="text" id="lbl_longitude">-->           
+          </div>
+           
+          {% if edit %}<input type="hidden" name="id" value="{{edit}}">{% endif %}
+          <input type="submit" class="btn btn-primary btn-lg btn-block" value="Save" /> 
+          <!--<a class="btn btn-danger" href="{% url 'home' %}">Cancel</a>      -->
+        </form> 
+      </div><!--/panel-body-->
+    </div><!--/panel-->      
+  </div> 
+</div>  
+{% endblock %}
+
+{% block javascript %} 
+<!-- Address Picker-->
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script src="{% static "jqueryui/sunny/jquery-ui.min.js" %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static "address/ui.addresspicker2.js" %}" type="text/javascript" charset="utf-8"></script>
+<!--/-->
+<script src="{% static "jcrop/jquery.Jcrop.min.js" %}"></script>
+{% selectize_tags_media 'js' %}
+<script type="text/javascript">
+$(document).ready(function() {
+  
+  // Address Picker
+  var addresspickerMap = $("#id_streetaddress").addresspicker({
+    reverseGeocode: 'true',
+    autocomplete: 'default',
+    componentsFilter: 'country:US',
+    mapOptions: {
+      zoom: 12,minZoom:11,
+      center:new google.maps.LatLng('38.906', '-77.047'),
+      //scrollwheel: false,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    },
+    elements: {
+      map: "#map_canvas",
+      lat: "#id_lat",
+      lng: "#id_lng" 
+    }
+  });
+  var gmarker = addresspickerMap.addresspicker("marker");
+  gmarker.setVisible(true);
+  addresspickerMap.addresspicker( "updatePosition");
+  
+  //End of address picker   
+  $('#id_days').removeClass('form-control'); 
+  $('#id_days').selectize({plugins: ['remove_button']}); 
+
+  $("#id_status").parents('.form-group').prepend('<label class="control-label" for="id_status">Listing Status</label>');
+
+  function showCoords(c){
+    //var str_vals='x:'+c.x+',y:'+c.y;
+    //str_vals+=',x2:'+c.x2+',y2:'+c.y2;
+    //str_vals+=',w:'+c.w+',h:'+c.h;    
+        var csv_vals=c.x+','+c.y+','+c.x2+','+c.y2;
+        if (c.w == 0){
+          //console.log('width 0');
+          $("#cropcoords").val('');
+        }else{
+          $("#cropcoords").val(csv_vals);
+        }
+        console.log($("#cropcoords").val());
+  };
+  function readURL(input) {
+      if (input.files && input.files[0]) {
+          var reader = new FileReader();            
+          reader.onload = function (e) {
+            var img_preview='<img id="blah" src="'+e.target.result+'" height="100" alt="Preview" />';
+              //$('#blah').attr('src', e.target.result);
+              $('#previewimage').html(img_preview);
+              $('#blah').Jcrop({                  
+                onSelect: showCoords,
+                onChange: showCoords,
+                aspectRatio: 1
+              });
+          }            
+          reader.readAsDataURL(input.files[0]);
+      }
+  }    
+  $("#id_pic").change(function(){
+      readURL(this);
+  });    
+});
+</script>
+{% endblock %} 
