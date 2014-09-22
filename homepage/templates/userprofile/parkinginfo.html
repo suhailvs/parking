@@ -5,13 +5,23 @@
  {% block extra_head %}
   <link rel="stylesheet" href="http://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
  {% endblock %}
+
+{% if request.user.is_superuser %}
+ {% block navbar %}{% endblock %}
+{% endif %}
+
 {% block content %}   
 <div class="panel-heading">{{park.streetaddress}}</div>
-<div class="panel-body">      
+<div class="panel-body">
+  {% if request.user.is_superuser %}
+   <a class="btn btn-primary" href="{% url 'admin_view_parking' %}"> <span class="glyphicon glyphicon-chevron-left"></span> Back</a>
+  {% else %}
   <a href="{% url 'home' %}?next=listings" class="btn btn-default btn-sm">Back</a>
+  {% endif %}
+
   <p>{{ park.feedescription}}</p>
-  <p>Fee(per hour):{{park.fee}}</p>
-  <p>latitude:{{park.lat}}, longitude:{{park.lng}}</p>
+  <p>Fee: ${{park.fee}}.00/hr</p>
+  <p>latitude: {{park.lat}}, longitude: {{park.lng}}</p>
   {% if park.pic %}<img src="{{ park|get_imgurl}}" />{% endif %}
   
   <hr><p class="lead" style="background: orange">Confirmed Bookings</p>
@@ -34,7 +44,7 @@
   <hr><p class="lead" style="background: orange">All Bookings</p>
   <div style="border: 1px solid #ccc;padding: 5px">    
   {% for order in orders %}    
-  	<strong>Booking Date:</strong> {{order.order_date}}<br>
+  	<strong>Booked on:</strong> {{order.order_date}}<br>
   	<strong>Parking Date:</strong> {{order.park_date}} for {{order.duration}} Hours<br>
     <h4><strong>Status:</strong> {% if order.paid %}<span class="label label-success">paid</span>{% else %}<span class="label label-danger">Not Paid</span>{% endif %}</h4>
 	   <hr>
@@ -88,10 +98,12 @@ cal.init({
   //    offset: {x: 20,y: 12},
   //    width: 110
   //},
-  onClick: function(date, nb) {      
-    $("#onClick-placeholder").html("<h1><span class='label label-success'>"+(nb === null ? "unknown" : nb) + "</span></h1> Parking was confirmed on <br/><b> " +
-      date.toDateString()+' at <kbd>'+date.getHours() + ":00</kbd></b>");
-    $("#onClick-placeholder").fadeOut('slow').fadeIn('slow');
+  onClick: function(date, nb) {
+    if (nb){
+      $("#onClick-placeholder").html("<h1><span class='label label-success'>"+(nb === null ? "unknown" : nb) + "</span></h1> Parking was confirmed on <br/><b> " +
+        date.toDateString()+' at <kbd>'+date.getHours() + ":00</kbd></b>");
+      $("#onClick-placeholder").fadeOut('slow').fadeIn('slow');
+    }else{$("#onClick-placeholder").empty();}
   }
 });
 </script>

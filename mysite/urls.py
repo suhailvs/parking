@@ -18,7 +18,11 @@ urlpatterns = patterns('',
 
     url(r'^ajax/', include('ajaxviews.urls')),
     url(r'^paypal/', include('paypal.standard.ipn.urls')),
+    url(r'^admin/remove_inactive_orders/$', 'payments.views.remove_inactive_orders', name='removeOrders'),
+    url(r'^admin/viewparkings/$', 'homepage.views.adminhome', name='admin_view_parking'),
     url(r'^admin/', include(admin.site.urls)),
+    
+
     url(r"^account/signup/$", CustSignupView.as_view(), name="account_signup"),
     url(r"^account/login/$", CustLoginView.as_view(), name="account_login"),    
 	url(r"^account/", include("account.urls")),
@@ -29,7 +33,7 @@ urlpatterns = patterns('',
 urlpatterns += patterns('payments.views',    
     url(r'^payment/ask_for_money/$', 'frm_paypal', name='ask_for_money'),
     url(r'^payment/(success|cancel)/$', 'paypal_redirect_pages', name='paypal_redirect_pages'),
-    url(r'^payment/remove_inactive_orders/$', 'remove_inactive_orders', name='removeOrders'),
+    
     #url(r'^payment/$','asks_for_money'),
 )
 

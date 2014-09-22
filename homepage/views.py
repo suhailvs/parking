@@ -15,8 +15,7 @@ class MyHome(View):
 	def get(self, request):
 		if not request.user.is_active:
 			return render(request,'home.html')
-		elif request.user.is_superuser:
-			return render(request,'admin_home.html')
+		
 		sidemenu={'editprofile':'Profile','bookings':'My Bookings',
 		'listings':'My Parking Areas'}
 		return render(request,'userprofile/home.html',{'sidemenu':sidemenu,'next':request.GET.get('next','editprofile')})
@@ -30,6 +29,9 @@ class MyHome(View):
 			request.user.save()		
 			messages.success(request, 'Profile updated successfully.')		
 			return HttpResponseRedirect(reverse('home'))
+def adminhome(request):
+	if request.user.is_superuser:
+		return render(request,'admin_home.html',{'parkings':Parking.objects.all()})
 
 
 class FindParkings(View):
@@ -136,7 +138,7 @@ def parking_info(request,pk):
 		p = get_object_or_404(Parking, pk=pk)
 
 		if request.user.is_superuser or request.user==p.user:
-			porders= Order.objects.filter(parking=p)
+			porders= Order.objects.filter(parking=p).order_by('-order_date')
 			#calmap_data={}
 			#for porder in porders:
 			#	ts=int(time.mktime(porder.park_date.timetuple()))
@@ -146,13 +148,29 @@ def parking_info(request,pk):
 			
 			# calmap origin
 			# so question http://stackoverflow.com/questions/1236865/
-			porders_confirmed= Order.objects.filter(parking=p,paid=True)
+
+			porders_confirmed= Order.objects.filter(parking=p)#,paid=True)
+			dates = []
+			for porder in porders_confirmed:
+				for i in range(porder.duration):
+					dates.append((
+						porder.id,
+						'{0}-{1}-{2}-{3}'.format(
+							porder.park_date.year,
+							porder.park_date.month,
+							porder.park_date.day,
+							porder.park_date.hour+i)
+					))
+				
 			calmap_data_or=[]
-			for key,group in itertools.groupby(porders_confirmed, key=lambda x: x.park_date):				
+			for key,group in itertools.groupby(dates, key=lambda x: x[1]):				
 				count=0
-				for element in group:count+=1
-				dt={'year': key.year, 'month': key.month,'day':key.day,'hour':key.hour, 'value':count}
-				calmap_data_or.append(dt)
+				for element in group:
+					count+=1
+
+				#dt={'year': key.year, 'month': key.month,'day':key.day,'hour':key.hour, 'value':count}
+				dt=key.split('-')
+				calmap_data_or.append({'year': dt[0], 'month': dt[1],'day':dt[2] ,'hour':dt[3], 'value':count})
 
 			return render(request,'userprofile/parkinginfo.html',{'park':p,'orders':porders,
 				'calmap_data':calmap_data_or,

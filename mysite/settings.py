@@ -65,6 +65,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "account.middleware.LocaleMiddleware",
     "account.middleware.TimezoneMiddleware",
+    'homepage.custom_middleware.RestrictAdminMiddleware',
 )
 AUTH_USER_MODEL = 'ajaxviews.MyUser'
 ROOT_URLCONF = 'mysite.urls'

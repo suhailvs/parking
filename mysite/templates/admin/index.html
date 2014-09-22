@@ -10,7 +10,10 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
-<a class="deletelink" href="{% url 'removeOrders' %}"> Delete Expired Orders</a>
+<div style="padding: 20px; border:1px solid #ccc">
+<a class="deletelink" href="{% url 'removeOrders' %}"> Delete Expired Orders</a> | 
+<a href="{% url 'admin_view_parking' %}"> View Parkings</a>
+</div>
 <div id="content-main">
 
 {% if app_list %}
