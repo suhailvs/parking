@@ -72,7 +72,7 @@
   
   <form action="." method="post" class="pull-right">{% csrf_token %} 
     <input type="hidden" name="park_pk" />
-    <a class='btn btn-primary btn-moreinfo' href='#box_moreinfo'>More Info</a>
+    <a class='btn btn-primary btn-moreinfo' href='#box_moreinfo'>Show Picture</a>
     <button type="submit" class="btn btn-primary" disabled="disabled">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
   </form>  
   {% else %}
@@ -125,7 +125,7 @@ MarkerLabel.prototype = $.extend(new google.maps.OverlayView(), {
     if (park_pk){
       $("form > button").prop("disabled", false);  
       $("input[name=park_pk]").val(park_pk);
-      $(".btn-moreinfo").data('pk',park_pk);
+      
       //$(".btn-moreinfo").removeClass("disabled"); 
      // $("#box_moreinfo").empty(); 
 
@@ -134,7 +134,8 @@ MarkerLabel.prototype = $.extend(new google.maps.OverlayView(), {
         '<small>'+datas.desc+'</small>'+
         '<p>Available on: <span class="label label-default">'+datas.avail+'</span></p>';
         if (datas.pic){
-          str_html+='<img class="img-responsive img-centered" src="'+datas.pic+'_crop.jpg" alt="">';
+          str_html+='<img class="img-responsive img-centered" src="'+datas.pic+'_160.jpg" alt="">';
+          $(".btn-moreinfo").data('imgurl',datas.pic);
         }       
         $("#parking_thumbnail").html(str_html);
       });     
@@ -216,26 +217,12 @@ MarkerLabel.prototype = $.extend(new google.maps.OverlayView(), {
   });
 
   $('.btn-moreinfo').click(function(){
-    //$(this).addClass("disabled");  
-    var ppk= $(this).data('pk');
-    if (ppk){
-      $.get("{% url 'parkingdetails' %}",{pk: ppk})
-      .done(function(datas) {     
-        var str_html='<p> Address:<small> '+datas.address+'</small></p>'+
-        '<p> Description:<small>'+datas.desc+'</small></p>'+
-        '<p> Days Available:<small>'+datas.avail+'</small></p>'+
-        '<p> Time:<small><kbd>'+datas.ftime+':00 - '+datas.totime+':00</kbd></small></p>';
-
-        if (datas.pic){
-          str_html+='<hr><img class="img-responsive img-centered" src="'+datas.pic+'_160.jpg" alt="">';
-        }
-       $('#modal-moreinfo').modal('show');
-       $("#loading_moreinfo").html(str_html);
-
-      });
+    var imgurl=$(this).data('imgurl');
+    if (imgurl){
+      $('#modal-moreinfo').modal('show');
+      $("#loading_moreinfo").html('<div class="thumbnail"><img src="'+imgurl+'_crop.jpg" alt=""></div>');
     }
-  });
- 
+  }); 
 </script>
 {% endif %}
 {% endblock %} 
