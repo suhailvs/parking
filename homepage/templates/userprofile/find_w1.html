@@ -54,7 +54,7 @@
   </div>
   <hr>
   
-
+<div id="parking_thumbnail"></div>
 
 <div id="modal-moreinfo" class="modal fade" aria-hidden="true">
     <div class="modal-dialog">
@@ -120,14 +120,24 @@ MarkerLabel.prototype = $.extend(new google.maps.OverlayView(), {
 //-----------------------------------------------------
 
   // show the view moreinfo and next buttons
-  function getAvailability(park_pk){
-    console.log(park_pk);
+  function getAvailability(park_pk){    
+    $("#parking_thumbnail").empty();
     if (park_pk){
       $("form > button").prop("disabled", false);  
       $("input[name=park_pk]").val(park_pk);
       $(".btn-moreinfo").data('pk',park_pk);
       //$(".btn-moreinfo").removeClass("disabled"); 
      // $("#box_moreinfo").empty(); 
+
+      $.get("{% url 'parkingdetails' %}",{pk: park_pk}).done(function(datas) {     
+        var str_html='<strong> '+datas.address+'</strong><br>'+
+        '<small>'+datas.desc+'</small>'+
+        '<p>Available on: <span class="label label-default">'+datas.avail+'</span></p>';
+        if (datas.pic){
+          str_html+='<img class="img-responsive img-centered" src="'+datas.pic+'_crop.jpg" alt="">';
+        }       
+        $("#parking_thumbnail").html(str_html);
+      });     
     }
   }
 

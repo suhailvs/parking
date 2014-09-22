@@ -5,7 +5,7 @@
   <div class="panel-body" style="padding:20px">   
   	{% if error_msg %} 
   	<div class="alert alert-danger" role="alert">
-	  <strong>Error!</strong> <p class="lead">{{ error_msg }}</p>
+	  <strong>Error!</strong> {{ error_msg }}
 	</div>
 	{% endif %}
     <form method="post" action="{% url "driver_info" %}">
