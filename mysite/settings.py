@@ -26,7 +26,6 @@ TEMPLATE_DEBUG = DEBUG
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'mysite','templates')]
 
 ALLOWED_HOSTS = [
-    '.flexspot.co',
     '.flexspot.webfactional.com',
     '.flexlot.co',
    # '127.0.0.1', 'localhost'
@@ -101,28 +100,6 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-on_webfaction=True
-if on_webfaction:
-    STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot/'
-    MEDIA_URL = STATIC_URL+'media/'
-    STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot/'
-    MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')
-    TIME_ZONE = 'US/Eastern'
-    DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.mysql', 
-		'NAME': 'flexspotdb',
-		'USER': 'flexspot_user',
-		'PASSWORD': 'Flexspot123',
-		'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-		'PORT': '3306',
-	}
-    }
-else:
-    STATIC_URL = '/static/'
-    MEDIA_URL = '/static/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR,'homepage','static', 'media')
-
 from django.conf import global_settings
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
     "django.core.context_processors.request", "account.context_processors.account",
@@ -143,16 +120,63 @@ SERVER_EMAIL = 'support@www.flexlot.co'
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
-
-
-PAYPAL_RECEIVER_EMAIL = "info@flexspot.co"
-PAYPAL_REDIRECT_URL = "http://www.flexspot.co"
-PAYPAL_TEST = False
-
-
-
 #DJango recaptcha(https://www.google.com/recaptcha/admin)
-
 RECAPTCHA_PUBLIC_KEY = '6LfgU_oSAAAAAABjYNwiprQV-9BO9yH7C9pkGDkt'
 RECAPTCHA_PRIVATE_KEY = '6LfgU_oSAAAAAORVMk6HGflbZx0rbShkn2sNjlXY'
 RECAPTCHA_USE_SSL = False
+
+"""
+ 1) master  --> flexlot.co
+ 2) develop --> dev.flexlot.co
+ 3) local   --> localhost:8000
+"""
+site_branch='local' #master, develop, local
+if site_branch == 'master':
+    STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot/'
+    MEDIA_URL = STATIC_URL+'media/'
+    STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot/'
+    MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')
+    TIME_ZONE = 'US/Eastern'
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql', 
+            'NAME': 'flexspotdb',
+            'USER': 'flexspot_user',
+            'PASSWORD': 'Flexspot123',
+            'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+            'PORT': '3306',
+        }
+    }
+
+    # live paypal settings
+    PAYPAL_RECEIVER_EMAIL = "info@flexspot.co"
+    PAYPAL_REDIRECT_URL = "http://www.flexspot.co"
+    PAYPAL_TEST = False
+
+elif site_branch == 'develop':
+    STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot_dev/'
+    MEDIA_URL = STATIC_URL+'media/'
+    STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot_dev/'
+    MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')
+    TIME_ZONE = 'US/Eastern'
+
+    #for paypal testing
+    # please use --> email: parkingbuyer@testing.com, password: suhail412  
+    PAYPAL_RECEIVER_EMAIL = "info-facilitator@flexspot.co"
+    PAYPAL_REDIRECT_URL = "http://dev.flexlot.co"
+    PAYPAL_TEST = True
+
+
+else:
+    TEMPLATE_DEBUG = DEBUG =True
+    ALLOWED_HOSTS += ['127.0.0.1','localhost'] # please addthis for template_debug false
+
+    STATIC_URL = '/static/'
+    MEDIA_URL = '/static/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR,'homepage','static', 'media')    
+
+    PAYPAL_RECEIVER_EMAIL = "info-facilitator@flexspot.co"
+    PAYPAL_REDIRECT_URL = "http://localhost:8000"
+    PAYPAL_TEST = True
+
+    ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = False
