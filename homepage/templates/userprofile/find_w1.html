@@ -43,7 +43,7 @@
           <span class="label label-danger">{{parking.pk}}</span>
         </div>
         <div class="col-md-11">
-          <strong>{{parking.streetaddress|truncatechars:50}}</strong><br>{{parking.fromtime}}:00-{{parking.totime}}:00, <small>${{parking.fee}}:00/hour</small>
+          <strong>{{parking.streetaddress|truncatechars:50}}</strong><br>{{parking.fromtime}}:00-{{parking.totime}}:00, <small>${{parking.fee}}.00/hour</small>
         </div>
       </div>
       {% endfor %}

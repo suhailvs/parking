@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'v^qhk(gj==5tlr&%e-76b_#3l*rd#!=x72xnyxcfdeq^lk(%9('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = DEBUG
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'mysite','templates')]
@@ -29,7 +29,7 @@ ALLOWED_HOSTS = [
     '.flexspot.co',
     '.flexspot.webfactional.com',
     '.flexlot.co',
-    '127.0.0.1', 'localhost'
+   # '127.0.0.1', 'localhost'
 ]
 
 
@@ -103,11 +103,21 @@ SITE_ID = 1
 
 on_webfaction=True
 if on_webfaction:
-    STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot_dev/'
+    STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot/'
     MEDIA_URL = STATIC_URL+'media/'
-    STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot_dev/'
+    STATIC_ROOT='/home/flexspot/webapps/htdocs/flexspot/'
     MEDIA_ROOT = os.path.join(STATIC_ROOT,'media')
     TIME_ZONE = 'US/Eastern'
+    DATABASES = {
+	'default': {
+		'ENGINE': 'django.db.backends.mysql', 
+		'NAME': 'flexspotdb',
+		'USER': 'flexspot_user',
+		'PASSWORD': 'Flexspot123',
+		'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+		'PORT': '3306',
+	}
+    }
 else:
     STATIC_URL = '/static/'
     MEDIA_URL = '/static/media/'
@@ -135,9 +145,9 @@ ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
 
 
-PAYPAL_RECEIVER_EMAIL = "info-facilitator@flexspot.co"
-PAYPAL_REDIRECT_URL = "http://dev.flexlot.co"
-PAYPAL_TEST = True
+PAYPAL_RECEIVER_EMAIL = "info@flexspot.co"
+PAYPAL_REDIRECT_URL = "http://www.flexspot.co"
+PAYPAL_TEST = False
 
 
 
