@@ -5,3 +5,4 @@ Pillow
 django-selectize
 python-dateutil
 django-recaptcha
+MySQL-python
