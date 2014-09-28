@@ -30,7 +30,7 @@ class Parking(models.Model):
     lat=models.CharField(max_length=20)
     lng=models.CharField(max_length=20)
     date_added=models.DateTimeField(auto_now_add =True)
-    description=models.CharField(max_length=140,help_text="Provide name of location or business, and pertinent details (e.g. use unmarked parking space only, use space with sign marked 'Private' located at end of alley, park off pavement, etc.)")
+    description=models.CharField(max_length=240,help_text="Provide name of location or business, and pertinent details (e.g. use unmarked parking space only, use space with sign marked 'Private' located at end of alley, park off pavement, etc.)")
     
     status=models.BooleanField(default=True, help_text="Uncheck to temporarily deactivate listing")
     streetaddress=models.CharField(max_length=200)

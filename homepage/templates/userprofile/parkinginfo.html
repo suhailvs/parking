@@ -5,12 +5,12 @@
  {% block extra_head %}
   <link rel="stylesheet" href="http://cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
  {% endblock %}
+{% block navbar %}
+  {% if not request.user.is_superuser %}{{ block.super }}{% endif %}
+{% endblock %}
 
-{% if request.user.is_superuser %}
- {% block navbar %}{% endblock %}
-{% endif %}
 
-{% block content %}   
+{% block content %}
 <div class="panel-heading">{{park.streetaddress}}</div>
 <div class="panel-body">
   {% if request.user.is_superuser %}
@@ -19,7 +19,7 @@
   <a href="{% url 'home' %}?next=listings" class="btn btn-default btn-sm">Back</a>
   {% endif %}
 
-  <p>{{ park.feedescription}}</p>
+  <p>{{ park.description}}</p>
   <p>Fee: ${{park.fee}}.00/hr</p>
   <p>latitude: {{park.lat}}, longitude: {{park.lng}}</p>
   {% if park.pic %}<img src="{{ park|get_imgurl}}" />{% endif %}

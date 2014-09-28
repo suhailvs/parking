@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     
     'payments',    
     'ajaxviews',
+    'customemails',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -109,13 +110,24 @@ AUTHENTICATION_BACKENDS = global_settings.AUTHENTICATION_BACKENDS+(
 )
 
 # gmail server settings
+
 EMAIL_HOST = 'smtp.webfaction.com'
 EMAIL_HOST_USER = 'flexspot'
 EMAIL_HOST_PASSWORD = 'Password123'#'pnaoeogqwtqlgusd'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'support@flexspot.co'
 SERVER_EMAIL = 'support@www.flexlot.co'
+"""
+EMAIL_HOST = 'smtpout.secureserver.net'
+EMAIL_HOST_USER = 'info@flexspot.co'
+EMAIL_HOST_PASSWORD = 'Password123'
+EMAIL_PORT = 80
+EMAIL_USE_TLS = False
+"""
+
+DEFAULT_FROM_EMAIL = 'support@flexspot.co'
+CONTACT_US_EMAIL='info@flexspot.co'#'suhailvs@gmail.com'
+
 #django-user-accounts
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True

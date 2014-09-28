@@ -17,6 +17,7 @@ urlpatterns = patterns('',
 
 
     url(r'^ajax/', include('ajaxviews.urls')),
+    url(r'^emails/', include('customemails.urls')),
     url(r'^paypal/', include('paypal.standard.ipn.urls')),
     url(r'^admin/remove_inactive_orders/$', 'payments.views.remove_inactive_orders', name='removeOrders'),
     url(r'^admin/viewparkings/$', 'homepage.views.adminhome', name='admin_view_parking'),
