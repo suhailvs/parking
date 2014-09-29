@@ -126,7 +126,7 @@ EMAIL_USE_TLS = False
 """
 
 DEFAULT_FROM_EMAIL = 'support@flexspot.co'
-CONTACT_US_EMAIL='info@flexspot.co'#'suhailvs@gmail.com'
+CONTACT_US_EMAIL='suhailvs@gmail.com'#'info@flexspot.co'#
 
 #django-user-accounts
 ACCOUNT_EMAIL_UNIQUE = True

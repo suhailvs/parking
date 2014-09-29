@@ -1,0 +1,8 @@
+CONFIRMATION - PARKING SESSION WILL BE ACTIVATED IN 15 MINUTES
+
+This confirmation indicates that your session will be activated with in 15 minutes.
+
+Will Activated:		{{order.park_date}}
+Will Deactivated:	{{deact}}
+Location:			{{order.parking.streetaddress}}
+Description:		{{order.parking.description}} 

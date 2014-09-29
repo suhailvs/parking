@@ -4,6 +4,7 @@ parking area in {{order.parking.streetaddress}}.
 
 Your Order ID is:{{order.invoiceid}}.
 
+License Plate Number: {{order.user.licenseplate}}
 
 Order Details
 ==================

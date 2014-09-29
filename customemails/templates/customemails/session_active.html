@@ -1,0 +1,27 @@
+<strong>CONFIRMATION - PARKING SESSION WILL BE ACTIVATED IN 15 MINUTES</strong>
+
+This confirmation indicates that your session will be activated with in 15 minutes.
+
+<table>
+  <tr>
+    <td>Will Activated:</td>
+    <td>{{order.park_date}}</td>    
+  </tr>
+  <tr>
+    <td>Will Deactivated:</td>
+    <td>{{deact}}</td>    
+  </tr>
+  <tr>
+    <td>Location:</td>
+    <td>{{order.parking.streetaddress}}</td>    
+  </tr>
+  <tr>
+    <td></td>
+    <td><img src="http://maps.googleapis.com/maps/api/staticmap?center={{order.parking.lat}},{{order.parking.lng}}&zoom=10&size=640x200&markers=color:blue%7Clabel:P%7C10.59975,76.45969"></td>    
+  </tr>
+  <tr>
+    <td>Description:</td>
+    <td>{{order.parking.description}}</td>    
+  </tr>
+  
+</table>

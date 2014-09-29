@@ -1,0 +1,9 @@
+User Details
+------------
+Name: {{name}}
+Phone: {{phone}}
+Email: {{email}}
+
+Message
+------------
+{{msg}}

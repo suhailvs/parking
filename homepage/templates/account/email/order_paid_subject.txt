@@ -1,1 +1,1 @@
-flexspot.co: Payment processed successfully.
+FLEXLOT: Payment processed successfully.

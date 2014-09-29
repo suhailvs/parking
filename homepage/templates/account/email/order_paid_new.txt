@@ -1,0 +1,15 @@
+PAYMENT SUCCESSFUL for your order with Flexlot.co
+
+You({{order.user.email}}) have Successfully Proccessed the Payment for 
+parking area in 
+
+Transaction Details
+
+TransactionID:			{{order.invoiceid}}
+Activated:				{{order.park_date}}
+Will Deactivated:		{{order.duration}}
+Location:				{{order.parking.streetaddress}}
+License Plate Number:	{{order.user.licenseplate}}
+Parking fee: 			Hourrate*{{order.duration}}
+Transaction fee: 		.38 * parkfee
+Total Cost:

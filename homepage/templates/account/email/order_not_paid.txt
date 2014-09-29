@@ -12,3 +12,5 @@ You have paid the parking fees
 {% else %}
 Please Pay the parking fee inorder to complete the order.
 {% endif %}
+
+License Plate Number: {{order.user.licenseplate}}

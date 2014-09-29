@@ -14,11 +14,20 @@ app.config_from_object('django.conf:settings')
 #app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 from payments.models import Log_errors
-
+from customemails.views import send_html_email
 @app.task
 def set_log(pk):
 	Log_errors(errors='celery test').save()
 
+@app.task
+def send_session_active_mail(order):
+	ctx=dict(order=order,
+		deact=order.park_date + datetime.timedelta(0,60*60*order.duration))
+	send_html_email(
+			template_name='session_active',
+			params=ctx,
+			subj="FLEXTLOT - PARKING SESSION WILL BE ACTIVATED IN 15 MINUTES",
+			to=[order.user.email])
 """
 USAGE:
 ======
