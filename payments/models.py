@@ -17,15 +17,22 @@ def send_success_payment_mail(order):
     from django.core.mail import send_mail
     from django import template
     from django.conf import settings
-    from mysite.celery import set_log,send_session_active_mail
+    from mysite.celery import set_log,send_session_emails
+    import datetime
 
     # celery schedule-> send mail 15 minutes before parking starttime
-    result = send_session_active_mail.apply_async((order,), countdown=40) # 40 seconds 
+    schedule_time=order.park_date - datetime.timedelta(0,15*60)
+    result = send_session_emails.apply_async(('ACT',order,), eta=schedule_time) #countdown=40) # 40 seconds 
+    
+    deltax=(60*60*order.duration)-(15*60)
+    schedule_time=order.park_date + datetime.timedelta(0,deltax)
+    result = send_session_emails.apply_async(('DEACT',order,), eta=schedule_time) #countdown=40) # 40 seconds 
+    
     ctx = {'order':order}
     subject = template.loader.render_to_string('account/email/order_paid_subject.txt', ctx)
     message = template.loader.render_to_string("account/email/order_paid.txt", ctx)
 
-    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,[order.user.email,'info@flexspot.co'],fail_silently=False)
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,[order.user.email,'info@flexspot.co'])#,fail_silently=False)
 
 
 from paypal.standard.ipn.signals import payment_was_successful

@@ -20,13 +20,16 @@ def set_log(pk):
 	Log_errors(errors='celery test').save()
 
 @app.task
-def send_session_active_mail(order):
+def send_session_emails(flag,order):
 	ctx=dict(order=order,
 		deact=order.park_date + datetime.timedelta(0,60*60*order.duration))
+	if flag=='ACT':templ='session_active'
+	else:
+		templ='session_deactive'
 	send_html_email(
-			template_name='session_active',
+			template_name=templ,
 			params=ctx,
-			subj="FLEXTLOT - PARKING SESSION WILL BE ACTIVATED IN 15 MINUTES",
+			subj="FLEXTLOT - PARKING SESSION WILL BE {0}IVATED IN 15 MINUTES".format(flag),
 			to=[order.user.email])
 """
 USAGE:
