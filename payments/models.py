@@ -22,11 +22,13 @@ def send_success_payment_mail(order):
 
     # celery schedule-> send mail 15 minutes before parking starttime
     schedule_time=order.park_date - datetime.timedelta(0,15*60)
-    result = send_session_emails.apply_async(('ACT',order,), eta=schedule_time) #countdown=40) # 40 seconds 
+    delta_secs=order.park_date - order.order_date
+    secs=int(delta_secs.total_seconds())-(15*60)
+    result1 = send_session_emails.apply_async(('ACT',order,), countdown=secs) # 40 seconds 
     
-    deltax=(60*60*order.duration)-(15*60)
-    schedule_time=order.park_date + datetime.timedelta(0,deltax)
-    result = send_session_emails.apply_async(('DEACT',order,), eta=schedule_time) #countdown=40) # 40 seconds 
+    #deltax=(60*60*order.duration)-(15*60)
+    #schedule_time2=order.park_date + datetime.timedelta(0,deltax)
+    #result2 = send_session_emails.apply_async(('DEACT',order,), eta=schedule_time2) #countdown=40) # 40 seconds 
     
     ctx = {'order':order}
     subject = template.loader.render_to_string('account/email/order_paid_subject.txt', ctx)

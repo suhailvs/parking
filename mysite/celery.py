@@ -6,8 +6,8 @@ from django.conf import settings
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 
-if settings.site_branch == 'local':broker='django://'
-else:broker='redis://127.0.0.1:31127/0'
+#if settings.site_branch == 'local':broker='django://'
+broker='redis://127.0.0.1:31127/0'
 app = Celery('parking_tasks',broker=broker)
 
 app.config_from_object('django.conf:settings')
