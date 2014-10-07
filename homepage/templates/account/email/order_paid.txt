@@ -1,6 +1,4 @@
-You({{order.user.email}}) have Successfully Proccessed the Payment for 
-parking area in {{order.parking.streetaddress}}.
-
+This confirmation is for successful payment for parking at: {{order.parking.streetaddress}}.
 
 Your Order ID is:{{order.invoiceid}}.
 
