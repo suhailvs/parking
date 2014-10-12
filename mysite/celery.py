@@ -8,6 +8,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 
 #if settings.site_branch == 'local':broker='django://'
 broker='redis://127.0.0.1:31127/0'
+#broker='django://'
 app = Celery('parking_tasks',broker=broker)
 
 app.config_from_object('django.conf:settings')

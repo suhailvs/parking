@@ -83,7 +83,7 @@ class ShareParkingStuff(View):
 		return render(request,'userprofile/share.html',d)
 
 	def post(self,request,id=None):
-		if id:#'id' in request.POST:
+		if id:#'id' in request.POST: todo
 			p = get_object_or_404(Parking, pk=id)#request.POST['id'])
 			if p.user != request.user:return HttpResponse('Forbidden')
 		else:p = Parking(user=request.user)

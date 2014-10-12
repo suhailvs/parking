@@ -11,7 +11,7 @@ from django.contrib import messages
 
 # for the user home page
 def userhome(request):
-    time.sleep(2)
+    #time.sleep(2)
     if not request.user.is_active: return HttpResponse('login')
     curpage=request.GET['page']
     context={}

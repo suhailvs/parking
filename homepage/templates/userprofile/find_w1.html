@@ -136,7 +136,7 @@ MarkerLabel.prototype = $.extend(new google.maps.OverlayView(), {
         '<p>Available on: <span class="label label-default">'+datas.avail+'</span></p>';
         if (datas.pic){
           $("#loading_moreinfo").html('<div class="thumbnail"><img src="'+datas.pic+'_crop.jpg" alt=""></div>');
-          str_html+='<a data-toggle="modal" href="#modal-moreinfo"> <img class="img-responsive img-centered" src="'+datas.pic+'_160.jpg" alt=""></a>';
+          str_html+='<a data-toggle="modal" href="#modal-moreinfo"> <img src="'+datas.pic+'_160.jpg" alt=""></a>';
         }else {
           $("#loading_moreinfo").empty();
         }

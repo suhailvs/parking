@@ -50,3 +50,10 @@ captcha
 
 https://www.google.com/recaptcha/admin
 
+
+changes required on changing the branches `master` and `develop`
+----------------------------------------------------------------
+
+`mysite/celery.py` -> change broker for local `broker='django://'`
+
+`mysite/settings.py` --> change the `site_branch='#####'`
