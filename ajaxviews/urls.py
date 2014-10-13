@@ -8,5 +8,5 @@ urlpatterns = patterns('ajaxviews.views',
 	
 	url(r'^parking/$','ajax_parkingdetails',name='parkingdetails'),
 	url(r'^savebooking/$','ajax_savebooking',name='savebooking'),
-	url(r'^edit/(\d+)/$','editparking', name='editparking'),
+	#url(r'^edit/(\d+)/$','editparking', name='editparking'),
 )

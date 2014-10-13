@@ -115,6 +115,7 @@ def ajax_savebooking(request):
         msg='login'
     return HttpResponse(json.dumps({'msg':msg,'status':flag}), mimetype="application/json")
 
+"""
 def editparking(request,id):
     p = get_object_or_404(Parking, pk=id,user=request.user)
     #'?next=listings' p.streetaddress + request.GET['f']
@@ -132,3 +133,4 @@ def editparking(request,id):
 
     messages.success(request,msg)
     return HttpResponseRedirect(reverse('home')+'?next=listings')
+"""
