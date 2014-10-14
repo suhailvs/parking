@@ -30,8 +30,7 @@
 	        <td>{{parking.description|truncatechars:20}}</td>
 	        <td>
 	          <a class="btn btn-default btn-xs" href="{% url 'parkingInfo' parking.pk %}">more-info</a>
-	          <!--<a class="btn btn-danger btn-xs" href="{% url 'editparking' parking.pk %}?f=del"><span class="glyphicon glyphicon-trash"></span></a>-->
-	          {% if parking.status %}
+   {% if parking.status %}
 	          <span class="label label-success"><span class="glyphicon glyphicon-ok"></span></span>
 	          {% else %}
 	          <span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span>

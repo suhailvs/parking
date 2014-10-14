@@ -22,7 +22,12 @@
   <p>{{ park.description}}</p>
   <p>Fee: ${{park.fee}}.00/hr</p>
   <p>latitude: {{park.lat}}, longitude: {{park.lng}}</p>
-  {% if park.pic %}<img src="{{park.pic.url}}{# { park|get_imgurl} #}" />{% endif %}
+  <div class="thumbnail">
+    <img src="http://maps.googleapis.com/maps/api/staticmap?center={{park.lat}},{{park.lng}}&zoom=15&size=640x200&markers=color:blue%7Clabel:P%7C{{park.lat}},{{park.lng}}" />
+  </div>
+
+  <p> Parking Photo:</p>
+  {% if park.pic %}<div class="thumbnail"><img src="{{park.pic.url}}{# { park|get_imgurl} #}" /></div>{% endif %}
   
   <hr><p class="lead" style="background: orange">Confirmed Bookings</p>
   <div class="row">

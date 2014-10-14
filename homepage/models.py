@@ -103,7 +103,8 @@ class Order(models.Model):
         #print 'Server Time:{0} - OrderTime:{1} - Difference:{2} - seconds {3}'.format(datetime.datetime.today(),self.order_date,diff,diff.seconds)
         return True if diff.seconds > 420 else False
 
-from django.db.models.signals import pre_delete
+"""
+from django.db.models.signals import pre_delete,pre_save
 
 def delete_parking_images(sender, instance, using, **kwargs):
     if instance.pic:
@@ -113,5 +114,5 @@ def delete_parking_images(sender, instance, using, **kwargs):
             #os.remove(fname)
         except:
             pass
-pre_delete.connect(delete_parking_images, sender=Parking)
-
+pre_save.connect(delete_parking_images, sender=Parking)
+"""

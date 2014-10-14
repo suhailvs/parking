@@ -142,7 +142,7 @@ RECAPTCHA_USE_SSL = False
  2) develop --> dev.flexlot.co
  3) local   --> localhost:8000
 """
-site_branch='local' #master, develop, local
+site_branch='develop' #master, develop, local
 if site_branch == 'master':
     STATIC_URL = 'http://static.flexspot.webfactional.com/flexspot/'
     MEDIA_URL = STATIC_URL+'media/'

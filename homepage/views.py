@@ -50,7 +50,7 @@ class FindParkings(View):
 	
 # Create your views here.
 #from os.path import join as pjoin
-def resize_and_crop(fname,coords):
+def resize_and_crop(fname):#,coords):
     """
     Resize and crop profile picture.
     coords=33,44,22,33   ---x:33,y:22,x2:3,y2:4,w:33,h:32    
@@ -104,7 +104,7 @@ class ShareParkingStuff(View):
 			form1.save()
 			if form1.instance.pic:
 				imfn = os.path.join(settings.MEDIA_ROOT, form1.instance.pic.name)
-				resize_and_crop(imfn,request.POST['cropcoords'])
+				resize_and_crop(imfn)#,request.POST['cropcoords'])
 			
 			return HttpResponseRedirect(reverse('home')+'?next=listings')
 		d=dict(first_form=form1,second_form=form2)

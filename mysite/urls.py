@@ -38,6 +38,10 @@ urlpatterns += patterns('payments.views',
     #url(r'^payment/$','asks_for_money'),
 )
 
+
+urlpatterns += patterns('mysite.views',    
+    url(r"^delunused/$", 'delete_unused_media_files'),
+)
 handler404 = 'mysite.views.my_custom_404_view'
 handler500 = 'mysite.views.my_custom_404_view'
 handler403 = 'mysite.views.my_custom_404_view'

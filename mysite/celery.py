@@ -39,6 +39,19 @@ from mysite.celery import set_log
 result = set_log.apply_async((1,), countdown=int(request.GET['ts']))
 """
 
+from celery.task.schedules import crontab
+from celery.decorators import periodic_task
+from homepage.models import Order
+# A periodic task that will run every minute (the symbol "*" means every)
+@periodic_task(run_every=(crontab(hour="*",minute=0)))
+def remove_inactive_parkingorders():
+    m='remove inactive parking cron run at:{}'.format(datetime.datetime.now())
+    Log_errors(errors=m).save()
+    orders=Order.objects.all()
+    for od in orders:        
+        if od.is_expired():od.delete()
+
+
 @app.task(bind=True)
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))
