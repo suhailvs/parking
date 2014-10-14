@@ -110,7 +110,7 @@ def delete_parking_images(sender, instance, using, **kwargs):
         fname=os.path.join(settings.MEDIA_ROOT, instance.pic.name)
         try:
             os.remove(fname[:-4]+'_160.jpg')
-            os.remove(fname[:-4]+'_crop.jpg')
+            #os.remove(fname)
         except:
             pass
 pre_delete.connect(delete_parking_images, sender=Parking)

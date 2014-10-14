@@ -57,6 +57,7 @@ def resize_and_crop(fname,coords):
     >>> x=[int(i) for i in coords.split(',')]
     """
     im = PImage.open(fname)
+    """
     #box = (50, 50, 200, 300) #x1,y1,x2,y2
     box=[int(i) for i in coords.split(',')]
     region = im.crop(box)
@@ -64,20 +65,22 @@ def resize_and_crop(fname,coords):
         region.save(fname[:-4]+'_crop.jpg',"JPEG")
     except IOError:
         region.convert('RGB').save(fname[:-4]+'_crop.jpg',"JPEG")
-    region.thumbnail((160,160), PImage.ANTIALIAS)
-    try:region.save(fname[:-4]+'_160.jpg', "JPEG")
-    except IOError:region.convert('RGB').save(fname[:-4]+'_160.jpg', "JPEG")
+    """
+    im.thumbnail((160,160), PImage.ANTIALIAS)
+    try:im.save(fname[:-4]+'_160.jpg', "JPEG")
+    except IOError:im.convert('RGB').save(fname[:-4]+'_160.jpg', "JPEG")
     #region.thumbnail((48,48), PImage.ANTIALIAS)
     #region.save(fname[:-4]+'_48.jpg', "JPEG")
-    os.remove(fname)
+    #os.remove(fname)
 
 class ShareParkingStuff(View):
 	def get(self, request,id=None):
 		if id:
 			p = get_object_or_404(Parking, pk=id)
 			if p.user != request.user:return HttpResponse('Forbidden')
-			d=dict(first_form=ParkingForm(instance=p),edit=id,
+			d=dict(first_form=ParkingForm(instance=p,is_edit=True),edit=id,
 				second_form=ParkingSubForm({'fromtime': p.fromtime, 'totime': p.totime,'fee':p.fee,'totalspaces':p.totalspaces}))
+
 		else:
 			d=dict(first_form=ParkingForm(),second_form=ParkingSubForm())
 		return render(request,'userprofile/share.html',d)
@@ -86,9 +89,12 @@ class ShareParkingStuff(View):
 		if id:#'id' in request.POST: todo
 			p = get_object_or_404(Parking, pk=id)#request.POST['id'])
 			if p.user != request.user:return HttpResponse('Forbidden')
-		else:p = Parking(user=request.user)
+			form1=ParkingForm(request.POST,request.FILES,instance=p,is_edit=True)
+		else:
+			p = Parking(user=request.user)
+			form1=ParkingForm(request.POST,request.FILES,instance=p)
 
-		form1=ParkingForm(request.POST,request.FILES,instance=p)
+		
 		form2=ParkingSubForm(request.POST)
 		if form1.is_valid() and form2.is_valid():
 			form1.instance.fromtime = form2.cleaned_data['fromtime']
