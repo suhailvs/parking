@@ -16,7 +16,7 @@
     </thead>
     <tbody>
     {% for parking in parkings %}    
-      <tr>
+      <tr{% if not parking.status %} class="danger"{% endif %}>
         <td><strong>{{forloop.counter}}</strong></td>
         <td>{{parking.streetaddress|truncatechars:20}}</td>
         <td>{{parking.totalspaces}}</td>
@@ -24,10 +24,8 @@
         <td>{{parking.description|truncatechars:20}}</td>
         <td>
           <a class="btn btn-default btn-xs" href="{% url 'parkingInfo' parking.pk %}">more-info</a>
-          <!--<a class="btn btn-danger btn-xs" href="{% url 'editparking' parking.pk %}?f=del"><span class="glyphicon glyphicon-trash"></span></a>-->
-          <a class="btn btn-default btn-xs" href="{% url 'editparking' parking.pk %}?f=act">{% if parking.status %}Deactivate</a> <span class="label label-success"><span class="glyphicon glyphicon-ok"></span></span>{% else %}Activate</a> <span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span>{% endif %}
-
           <a class="btn btn-default btn-xs" href="{% url 'editparkingdet' parking.pk %}">Edit</a>
+          {% if parking.status %}<span class="label label-success">Live</span>{% endif %}
         </td>
       </tr>
     {% endfor %}     
@@ -42,9 +40,10 @@
   <code>spaces:{{parking.totalspaces}}</code>
   <strong>Lat:{{parking.lat|floatformat}},Long:{{parking.lng|floatformat}}</strong> 
   <br>{{parking.description|truncatechars:40}}
+  <br>
+  Status: {% if parking.status %}<span class="label label-success">Live</span>{% else %}<span class="label label-danger">Hidden</span>{% endif %}
   <a class="btn btn-default btn-xs" href="{% url 'parkingInfo' parking.pk %}">more-info</a>
-  <!--<a class="btn btn-danger btn-xs" href="{% url 'editparking' parking.pk %}?f=del"><span class="glyphicon glyphicon-trash"></span></a>-->
-  <a class="btn btn-default btn-xs" href="{% url 'editparking' parking.pk %}?f=act">{% if parking.status %}Deactivate</a> <span class="label label-success"><span class="glyphicon glyphicon-ok"></span></span>{% else %}Activate</a> <span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span>{% endif %}
+  <a class="btn btn-default btn-xs" href="{% url 'editparkingdet' parking.pk %}">Edit</a>
   <hr>
 {% endfor %}  
 </div>

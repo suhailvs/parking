@@ -43,7 +43,9 @@ def ajax_parkingdetails(request):
     d=dict(address=p.streetaddress,desc=p.description,avail=','.join(avail),
         ftime=p.fromtime,totime=p.totime,fees=p.fee)
         #ftime=p.fromtime.strftime(tformat),totime=p.totime.strftime(tformat))
-    if p.pic: d['pic']=p.pic.url[:-4]
+    if p.pic: 
+        d['pic']=p.pic.url
+        d['pic_thumb']=p.pic.url[:-4] + '_160.jpg'
     return HttpResponse(json.dumps(d), mimetype="application/json")
 """
 def ajax_login(request):
@@ -115,6 +117,7 @@ def ajax_savebooking(request):
         msg='login'
     return HttpResponse(json.dumps({'msg':msg,'status':flag}), mimetype="application/json")
 
+"""
 def editparking(request,id):
     p = get_object_or_404(Parking, pk=id,user=request.user)
     #'?next=listings' p.streetaddress + request.GET['f']
@@ -132,3 +135,4 @@ def editparking(request,id):
 
     messages.success(request,msg)
     return HttpResponseRedirect(reverse('home')+'?next=listings')
+"""

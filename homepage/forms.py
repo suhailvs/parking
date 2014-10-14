@@ -51,15 +51,17 @@ class CustSignupForm(SignupForm):
 class MyFileUploadField(forms.ClearableFileInput):
     def render(self, name, value, attrs=None):
         html = super(MyFileUploadField, self).render(name, value,attrs)
-        html+= '''<input id="cropcoords" type="hidden" name="cropcoords" value="">
-        <div class="thumbnail" id="previewimage"></div>'''
+        html+= '''<div class="thumbnail" id="previewimage"></div>'''
         return mark_safe(html);
 
 
 
 class ParkingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        is_editing=kwargs.pop('is_edit', False)
         super(ParkingForm, self).__init__(*args, **kwargs)
+        if is_editing: del self.fields["streetaddress"]
+        
         self.fields['days'].help_text = None 
         self.fields['status'].label='Live'
     class Meta:

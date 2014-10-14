@@ -22,7 +22,7 @@
   <p>{{ park.description}}</p>
   <p>Fee: ${{park.fee}}.00/hr</p>
   <p>latitude: {{park.lat}}, longitude: {{park.lng}}</p>
-  {% if park.pic %}<img src="{{ park|get_imgurl}}" />{% endif %}
+  {% if park.pic %}<img src="{{park.pic.url}}{# { park|get_imgurl} #}" />{% endif %}
   
   <hr><p class="lead" style="background: orange">Confirmed Bookings</p>
   <div class="row">
