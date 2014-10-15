@@ -5,19 +5,16 @@ from homepage.models import Order
 # Create your models here.
 
 class Log_errors(models.Model):
-	time_occured = models.DateTimeField(auto_now_add=True)
-	errors=models.TextField(blank=True)
-	def __unicode__(self):
-		return unicode(self.errors)
-
-
-
+    time_occured = models.DateTimeField(auto_now_add=True)
+    errors=models.TextField(blank=True)
+    def __unicode__(self):
+        return unicode(self.errors)
 
 def send_success_payment_mail(order):
     from django.core.mail import send_mail
     from django import template
     from django.conf import settings
-    from mysite.celery import set_log,send_session_emails
+    from mysite.celery import send_session_emails #set_log
     import datetime
 
     # celery schedule-> send mail 15 minutes before parking starttime

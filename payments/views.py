@@ -12,8 +12,15 @@ def frm_paypal(request):
     # What you want the button to do.
     #if not 'orderpk' in request.GET: 
     credit_order=Order.objects.get(pk=request.GET['orderpk'])
+    """
     if credit_order.is_expired():
         return HttpResponse("Payment Time Expired. The maximum time for completing an order is 7 minutes. <a href='/'>home</a>")
+    """
+    if credit_order.paid == True:
+        return render(request,'errorpages/error_404.html',{'error_msg':'You already paid for this Parking Area.'})
+    elif credit_order.is_expired():
+        msg= "Payment Time Expired. The maximum time for completing an order is 7 minutes. <a href='/'>home</a>"
+        return render(request,'errorpages/error_404.html',{'error_msg':msg})
     
     site_url=settings.PAYPAL_REDIRECT_URL
     total=credit_order.parking.fee * credit_order.duration
@@ -36,7 +43,7 @@ from django.contrib.auth.decorators import user_passes_test
 @user_passes_test(lambda u: u.is_superuser)
 def remove_inactive_orders(request):    
     msg='<a href="/admin/">back to admin</a><h1> Successfully Deleted Unpaid orders more than 7minutes old.</h1>because somebody goes to PayPal but changes their mind and decides not to purchase.<ul>Deleted:'
-    orders=Order.objects.all()
+    orders=Order.objects.filter(paid=False)
     for od in orders:        
         if od.is_expired():
             msg+='<li>{0},OrderBy:{1}, OrderOn: {2}</li>'.format(od.pk,od.user.username,od.order_date)
