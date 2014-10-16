@@ -14,7 +14,7 @@ def send_success_payment_mail(order):
     from django.core.mail import send_mail
     from django import template
     from django.conf import settings
-    from mysite.celery import send_session_emails #set_log
+    from customemails.tasks import send_session_emails #set_log
     import datetime
 
     # celery schedule-> send mail 15 minutes before parking starttime

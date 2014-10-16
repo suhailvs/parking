@@ -49,6 +49,8 @@ INSTALLED_APPS = (
     'selectize',
     'paypal.standard.ipn',
     'captcha',
+    #kombu.transport.django',
+    'djcelery',
     # custom apps
     
     'payments',    
@@ -136,6 +138,13 @@ ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 RECAPTCHA_PUBLIC_KEY = '6LfgU_oSAAAAAABjYNwiprQV-9BO9yH7C9pkGDkt'
 RECAPTCHA_PRIVATE_KEY = '6LfgU_oSAAAAAORVMk6HGflbZx0rbShkn2sNjlXY'
 RECAPTCHA_USE_SSL = False
+
+
+
+import djcelery
+djcelery.setup_loader()
+#BROKER_URL = 'django://'
+BROKER_URL = 'sqla+mysql://flexspot_user:Flexspot123@localhost/celerytasks'
 
 """
  1) master  --> flexlot.co
