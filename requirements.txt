@@ -1,8 +1,8 @@
 django
 django-bootstrap-form
-django-user-accounts==1.0b18
+django-user-accounts
 Pillow
 django-selectize
 python-dateutil
 django-recaptcha
-MySQL-python
+# MySQL-python

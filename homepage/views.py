@@ -1,6 +1,6 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponseRedirect,HttpResponse,Http404
-from django.core.urlresolvers import reverse,reverse_lazy
+from django.urls import reverse,reverse_lazy
 from django.views.generic.edit import FormView
 from homepage.models import Parking,Order
 #from payments import Orders

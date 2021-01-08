@@ -18,13 +18,13 @@ class Weeks(models.Model):
         return self.name
 
 class Parking(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     days=models.ManyToManyField(Weeks,help_text=None)  
 
-    fromtime=models.PositiveIntegerField(max_length=2)
-    totime=models.PositiveIntegerField(max_length=2)    
-    totalspaces=models.PositiveIntegerField(max_length=3)
-    fee=models.PositiveIntegerField(max_length=5, help_text="Parking Fee per hour")
+    fromtime=models.PositiveIntegerField()
+    totime=models.PositiveIntegerField()    
+    totalspaces=models.PositiveIntegerField()
+    fee=models.PositiveIntegerField(help_text="Parking Fee per hour")
 
     pic = models.ImageField("Parking Photos", upload_to="images/",blank=True)
     lat=models.CharField(max_length=20)
@@ -70,7 +70,7 @@ class Parking(models.Model):
                     ts+=relativedelta.relativedelta(weeks=+1)
                 if clean_dt == ts:
                     booked_hours=self.hoursBookedOnDate(clean_dt)
-                    print relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name]).day
+                    # print relativedelta.relativedelta(weekday=WEEKDAY_DICT[day.name]).day
                     # loop through the hours listed by owner ie--> 6-8 --> range(6,9) --> [6,7,8]
                     for hr in range(self.fromtime,self.totime+1):  
 
@@ -90,11 +90,11 @@ class Parking(models.Model):
         return datas if datas else False
 
 class Order(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     order_date=models.DateTimeField(auto_now_add =True)
-    parking=models.ForeignKey(Parking)
+    parking=models.ForeignKey(Parking, on_delete=models.CASCADE)
     park_date=models.DateTimeField()
-    duration=models.PositiveIntegerField(max_length=2,default=1)    
+    duration=models.PositiveIntegerField(default=1)    
     paid=models.BooleanField(default=False)
     invoiceid=models.CharField(max_length=100,blank=True)
     def is_expired(self):

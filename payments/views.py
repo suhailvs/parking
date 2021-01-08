@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect,HttpResponse
 from mysite import settings 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 # Create your views here.
 from paypal.standard.forms import PayPalPaymentsForm
 

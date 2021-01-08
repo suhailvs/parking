@@ -1,6 +1,6 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponse,HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib import auth
 import time,json
 from datetime import datetime
@@ -74,7 +74,7 @@ def checkBooking(park,parktime,dur):
     hr=int(dt[1])
     avail_hours=park.hoursAvailableOnDate(dt[0])#request.GET['date'])
     wanted_hours=range(hr, hr+dur)
-    print avail_hours,'<-Available | Wanted->',wanted_hours
+    # print avail_hours,'<-Available | Wanted->',wanted_hours
     #if wanted_hours in avail_hours: 
     if set(wanted_hours).issubset(set(avail_hours)):
         return ('Success',True)

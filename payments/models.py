@@ -24,7 +24,7 @@ def send_success_payment_mail(order):
 
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL,[order.user.email],fail_silently=False)
 
-from paypal.standard.ipn.signals import payment_was_successful
+# from paypal.standard.ipn.signals import payment_was_successful
 def show_me_the_money(sender, **kwargs):
 	ipn_obj = sender
 	# You need to check 'payment_status' of the IPN
@@ -58,4 +58,4 @@ def show_me_the_money(sender, **kwargs):
 		log+='error:ipn_obj.payment_status = {0}\n'.format(ipn_obj.payment_status)
 	Log_errors(errors=log).save()
 
-payment_was_successful.connect(show_me_the_money)
+# payment_was_successful.connect(show_me_the_money)

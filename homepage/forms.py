@@ -43,9 +43,9 @@ class CustSignupForm(SignupForm):
         self.fields["state"] = forms.ChoiceField(choices=STATE_CHOICES,initial="WA",label='State')
         #self.fields["captcha"] = ReCaptchaField()
         
-        current_order = self.fields.keyOrder
-        print current_order
-        self.fields.keyOrder = ['email'] + [field for field in current_order if not field in ('captcha','email')]+['captcha']
+        # current_order = self.fields.keyOrder
+        # # print current_order
+        # self.fields.keyOrder = ['email'] + [field for field in current_order if not field in ('captcha','email')]+['captcha']
 
 
 class MyFileUploadField(forms.ClearableFileInput):
